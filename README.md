@@ -10,7 +10,11 @@
 2. Install eslint addon for whatever editor you have
 3. For vscode use [this](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and hit `CTRL-COMMA` and add the following settings
 ```json
+    "eslint.enable": true,
+    "eslint.autoFixOnSave": true
+}
 ```
+This should show lint erros in VS Code and will autoformat the code when you save. 
 
 ### Deploying to Firebase
 
