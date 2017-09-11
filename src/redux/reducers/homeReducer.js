@@ -1,8 +1,8 @@
-import { HOME_PAGE_BUTTON_PRESSED } from '../actions/types/exampleActionTypes';
+import { HOME_PAGE_BUTTON_PRESSED } from '../actions/types/exampleActionTypes'
 
 const initalState = {
   timesButtonPressed: 0,
-};
+}
 
 export default (state = initalState, action) => {
   switch (action.type) {
@@ -10,8 +10,8 @@ export default (state = initalState, action) => {
       return {
         ...state,
         timesButtonPressed: state.timesButtonPressed + 1,
-      };
+      }
     default:
-      return state;
+      return state
   }
-};
+}

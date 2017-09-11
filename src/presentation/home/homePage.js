@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import logo from '../../logo.svg';
-import '../../App.css';
+import React from 'react'
+import PropTypes from 'prop-types'
+import logo from '../../logo.svg'
+import '../../App.css'
 
 const homePage = props => (
   <div className="App">
@@ -17,11 +17,11 @@ const homePage = props => (
       {`I've been clicked ${props.timesButtonPressed} times`}
     </h1>
   </div>
-);
+)
 
 homePage.propTypes = {
   onButtonClick: PropTypes.bool.isRequired,
   timesButtonPressed: PropTypes.func.isRequired,
-};
+}
 
-export default homePage;
+export default homePage
