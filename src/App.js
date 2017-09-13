@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 import Home from './containers/home'
+import Dashboard from './containers/dashboard/dashboard'
 import './App.css'
 import logo from './logo.svg'
 
@@ -17,6 +18,7 @@ const App = () => (
       </h3>
     </div>
     <Route exact path="/" component={Home} />
+    <Route exact path="/dashboard" component={Dashboard} />
   </div>
 )
 

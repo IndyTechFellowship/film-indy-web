@@ -1,26 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import * as exampleActions from '../redux/actions/creators/exampleActions'
+import * as accountActions from '../redux/actions/creators/accountActions'
 import HomePage from '../presentation/home/homePage'
 
 class Home extends React.Component {
   render() {
-    const { home, homePageButtonPressed } = this.props
     return (
-      <HomePage timesButtonPressed={home.timesButtonPressed} onButtonClick={homePageButtonPressed} />
+      <HomePage {...this.props} />
     )
   }
 }
 
 Home.propTypes = {
-  home: PropTypes.shape({
-    timesButtonPressed: PropTypes.bool,
-  }).isRequired,
-  homePageButtonPressed: PropTypes.func.isRequired,
+  signIn: PropTypes.func.isRequired,
 }
 
-export default connect(
-  state => ({ home: state.home }),
-  { ...exampleActions },
-)(Home)
+export default withRouter(connect(
+  state => ({ home: state.home, account: state.account }),
+  { ...exampleActions, ...accountActions },
+)(Home))
