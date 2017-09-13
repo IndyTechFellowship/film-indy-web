@@ -1,8 +1,9 @@
 import React from 'react'
+import * as firebase from 'firebase'
 
 const Dashboard = () => (
   <div>
-    <h1> hello </h1>
+    <h1>{`hello ${firebase.auth().currentUser.email}`}</h1>
   </div>
 )
 
