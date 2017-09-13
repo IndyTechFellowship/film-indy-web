@@ -20,7 +20,6 @@ const firebaseConfig = {
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
 }
 
-console.log(firebaseConfig)
 firebase.initializeApp(firebaseConfig)
 
 ReactDOM.render(
