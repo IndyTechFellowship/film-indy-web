@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
 
+* { font-family: 'Roboto'; }
+
 .App {
   text-align: center;
 }
@@ -9,18 +11,13 @@
   height: 80px;
 }
 
-.App-header {
-  background-color: #004b8d; /* Film Indy's dark blue color */
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
 .App-subheader {
-    background-color: #38b5e6;
+    background-color: #38b5e6; /* Film Indy's light blue */
     height: 20px;
     padding-top: 10px;
     padding-bottom: 45px;
+    width: 30%;
+    margin: auto;
     color: white;
 }
 
@@ -36,4 +33,58 @@
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/****** HOME PAGE STYLES ******/
+
+.raisedButton {
+    width: 200px;
+}
+.accountIcon {
+    margin-right: 2em;
+}
+
+.logo {
+    margin-left: 4em;
+    width: 4em;
+    padding: 5px;
+}
+
+.appBar {
+
+}
+
+.sidebar {
+    width: 12%;
+    height: 100vh;
+    border-right: 1px solid #dbdbdb;
+    float: left;
+}
+
+.mainContent {
+    display: inline-block;
+    margin: auto;
+    max-width: 88%;
+    height: 100%;
+    /*background-color: #dbdbdb;*/
+}
+
+.searchCard {
+    /*position: absolute;*/
+	display: inline-block !important;
+	margin: auto !important;
+	margin-left: 4em !important;
+    margin-bottom: 1em !important;
+}
+
+.searchIcon {
+	color: #38b5e6 !important;
+	margin-left: 1.25em;
+	float: left;
+	margin-top: 0.75em;
+}
+
+.searchField {
+	float: left;
+	margin-left: 1em;
 }
