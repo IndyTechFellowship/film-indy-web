@@ -3,42 +3,39 @@ import { Route } from 'react-router-dom'
 import Home from './containers/home'
 import './App.css'
 
-// implements Google Material UI framework:
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {fade} from 'material-ui/utils/colorManipulator';
-import {
-  pinkA200,
-  grey100, grey300, grey400, grey500,
-  white, darkBlack, fullBlack,
-} from 'material-ui/styles/colors';
+import AppBar from 'material-ui/AppBar'
+import Avatar from 'material-ui/Avatar'
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card'
+import Checkbox from 'material-ui/Checkbox'
+import TextField from 'material-ui/TextField'
 
-const muiTheme = getMuiTheme({
-	  fontFamily: 'Roboto, sans-serif',
-	  palette: {
-	    primary1Color: '#004b8d', // Film Indy dark blue: primary={true} enables it on component
-	    primary2Color: pinkA200,
-	    primary3Color: grey400,
-	    accent1Color: '#38b5e6', // Film Indy light blue: secondary={true} enables it on component
-	    accent2Color: grey100,
-	    accent3Color: grey500,
-	    textColor: darkBlack,
-	    alternateTextColor: white,
-	    canvasColor: white,
-	    borderColor: grey300,
-	    disabledColor: fade(darkBlack, 0.3),
-	    pickerHeaderColor: '#39991e',
-	    clockCircleColor: fade(darkBlack, 0.07),
-	    shadowColor: fullBlack,
-	  },
-});
+import SearchIcon from 'material-ui/svg-icons/action/search'
+
+// Image importing would only work via require
+const Logo = require('./film-indy-logo.jpg')
 
 const App = () => (
-<MuiThemeProvider muiTheme={muiTheme}>
   <div className="App">
-    <Route exact path="/" component={Home} />
+      <AppBar
+          iconElementLeft={
+              <div>
+                  <img src={Logo} className="logo"/>
+                  <Card className="searchCard" style={{width: 400}}>
+                          <SearchIcon className="searchIcon" />
+                          <TextField
+                              className="searchField"
+                              hintText="Search FilmIndy"
+                              underlineFocusStyle={{borderColor: '#38b5e6'}}
+                              floatingLabelFocusStyle={{color: '#38b5e6'}}
+                          />
+                  </Card>
+              </div>
+          }
+          iconElementRight={ <Avatar className="accountIcon" src="https://goo.gl/ybdoo6" size={60} /> }
+          zDepth = {2}
+      />
+     <Route exact path="/" component={Home} />
   </div>
-</MuiThemeProvider>
 )
 
 export default App
