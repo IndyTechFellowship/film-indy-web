@@ -3,8 +3,8 @@ module.exports = {
         "browser": true
     },
     "rules": {
-        "max-len": ['error', 500],
-        "semi": ["error", "never"],
+        "max-len": ['warn', 500],
+        "semi": ["warn", "never"],
         'react/prefer-stateless-function': ['warn', { ignorePureComponents: true }],
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "import/prefer-default-export": 'off',
