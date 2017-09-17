@@ -5,11 +5,12 @@
 }
 .accountIcon {
     margin-right: 2em;
+    margin-top: 0.25em;
 }
 
 .logo {
     margin-left: 4em;
-    width: 4em;
+    width: 3.5em;
     padding: 5px;
 }
 
