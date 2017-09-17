@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 import Home from './containers/home'
+import Login from './containers/login/login'
 import Dashboard from './containers/dashboard/dashboard'
 import './App.css'
 import logo from './logo.svg'
@@ -19,6 +20,7 @@ const App = () => (
     </div>
     <Route exact path="/" component={Home} />
     <Route exact path="/dashboard" component={Dashboard} />
+    <Route exact path="/login" component={Login} />
   </div>
 )
 
