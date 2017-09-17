@@ -4,22 +4,39 @@ import Home from './containers/home'
 import Login from './containers/login/login'
 import Dashboard from './containers/dashboard/dashboard'
 import './App.css'
-import logo from './logo.svg'
+
+import AppBar from 'material-ui/AppBar'
+import Avatar from 'material-ui/Avatar'
+import {Card} from 'material-ui/Card'
+import TextField from 'material-ui/TextField'
+
+import SearchIcon from 'material-ui/svg-icons/action/search'
+
+// Image importing would only work via require
+const Logo = require('./film-indy-logo.png')
 
 const App = () => (
   <div className="App">
-    <div className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <h2>Film Indy Project</h2>
-    </div>
-    <div className="App-subheader">
-      <h3>Built with <a href="https://github.com/facebookincubator/create-react-app" className="App-docs">React,</a>
-        <a href="http://redux.js.org/" className="App-docs">Redux,</a>
-        <a href="https://firebase.google.com/docs/" className="App-docs">& Firebase</a>
-      </h3>
-    </div>
-    <Route exact path="/" component={Home} />
-    <Route exact path="/dashboard" component={Dashboard} />
+      <AppBar
+          iconElementLeft={
+              <div>
+                  <img src={Logo} className="logo" alt="Film Indy Logo"/>
+                  <Card className="searchCard" style={{width: 400}}>
+                          <SearchIcon className="searchIcon" />
+                          <TextField
+                              className="searchField"
+                              hintText="Search FilmIndy"
+                              underlineFocusStyle={{borderColor: '#38b5e6'}}
+                              floatingLabelFocusStyle={{color: '#38b5e6'}}
+                          />
+                  </Card>
+              </div>
+          }
+          iconElementRight={ <Avatar className="accountIcon" src="https://goo.gl/ybdoo6" size={60} /> }
+          zDepth = {2}
+      />
+     <Route exact path="/" component={Home} />
+     <Route exact path="/dashboard" component={Dashboard} />
     <Route exact path="/login" component={Login} />
   </div>
 )

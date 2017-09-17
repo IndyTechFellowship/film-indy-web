@@ -1,5 +1,6 @@
 import React from 'react'
 import '../../App.css'
+import './homePage.css'
 
 const homePage = props => (
   <div />
