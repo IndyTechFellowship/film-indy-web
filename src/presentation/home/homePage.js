@@ -9,7 +9,7 @@ const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
   switch (errorCode) {
     case 'auth/wrong-password': return 'Invalid Password'
     case 'auth/user-not-found': return 'No user with that email exists'
-    default: return 'unknown'
+    default: return 'There was an issue signing in. Please try again'
   }
 }
 
