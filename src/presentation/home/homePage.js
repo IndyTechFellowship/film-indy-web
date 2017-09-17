@@ -1,16 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../App.css'
+import './homePage.css'
+import RaisedButton from 'material-ui/RaisedButton'
 
 const homePage = props => (
-  <div >
-    <p className="App-intro">
-            To get started, edit <code>src/App.js</code> and save to reload.
-    </p>
-    <button onClick={props.onButtonClick}>CLICK ME </button>
-    <h1>
-      {`I've been clicked ${props.timesButtonPressed} times`}
-    </h1>
+  <div>
+    <div className="mainContent">
+        <br />
+        <RaisedButton className="raisedButton" secondary={true} labelColor="#fff" onTouchTap={props.onButtonClick}>CLICK ME </RaisedButton>
+        <h3>
+          {`Aww jeez Rick I've been clicked ${props.timesButtonPressed} times`}
+       </h3>
+   </div>
   </div>
 )
 
