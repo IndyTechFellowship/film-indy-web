@@ -1,9 +1,5 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
-import Home from './containers/home'
-import Login from './containers/login/login'
-import Dashboard from './containers/dashboard/dashboard'
-import './App.css'
 
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
@@ -12,8 +8,12 @@ import TextField from 'material-ui/TextField'
 
 import SearchIcon from 'material-ui/svg-icons/action/search'
 
-// Image importing would only work via require
-const Logo = require('./film-indy-logo.png')
+import Home from './containers/home'
+import Login from './containers/login/login'
+import Dashboard from './containers/dashboard/dashboard'
+
+import './App.css'
+import Logo from './film-indy-logo.png'
 
 const App = () => (
   <div className="App">
