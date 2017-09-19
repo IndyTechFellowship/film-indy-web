@@ -6,7 +6,10 @@ import thunk from 'redux-thunk'
 import rootReducer from '../reducers'
 
 export const configureStore = (browserHistory, firebaseConfig) => {
-  const reduxFirebaseConfig = { userProfile: 'users' }
+  const reduxFirebaseConfig = {
+    userProfile: 'users',
+    updateProfileOnLogin: true,
+  }
   const createStoreWithFirebase = compose(
     reactReduxFirebase(firebaseConfig, reduxFirebaseConfig),
   )(createStore)

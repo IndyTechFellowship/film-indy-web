@@ -55,7 +55,7 @@ const history = createHistory()
 const store = configureStore(history, firebaseConfig)
 
 
-firebase.initializeApp(firebaseConfig)
+// firebase.initializeApp(firebaseConfig)
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941

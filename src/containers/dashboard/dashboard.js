@@ -1,12 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import * as firebase from 'firebase'
 import { firebaseConnect } from 'react-redux-firebase'
 import { get } from 'lodash'
 
 const Dashboard = (props) => {
-  console.log(props.firebase)
   const email = get(props.firebase.auth(), 'currentUser.email', '')
   return (
     <div>
@@ -19,7 +17,10 @@ const Dashboard = (props) => {
           const file = event.target.files[0]
           const fbFilePath = `/images/users/account/${uid}/account_image`
           props.firebase.uploadFile(fbFilePath, file).then((response) => {
-            const downloadUrl = response.a.downloadURLs[0]
+            const downloadUrl = response.downloadURL
+            props.firebase.updateProfile({
+              photoURL: downloadUrl,
+            })
           })
         }}
       />
