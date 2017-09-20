@@ -49,13 +49,12 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
 }
 
+firebase.initializeApp(firebaseConfig)
 
 const target = document.getElementById('root')
 const history = createHistory()
-const store = configureStore(history, firebaseConfig)
+const store = configureStore(history, firebase)
 
-
-// firebase.initializeApp(firebaseConfig)
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
