@@ -8,6 +8,9 @@ import './App.css'
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
 import { Card } from 'material-ui/Card'
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
+import Popover from 'material-ui/Popover';
 import TextField from 'material-ui/TextField'
 
 import SearchIcon from 'material-ui/svg-icons/action/search'
@@ -16,6 +19,30 @@ import SearchIcon from 'material-ui/svg-icons/action/search'
 const Logo = require('./film-indy-logo.png')
 
 const App = () => (
+
+    constructor(props) {
+      super(props);
+      this.state = {
+        open: false,
+      }
+    }
+
+    handleTouchTap = (event) => {
+      // This prevents ghost click.
+      event.preventDefault()
+
+      this.setState({
+        open: true,
+        anchorEl: event.currentTarget,
+      });
+    }
+
+    handleRequestClose = () => {
+      this.setState({
+        open: false,
+      })
+  }
+
   <div className="App">
     <AppBar
       iconElementLeft={
@@ -32,9 +59,21 @@ const App = () => (
           </Card>
         </div>
       }
-      iconElementRight={<Avatar className="accountIcon" src="https://goo.gl/ybdoo6" size={60} />}
+      iconElementRight={<Avatar className="accountIcon" src="https://goo.gl/ybdoo6" size={60} onClick={this.handleTouchTap} />}
       zDepth={2}
     />
+    <Popover
+          open={this.state.open}
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+          onRequestClose={this.handleRequestClose}
+        >
+          <Menu>
+            <MenuItem primaryText="Account Settings" />
+            <MenuItem primaryText="Log Out" />
+          </Menu>
+        </Popover>
     <Route exact path="/" component={Home} />
     <Route exact path="/dashboard" component={Dashboard} />
     <Route exact path="/login" component={Login} />

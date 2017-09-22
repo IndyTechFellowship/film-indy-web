@@ -6,6 +6,7 @@
 .accountIcon {
     margin-right: 2em;
     margin-top: 0.25em;
+    cursor: pointer;
 }
 
 .logo {
