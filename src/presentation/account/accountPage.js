@@ -1,6 +1,9 @@
 import React from 'react'
 import '../../App.css'
 import './accountPage.css'
+import { firebaseConnect } from 'react-redux-firebase'
+import PropTypes from 'prop-types'
+import { get } from 'lodash'
 
 // Material UI Imports
 import Avatar from 'material-ui/Avatar'
@@ -26,7 +29,9 @@ const accountPage = props => (
           <div className="imageWrapper">
               <Avatar className="accountImage" src="https://goo.gl/ThFe4C" size={150} />
               <CameraIcon className="cameraIcon" color="white"/>
-              <FlatButton className="imageText" icon={<UploadIcon />} labelPosition="before">Upload Picture</FlatButton>
+              <FlatButton className="imageText" icon={<UploadIcon />} label="Upload Picture" labelPosition="before" containerElement='label'>
+                  <FileUploader />
+              </FlatButton>
           </div>
           <ul className="fields">
               <li><TextField className="profileField" hintText="Enter your first name" floatingLabelText="First Name" defaultValue={firstname} /></li>
@@ -45,6 +50,25 @@ const accountPage = props => (
           <RaisedButton className="accountButton" primary={true} label="Submit"/>
       </Card>
   </div>
+)
+
+const FileUploader = props => (
+    <input
+        name="myFile"
+        type="file"
+        style={{ display: 'none' }}
+        onChange={(event) => {
+          const uid = get(props.auth, 'uid')
+          const file = event.target.files[0]
+          const fbFilePath = `/images/users/account/${uid}/account_image`
+          props.uploadFile(fbFilePath, file).then((response) => {
+            const downloadUrl = response.downloadURL
+            props.updateProfile({
+              photoURL: downloadUrl,
+            })
+          })
+      }}
+    />
 )
 
 accountPage.propTypes = {
