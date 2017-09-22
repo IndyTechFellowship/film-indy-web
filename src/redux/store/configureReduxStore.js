@@ -1,10 +1,19 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import promiseMiddleware from 'redux-promise-middleware'
 import { routerMiddleware } from 'react-router-redux'
+import { reactReduxFirebase } from 'react-redux-firebase'
 import thunk from 'redux-thunk'
 import rootReducer from '../reducers'
 
-export const configureStore = (browserHistory) => {
+export const configureStore = (browserHistory, firebaseConfig) => {
+  const reduxFirebaseConfig = {
+    userProfile: 'users',
+    updateProfileOnLogin: true,
+  }
+  const createStoreWithFirebase = compose(
+    reactReduxFirebase(firebaseConfig, reduxFirebaseConfig),
+  )(createStore)
+
   const initialState = {}
   const enhancers = []
   const middleware = [
@@ -26,6 +35,6 @@ export const configureStore = (browserHistory) => {
 
   const composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers)
 
-  const store = createStore(rootReducer, initialState, composedEnhancers)
+  const store = createStoreWithFirebase(rootReducer, initialState, composedEnhancers)
   return store
 }
