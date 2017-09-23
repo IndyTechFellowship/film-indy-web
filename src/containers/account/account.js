@@ -3,19 +3,11 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { firebaseConnect } from 'react-redux-firebase'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
 import AccountPage from '../../presentation/account/accountPage'
 
-const Account = (props) => {
-  const { firebase: { updateProfile, uploadFile }, auth } = props
-  const email = get(auth, 'email', '')
-  return (
-    <div>
-      <h1>{`hello ${email}`}</h1>
-      <AccountPage {...this.props} />
-    </div>
-  )
-}
+const Account = props => (
+  <AccountPage {...props} />
+)
 
 Account.propTypes = {
   firebase: PropTypes.shape({
@@ -31,6 +23,6 @@ Account.propTypes = {
 const wrappedAccount = firebaseConnect()(Account)
 
 export default withRouter(connect(
-  state => ({ account: state.account, firebase: state.firebase, auth: state.firebase.auth }),
+  state => ({ account: state.account, firebase: state.firebase, auth: state.firebase.auth, profile: state.firebase.profile }),
   { },
 )(wrappedAccount))
