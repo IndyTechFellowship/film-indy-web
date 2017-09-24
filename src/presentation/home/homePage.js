@@ -3,14 +3,14 @@ import '../../App.css'
 import './homePage.css'
 
 const homePage = props => (
-  <div />
-)
+        <div />
+);
 
 homePage.propTypes = {
 
-}
+};
 
 homePage.defaultProps = {
-}
+};
 
 export default homePage

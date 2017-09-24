@@ -5,7 +5,7 @@ import { TextField } from 'redux-form-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
 
 const SignInForm = (props) => {
-  const { handleSubmit } = props
+  const { handleSubmit } = props;
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -29,14 +29,14 @@ const SignInForm = (props) => {
       <RaisedButton type="submit">Login</RaisedButton>
     </form>
   )
-}
+};
 
 SignInForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-}
+};
 
 const SignInFormEnriched = reduxForm({
   form: 'signIn',
-})(SignInForm)
+})(SignInForm);
 
 export default SignInFormEnriched

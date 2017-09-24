@@ -23,6 +23,8 @@ import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
 // Page components
 import Home from './containers/home'
 import Login from './containers/login/login'
+import Dashboard from './containers/dashboard/dashboard'
+import SignUp from './containers/signUp'
 import Account from './containers/account/account'
 
 // Style and images
@@ -93,6 +95,7 @@ class App extends React.Component {
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/account" component={Account} />
+        <Route exact path="/signup" component={SignUp} />
       </div>
     )
   }
