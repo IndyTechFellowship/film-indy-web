@@ -3,6 +3,7 @@ module.exports = {
         "browser": true
     },
     "rules": {
+        "comma-dangle": ["warn", "never"],
         "max-len": ['warn', 500],
         "semi": ["warn", "never"],
         'react/prefer-stateless-function': ['warn', { ignorePureComponents: true }],
