@@ -25,6 +25,7 @@ import Home from './containers/home'
 import Login from './containers/login/login'
 import SignUp from './containers/signUp'
 import Account from './containers/account/account'
+import ForgotPassword from './containers/forgotPassword/forgotPassword'
 
 // Style and images
 import './App.css'
@@ -95,6 +96,7 @@ class App extends React.Component {
         <Route exact path="/login" component={Login} />
         <Route exact path="/account" component={Account} />
         <Route exact path="/signup" component={SignUp} />
+        <Route exact path="/forgotpassword" component={ForgotPassword} />
       </div>
     )
   }

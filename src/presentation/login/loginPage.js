@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Snackbar from 'material-ui/Snackbar'
+import FlatButton from 'material-ui/FlatButton'
 import { get } from 'lodash'
 import '../../App.css'
 import SignInForm from './SignInForm'
@@ -16,6 +17,10 @@ const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
 const LoginPage = props => (
   <div >
     <SignInForm onSubmit={values => props.signIn(values.email, values.password)} />
+    <FlatButton
+      label = "Forgot Password"
+      primary = { true }
+    />
     <Snackbar
       bodyStyle={{ backgroundColor: '#F44336' }}
       open={props.account.signInError !== undefined}
