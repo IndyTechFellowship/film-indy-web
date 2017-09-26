@@ -7,7 +7,7 @@ import ForgotPasswordForm from './ForgotPasswordForm'
 
 const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
   switch (errorCode) {
-    case 'auth/invalid-email': return 'No user with that email exists'
+    case 'auth/user-not-found': return 'No user with that email exists'
     default: return 'There was an issue processing your email. Please try again'
   }
 }
@@ -17,8 +17,8 @@ const ForgotPasswordPage = props => (
     <ForgotPasswordForm onSubmit={values => props.sendPasswordResetEmail(values.email)} />
     <Snackbar
       bodyStyle={{ backgroundColor: '#F44336' }}
-      open={props.account.sendPasswordResetEmailError !== undefined}
-      message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.sendPasswordResetEmailErrorError.code'))}
+      open={props.account.sendPasswordResetEmailErro !== undefined}
+      message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.sendPasswordResetEmailError.code'))}
       autoHideDuration={4000}
     />
   </div>
