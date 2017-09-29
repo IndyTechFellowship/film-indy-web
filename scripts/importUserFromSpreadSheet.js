@@ -75,7 +75,6 @@ const getUniqueRoles = usersToImport => usersToImport.reduce((acc, userToImport)
 const addRolesToFirebase = uniqueRoles => uniqueRoles.map(uniqueRole => rolesRef.orderByChild('roleName').equalTo(uniqueRole).once('value', (snapshot) => {
   const val = snapshot.val()
   if (val === null) {
-    console.log(uniqueRole)
     const key = rolesRef.push().key
     return rolesRef.child(key).update({
       roleName: uniqueRole
