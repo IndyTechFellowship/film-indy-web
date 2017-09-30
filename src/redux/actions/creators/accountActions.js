@@ -22,4 +22,4 @@ export const signUp = (email, password) => dispatch => dispatch({
 export const signOut = () => dispatch => dispatch({
     type: SIGN_OUT,
     payload: firebase.auth().signOut(),
-}).then(() => dispatch(push('account')));
+}).then(() => dispatch(push('home')));

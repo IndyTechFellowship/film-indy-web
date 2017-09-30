@@ -14,7 +14,6 @@ import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover'
 import TextField from 'material-ui/TextField'
 
-
 // Material UI SVG Icons
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import AccountCircle from 'material-ui/svg-icons/action/account-circle'
@@ -92,7 +91,7 @@ class App extends React.Component {
             { uid ? ( // renders dropdown items depending on if logged in
                 <div>
                     <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
-                    <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} />
+                    <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={this.props.signOut}/>
                 </div>
             ) : (
                 <div>
