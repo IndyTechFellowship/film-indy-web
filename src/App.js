@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
+import * as accountActions from './redux/actions/creators/accountActions'
 
 // Material UI Components
 import AppBar from 'material-ui/AppBar'
@@ -12,6 +13,7 @@ import { Card } from 'material-ui/Card'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover'
+import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 
 // Material UI SVG Icons
@@ -48,6 +50,7 @@ class App extends React.Component {
     this.setState({
       open: true,
       anchorEl: event.currentTarget,
+      signedOut: false,
     })
   }
 
@@ -56,8 +59,15 @@ class App extends React.Component {
       open: false,
     })
   }
+
+  signOutMessage() {
+      this.setState({
+        signedOut: true,
+      })
+  }
+
   render() {
-    const { profile, auth } = this.props
+    const { profile, auth, signOut, account } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     return (
@@ -91,7 +101,7 @@ class App extends React.Component {
             { uid ? ( // renders dropdown items depending on if logged in
                 <div>
                     <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
-                    <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={this.props.signOut}/>
+                    <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => {signOut();  this.handleRequestClose(); this.signOutMessage()}}/>
                 </div>
             ) : (
                 <div>
@@ -101,6 +111,12 @@ class App extends React.Component {
             )}
           </Menu>
         </Popover>
+        <Snackbar
+          bodyStyle={{ backgroundColor: '#F44336' }}
+          open={this.state.signedOut}
+          message={'Successfully Logged Out.'}
+          autoHideDuration={4000}
+        />
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/account" component={Account} />
@@ -118,11 +134,21 @@ App.propTypes = {
     uid: PropTypes.string,
   }).isRequired,
   signOut: PropTypes.func.isRequired,
+  account: PropTypes.shape({
+    signOutError: PropTypes.shape({
+      code: PropTypes.string,
+      message: PropTypes.string,
+    }),
+  }),
+}
+
+App.defaultProps = {
+  account: {},
 }
 
 const wrappedApp = firebaseConnect()(App)
 
 export default withRouter(connect(
   state => ({ firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth }),
-  {},
+  { ...accountActions },
 )(wrappedApp))
