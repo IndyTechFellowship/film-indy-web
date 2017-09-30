@@ -1,5 +1,6 @@
 import { SIGN_IN } from '../actions/types/accountActionTypes'
 import { SIGN_UP } from '../actions/types/accountActionTypes'
+import { SIGN_OUT } from '../actions/types/accountActionTypes'
 
 const initalState = {
 
@@ -16,6 +17,11 @@ export default (state = initalState, action) => {
       return {
         ...state,
         signUpError: action.payload,
+    };
+    case `${SIGN_OUT}_ERROR`:
+      return {
+        ...state,
+        signOutError: action.payload,
     };
     default:
       return state

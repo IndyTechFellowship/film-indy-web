@@ -2,6 +2,7 @@ import * as firebase from 'firebase'
 import { push } from 'react-router-redux'
 import { SIGN_IN } from '../types/accountActionTypes'
 import { SIGN_UP } from '../types/accountActionTypes'
+import { SIGN_OUT } from '../types/accountActionTypes'
 
 /* this an example of how to chain actions together.
 This is a function which takes username and email and and returns a function with the argument of dispatch
@@ -16,4 +17,9 @@ export const signIn = (email, password) => dispatch => dispatch({
 export const signUp = (email, password) => dispatch => dispatch({
   type: SIGN_UP,
   payload: firebase.auth().createUserWithEmailAndPassword(email, password),
+}).then(() => dispatch(push('dashboard')));
+
+export const signOut = () => dispatch => dispatch({
+    type: SIGN_OUT,
+    payload: firebase.auth().signOut(),
 }).then(() => dispatch(push('dashboard')));

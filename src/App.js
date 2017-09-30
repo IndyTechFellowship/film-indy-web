@@ -104,6 +104,8 @@ App.propTypes = {
   profile: PropTypes.shape({
     photoURL: PropTypes.string,
   }).isRequired,
+  signOut: PropTypes.func.isRequired,
+
 }
 
 const wrappedApp = firebaseConnect()(App)
