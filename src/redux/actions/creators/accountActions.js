@@ -32,10 +32,10 @@ const migrateIfNeeded = (email) => {
 export const signIn = (email, password) => dispatch => dispatch({
   type: SIGN_IN,
   payload: firebase.auth().signInWithEmailAndPassword(email, password)
-}).then(() => dispatch(push('dashboard')))
+}).then(() => dispatch(push('account')))
 
 export const signUp = (email, password) => dispatch => dispatch({
   type: SIGN_UP,
   payload: firebase.auth().createUserWithEmailAndPassword(email, password)
-}).then(() => dispatch(push('dashboard'))).then(() => migrateIfNeeded(email))
+}).then(() => dispatch(push('account'))).then(() => migrateIfNeeded(email))
 
