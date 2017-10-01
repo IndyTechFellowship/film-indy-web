@@ -17,7 +17,7 @@ const ForgotPasswordForm = (props) => {
           type="email"
         />
       </div>
-      <RaisedButton type="submit">Send Password Reset</RaisedButton>
+      <RaisedButton type="submit">Reset Password</RaisedButton>
     </form>
   )
 };

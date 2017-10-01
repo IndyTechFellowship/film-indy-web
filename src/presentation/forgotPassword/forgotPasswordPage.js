@@ -7,7 +7,7 @@ import ForgotPasswordForm from './ForgotPasswordForm'
 
 const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
   switch (errorCode) {
-    case 'auth/user-not-found': return 'No user with that email exists'
+    case 'auth/user-not-found': return 'A valid email is required.'
     default: return 'There was an issue processing your email. Please try again'
   }
 }

@@ -18,7 +18,7 @@ const LoginPage = props => (
   <div >
     <SignInForm onSubmit={values => props.signIn(values.email, values.password)} />
     <FlatButton
-      label = "Forgot Password"
+      label = "Forgot Password?"
       primary = { true }
     />
     <Snackbar
