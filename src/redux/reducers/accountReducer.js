@@ -1,5 +1,4 @@
-import { SIGN_IN } from '../actions/types/accountActionTypes'
-import { SIGN_UP } from '../actions/types/accountActionTypes'
+import { SIGN_IN, SIGN_UP } from '../actions/types/accountActionTypes'
 
 const initalState = {
 
