@@ -18,45 +18,88 @@ import UploadIcon from 'material-ui/svg-icons/file/file-upload'
 import '../../App.css'
 import './accountPage.css'
 
-const firstname = 'Rick'
-const lastname = 'Sanchez'
-const email = 'ilovemygrandkids@hotmail.com'
+class accountPage extends React.Component {
 
-const accountPage = (props) => {
-  const { profile, firebase, auth } = props
-  const photoURL = get(profile, 'photoURL', '')
-  const uid = get(auth, 'uid')
-  return (
-    <div>
-      <h1>Account Settings</h1>
-      <Card className="profileCard" >
-        <CardTitle title="Your Profile" />
-        <Divider />
-        <div className="imageWrapper">
-          <Avatar className="accountImage" src={photoURL} size={150} />
-          <CameraIcon className="cameraIcon" color="white" />
-          <FlatButton className="imageText" icon={<UploadIcon />} label="Upload Picture" labelPosition="before" containerElement="label">
-            <FileUploader uid={uid} uploadFile={firebase.uploadFile} updateProfile={firebase.updateProfile} />
-          </FlatButton>
+    constructor(props) {
+      super(props)
+      this.state = {
+          currentName: "",
+          currentEmail: "",
+      }
+      this.handleNameChange = this.handleNameChange.bind(this)
+      this.handleEmailChange = this.handleEmailChange.bind(this)
+    }
+
+    handleNameChange = (event) =>{
+       this.setState({
+            currentName: event.target.value
+        });
+    }
+
+    handleEmailChange = (event) =>{
+       this.setState({
+            currentEmail: event.target.value
+        });
+    }
+
+    render() {
+      const { profile, firebase, auth } = this.props
+      const photoURL = get(profile, 'photoURL', '')
+      const email = get(auth, 'email')
+      const displayName = get(profile, 'displayName')
+      const uid = get(auth, 'uid')
+      return (
+        <div>
+          <h1>Account Settings</h1>
+          <Card className="profileCard" >
+            <CardTitle title="Your Profile" />
+            <Divider />
+            <div className="imageWrapper">
+              <Avatar className="accountImage" src={photoURL} size={150} />
+              <CameraIcon className="cameraIcon" color="white" />
+              <FlatButton className="imageText" icon={<UploadIcon />} label="Upload Picture" labelPosition="before" containerElement="label">
+                <FileUploader uid={uid} uploadFile={firebase.uploadFile} updateProfile={firebase.updateProfile} />
+              </FlatButton>
+            </div>
+            <ul className="fields">
+              <li>
+                  <TextField
+                      className="profileField"
+                      hintText="Enter your name"
+                      floatingLabelText="Name"
+                      defaultValue={displayName}
+                      value={this.state.currentName}
+                      onChange={this.handleNameChange}
+                      type="text"
+                   />
+              </li>
+              <li>
+                  <TextField
+                      className="profileField"
+                      hintText="Enter your email"
+                      floatingLabelText="Email"
+                      defaultValue={email}
+                      value={this.state.currentEmail}
+                      onChange={this.handleEmailChange}
+                      type="text"
+                   />
+              </li>
+            </ul>
+            <RaisedButton className="accountButton" primary label="Save"/>
+            {/* <RaisedButton className="accountButton" primary label="Save" onClick={firebase.updateProfile({displayName: this.state.currentName, email: this.state.email })}/> */}
+          </Card>
+          <Card className="passwordCard">
+            <CardTitle title="Reset Password" />
+            <Divider />
+            <ul className="fields">
+              <li><TextField hintText="New Password" floatingLabelText="Password" type="password" /></li>
+              <li><TextField hintText="Confirm Password" floatingLabelText="Confirm Password" type="password" /></li>
+            </ul>
+            <RaisedButton className="accountButton" primary label="Submit" />
+          </Card>
         </div>
-        <ul className="fields">
-          <li><TextField className="profileField" hintText="Enter your first name" floatingLabelText="First Name" defaultValue={firstname} /></li>
-          <li><TextField className="profileField" hintText="Enter your last name" floatingLabelText="Last Name" defaultValue={lastname} /></li>
-          <li><TextField className="profileField" hintText="Enter your email address" floatingLabelText="Email" defaultValue={email} type="email" /></li>
-        </ul>
-        <RaisedButton className="accountButton" primary label="Save" />
-      </Card>
-      <Card className="passwordCard">
-        <CardTitle title="Reset Password" />
-        <Divider />
-        <ul className="fields">
-          <li><TextField hintText="New Password" floatingLabelText="Password" type="password" /></li>
-          <li><TextField hintText="Confirm Password" floatingLabelText="Confirm Password" type="password" /></li>
-        </ul>
-        <RaisedButton className="accountButton" primary label="Submit" />
-      </Card>
-    </div>
-  )
+      )
+  }
 }
 
 const FileUploader = props => (
@@ -87,12 +130,15 @@ FileUploader.propTypes = {
 FileUploader.defaultProps = {
   uid: '',
 }
+
 accountPage.propTypes = {
   profile: PropTypes.shape({
     photoURL: PropTypes.string,
+    displayName: PropTypes.string,
   }).isRequired,
   auth: PropTypes.shape({
     uid: PropTypes.string,
+    email: PropTypes.string,
   }).isRequired,
   firebase: PropTypes.shape({
     updateProfile: PropTypes.func.isRequired,
