@@ -38,6 +38,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       open: false,
+      signedOut: false,
     }
     this.handleTouchTap = this.handleTouchTap.bind(this)
     this.handleRequestClose = this.handleRequestClose.bind(this)
@@ -50,7 +51,6 @@ class App extends React.Component {
     this.setState({
       open: true,
       anchorEl: event.currentTarget,
-      signedOut: false,
     })
   }
 
@@ -67,7 +67,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, signOut, account } = this.props
+    const { profile, auth, signOut } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     return (
@@ -134,16 +134,6 @@ App.propTypes = {
     uid: PropTypes.string,
   }).isRequired,
   signOut: PropTypes.func.isRequired,
-  account: PropTypes.shape({
-    signOutError: PropTypes.shape({
-      code: PropTypes.string,
-      message: PropTypes.string,
-    }),
-  }),
-}
-
-App.defaultProps = {
-  account: {},
 }
 
 const wrappedApp = firebaseConnect()(App)
