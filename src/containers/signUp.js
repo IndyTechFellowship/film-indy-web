@@ -16,7 +16,6 @@ class signUp extends React.Component {
 
 signUp.propTypes = {
   signUp: PropTypes.func.isRequired,
-  updateProfile: PropTypes.func.isRequired,
 };
 
 export default withRouter(connect(

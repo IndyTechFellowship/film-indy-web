@@ -12,10 +12,10 @@ export const signIn = (email, password) => dispatch => dispatch({
   payload: firebase.auth().signInWithEmailAndPassword(email, password),
 }).then(() => dispatch(push('dashboard')));
 
-export const signUp = (fName, lName, email, password) => dispatch => dispatch({
+export const signUp = (fullName, email, password) => dispatch => dispatch({
   type: SIGN_UP,
   payload: firebase.auth().createUserWithEmailAndPassword(email, password),
-}).then(() => {updateProfile({displayName: fName + " " + lName, photoURL: ""})});
+}).then(() => dispatch(updateProfile({displayName: fullName, photoURL: ""})));
 
 export const updateProfile = (profile) => dispatch => dispatch({
   type: UPDATE_PROFILE,
