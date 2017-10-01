@@ -51,6 +51,7 @@ class App extends React.Component {
     this.setState({
       open: true,
       anchorEl: event.currentTarget,
+      signedOut: false,
     })
   }
 
