@@ -17,7 +17,7 @@ const ForgotPasswordPage = props => (
     <ForgotPasswordForm onSubmit={values => props.sendPasswordResetEmail(values.email)} />
     <Snackbar
       bodyStyle={{ backgroundColor: '#F44336' }}
-      open={props.account.sendPasswordResetEmailErro !== undefined}
+      open={props.account.sendPasswordResetEmailError !== undefined}
       message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.sendPasswordResetEmailError.code'))}
       autoHideDuration={4000}
     />
