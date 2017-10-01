@@ -19,6 +19,7 @@ import TextField from 'material-ui/TextField'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import AccountCircle from 'material-ui/svg-icons/action/account-circle'
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
+import CreateIcon from 'material-ui/svg-icons/social/person-add'
 
 // Page components
 import Home from './containers/home'
@@ -58,8 +59,9 @@ class App extends React.Component {
     })
   }
   render() {
-    const { profile } = this.props
+    const { profile, auth } = this.props
     const photoURL = get(profile, 'photoURL', '')
+    const uid = get(auth, 'uid')
     return (
       <div className="App">
         <AppBar
@@ -88,8 +90,17 @@ class App extends React.Component {
           onRequestClose={this.handleRequestClose}
         >
           <Menu>
-            <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
-            <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} />
+            { uid ? ( // renders dropdown items depending on if logged in
+                <div>
+                    <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
+                    <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} />
+                </div>
+            ) : (
+                <div>
+                    <Link to="/login"><MenuItem primaryText="Log In" leftIcon={<AccountCircle />} /></Link>
+                    <Link to="/signup"><MenuItem primaryText="Create Account" leftIcon={<CreateIcon />} /></Link>
+                </div>
+            )}
           </Menu>
         </Popover>
         <Route exact path="/" component={Home} />
@@ -106,11 +117,14 @@ App.propTypes = {
   profile: PropTypes.shape({
     photoURL: PropTypes.string,
   }).isRequired,
+  auth: PropTypes.shape({
+    uid: PropTypes.string,
+  }).isRequired,
 }
 
 const wrappedApp = firebaseConnect()(App)
 
 export default withRouter(connect(
-  state => ({ firebase: state.firebase, profile: state.firebase.profile }),
+  state => ({ firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth }),
   {},
 )(wrappedApp))
