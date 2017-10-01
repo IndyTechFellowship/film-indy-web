@@ -7,8 +7,8 @@ import rootReducer from '../reducers'
 
 export const configureStore = (browserHistory, firebaseConfig) => {
   const reduxFirebaseConfig = {
-    userProfile: 'users',
-    updateProfileOnLogin: true,
+    userProfile: 'userAccount',
+    updateProfileOnLogin: true
   }
   const createStoreWithFirebase = compose(
     reactReduxFirebase(firebaseConfig, reduxFirebaseConfig),
@@ -20,8 +20,8 @@ export const configureStore = (browserHistory, firebaseConfig) => {
     routerMiddleware(browserHistory),
     thunk,
     promiseMiddleware({
-      promiseTypeSuffixes: ['STARTING', 'SUCCESS', 'ERROR'],
-    }),
+      promiseTypeSuffixes: ['STARTING', 'SUCCESS', 'ERROR']
+    })
   ]
 
 
