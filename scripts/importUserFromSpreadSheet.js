@@ -51,18 +51,29 @@ const parseFile = (filename) => {
     const [firstName, lastName] = submission['Last Name'].split(' ')
     const phone = submission.Phone
     const roles = RoleParser.Role.tryParse(submission['Named Content'])
+    const rolesWithoutUnderscore = roles.map((roleWithAnswer) => {
+      const role = roleWithAnswer[0].replace(/ /g, '')
+      const answer = roleWithAnswer[1]
+      const roleWithoutUnderscore = role.split('_').reduce((acc, string) => {
+        if (acc === '') {
+          return `${string.charAt(0).toUpperCase()}${string.slice(1)}`
+        }
+        return `${acc} ${string.charAt(0).toUpperCase()}${string.slice(1)}`
+      }, '')
+      return [roleWithoutUnderscore, answer]
+    })
     return {
       email,
       firstName,
       lastName,
-      roles,
+      roles: rolesWithoutUnderscore,
       phone
     }
   })
 }
 
 const getUniqueRoles = usersToImport => usersToImport.reduce((acc, userToImport) => {
-  const roles = userToImport.roles.map(role => role[0].replace(/ /g, ''))
+  const roles = userToImport.roles.map(role => role[0])
   const newRoles = roles.reduce((roleAcc, role) => {
     if (acc.includes(role)) {
       return roleAcc
@@ -84,8 +95,8 @@ const addRolesToFirebase = uniqueRoles => uniqueRoles.map(uniqueRole => rolesRef
 }))
 
 const convertRoleNameToRoleId = users => users.map((userToImport) => {
-  const replacedRolesPromises = userToImport.roles.filter(role => role[0].replace(/ /g, '') !== 'link').map((role) => {
-    const r = role[0].replace(/ /g, '')
+  const replacedRolesPromises = userToImport.roles.filter(role => role[0] !== 'Link').map((role) => {
+    const r = role[0]
     return rolesRef.orderByChild('roleName').equalTo(r).once('value').then((snapshot) => {
       const key = Object.keys(snapshot.val())[0]
       return key
