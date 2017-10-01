@@ -36,16 +36,10 @@ export const signIn = (email, password) => dispatch => dispatch({
 
 export const signUp = (email, password) => dispatch => dispatch({
   type: SIGN_UP,
-<<<<<<< HEAD
   payload: firebase.auth().createUserWithEmailAndPassword(email, password)
 }).then(() => dispatch(push('account'))).then(() => migrateIfNeeded(email))
 
-=======
-  payload: firebase.auth().createUserWithEmailAndPassword(email, password),
-}).then(() => dispatch(push('account')));
-
 export const signOut = () => dispatch => dispatch({
-    type: SIGN_OUT,
-    payload: firebase.auth().signOut(),
-}).then(() => dispatch(push('home')));
->>>>>>> kylep-film-22
+  type: SIGN_OUT,
+  payload: firebase.auth().signOut()
+}).then(() => dispatch(push('home')))
