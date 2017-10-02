@@ -66,7 +66,8 @@ class EditProfile extends React.Component {
     const email = get(auth, 'email', '')
     const possibleRolesToAdd = Object.keys(roles).reduce((acc, roleId) => {
       const roleName = get(roles, `${roleId}.roleName`, '')
-      if (userRoles.includes(roleName)) {
+      const r = userRoles.map(role => role.roleName)
+      if (r.includes(roleName)) {
         return acc
       }
       return [...acc, { roleName, roleId }]
