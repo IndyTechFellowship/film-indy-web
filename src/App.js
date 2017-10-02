@@ -4,6 +4,9 @@ import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
+import { InstantSearch, Configure, Index } from 'react-instantsearch/dom'
+import { connectAutoComplete } from 'react-instantsearch/connectors'
+import Autosuggest from 'react-autosuggest'
 import * as accountActions from './redux/actions/creators/accountActions'
 
 // Material UI Components
@@ -30,15 +33,48 @@ import Account from './containers/account/account'
 
 // Style and images
 import './App.css'
+import 'react-instantsearch-theme-algolia/style.css'
 
 import Logo from './film-indy-logo.png'
+
+const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
+const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
+console.log(ALGOLIA_SEARCH_KEY)
+console.log(ALGOLIA_APP_ID)
+
+const AutoComplete = connectAutoComplete(
+  ({ hits, currentRefinement, refine }) => {
+    console.log('')
+    return (
+      <Autosuggest
+        suggestions={hits.map(hit => hit.roleName)}
+        multiSection
+        onSuggestionsFetchRequested={({ value }) => refine(value)}
+        onSuggestionsClearRequested={() => refine('')}
+        getSuggestionValue={hit => hit.roleName}
+        renderSuggestion={hit => (
+          <div>
+            <div>{hit.roleName}</div>
+          </div>
+        )}
+        inputProps={{
+          placeholder: 'Type a product',
+          value: currentRefinement,
+          onChange: () => {}
+        }}
+        renderSectionTitle={section => section}
+        getSectionSuggestions={section => [section]}
+      />
+    )
+  }
+)
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       open: false,
-      signedOut: false,
+      signedOut: false
     }
     this.handleTouchTap = this.handleTouchTap.bind(this)
     this.handleRequestClose = this.handleRequestClose.bind(this)
@@ -51,20 +87,20 @@ class App extends React.Component {
     this.setState({
       open: true,
       anchorEl: event.currentTarget,
-      signedOut: false,
+      signedOut: false
     })
   }
 
   handleRequestClose() {
     this.setState({
-      open: false,
+      open: false
     })
   }
 
   signOutMessage() {
-      this.setState({
-        signedOut: true,
-      })
+    this.setState({
+      signedOut: true
+    })
   }
 
   render() {
@@ -78,13 +114,13 @@ class App extends React.Component {
             <div>
               <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
               <Card className="searchCard" style={{ width: 400 }}>
-                <SearchIcon className="searchIcon" />
-                <TextField
-                  className="searchField"
-                  hintText="Search FilmIndy"
-                  underlineFocusStyle={{ borderColor: '#38b5e6' }}
-                  floatingLabelFocusStyle={{ color: '#38b5e6' }}
-                />
+                <InstantSearch
+                  appId={ALGOLIA_APP_ID}
+                  apiKey={ALGOLIA_SEARCH_KEY}
+                  indexName="roles"
+                >
+                  <AutoComplete />
+                </InstantSearch>
               </Card>
             </div>
           }
@@ -100,15 +136,15 @@ class App extends React.Component {
         >
           <Menu>
             { uid ? ( // renders dropdown items depending on if logged in
-                <div>
-                    <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
-                    <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => {signOut();  this.handleRequestClose(); this.signOutMessage()}}/>
-                </div>
+              <div>
+                <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
+                <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { signOut(); this.handleRequestClose(); this.signOutMessage() }} />
+              </div>
             ) : (
-                <div>
-                    <Link to="/login"><MenuItem primaryText="Log In" leftIcon={<AccountCircle />} /></Link>
-                    <Link to="/signup"><MenuItem primaryText="Create Account" leftIcon={<CreateIcon />} /></Link>
-                </div>
+              <div>
+                <Link to="/login"><MenuItem primaryText="Log In" leftIcon={<AccountCircle />} /></Link>
+                <Link to="/signup"><MenuItem primaryText="Create Account" leftIcon={<CreateIcon />} /></Link>
+              </div>
             )}
           </Menu>
         </Popover>
@@ -129,12 +165,12 @@ class App extends React.Component {
 
 App.propTypes = {
   profile: PropTypes.shape({
-    photoURL: PropTypes.string,
+    photoURL: PropTypes.string
   }).isRequired,
   auth: PropTypes.shape({
-    uid: PropTypes.string,
+    uid: PropTypes.string
   }).isRequired,
-  signOut: PropTypes.func.isRequired,
+  signOut: PropTypes.func.isRequired
 }
 
 const wrappedApp = firebaseConnect()(App)
