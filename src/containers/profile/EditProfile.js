@@ -8,7 +8,6 @@ import EditProfile from '../../presentation/profile/EditProfile'
 
 class EditProfileContainer extends React.Component {
   render() {
-    console.log(this.props)
     return (
       <EditProfile {...this.props} />
     )
@@ -16,6 +15,21 @@ class EditProfileContainer extends React.Component {
 }
 
 EditProfileContainer.propTypes = {
+  auth: PropTypes.shape({
+    uid: PropTypes.string
+  }).isRequired,
+  profile: PropTypes.shape({
+    photoURL: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string
+  }).isRequired,
+  data: PropTypes.shape({
+    roles: PropTypes.object,
+    userProfile: PropTypes.object
+  }).isRequired,
+  firebase: PropTypes.shape({
+    set: PropTypes.func
+  }).isRequired
 }
 
 const WrappedEditProfile = firebaseConnect((props, firebase) => {

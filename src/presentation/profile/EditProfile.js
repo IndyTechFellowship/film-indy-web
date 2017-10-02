@@ -24,11 +24,12 @@ const styles = {
   }
 }
 
-const RoleChipDisplays = (roles, selected, onClick = () => {}) => roles.map((role) => {
+const RoleChipDisplays = (roles, selected, onClick = () => {}, onDelete) => roles.map((role) => {
   const isSelected = selected.includes(role.roleId)
-  const chipStyle = isSelected ? { ...styles.chipStyle, backgroundColor: 'blue' } : styles.chipStyle
+  const chipStyle = isSelected ? { ...styles.chipStyle, backgroundColor: '#707070' } : styles.chipStyle
+  const deleteFunc = onDelete !== undefined ? onDelete.bind(this, role.roleId) : onDelete
   return (
-    <Chip id={role.roleId} key={role.roleId} onClick={onClick} style={chipStyle} >{role.roleName}</Chip>
+    <Chip id={role.roleId} key={role.roleId} onRequestDelete={deleteFunc} onClick={onClick} style={chipStyle} >{role.roleName}</Chip>
   )
 })
 class EditProfile extends React.Component {
@@ -37,33 +38,47 @@ class EditProfile extends React.Component {
     this.state = ({ dialogOpen: false })
     this.handleClose = this.handleClose.bind(this)
     this.handleOpen = this.handleOpen.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
   handleOpen() {
     this.setState({ dialogOpen: true, selectedRoles: [] })
   }
-  handleClose() {
+  handleSubmit() {
     const { auth, firebase } = this.props
     const uid = get(auth, 'uid', '')
     const { selectedRoles } = this.state
-    const roles = Object.keys(get(this.props, 'data.roles', {}))
     const userProfile = get(this.props, `data.userProfiles.${uid}`)
-    const roleNames = Object.keys(roles).map(roleId => roles[roleId].roleName)
     const userRoleIds = get(userProfile, 'roles', [])
     const userProfileRolePath = `/userProfiles/${uid}`
     const allRoles = [...userRoleIds, ...selectedRoles]
-    this.props.firebase.set(userProfileRolePath, { roles: allRoles })
+    firebase.set(userProfileRolePath, { roles: allRoles })
+    this.setState({ dialogOpen: false })
+  }
+  handleClose() {
     this.setState({ dialogOpen: false })
   }
   render() {
-    const { auth, profile } = this.props
+    const { auth, profile, firebase, data } = this.props
+    const uid = get(auth, 'uid', '')
     const selectedRoles = get(this.state, 'selectedRoles', [])
-    const roles = get(this.props, 'data.roles', {})
-    const userProfile = get(this.props, `data.userProfiles.${auth.uid}`)
-    const roleNames = Object.keys(roles).map(roleId => roles[roleId].roleName)
-    const userRoles = get(userProfile, 'roles', []).map(roleId => ({ roleName: get(roles, `${roleId}.roleName`, ''), roleId }))
+    const roles = get(data, 'roles', {})
+    const userProfile = get(data, `userProfiles.${auth.uid}`)
+    const userRoles = get(userProfile, 'roles', [])
+      .map(roleId => ({ roleName: get(roles, `${roleId}.roleName`, ''), roleId }))
+      .sort((a, b) => {
+        const aCaps = a.roleName.toUpperCase()
+        const bcaps = b.roleName.toUpperCase()
+        if (aCaps < bcaps) {
+          return -1
+        } else if (aCaps > bcaps) {
+          return 1
+        }
+        return 0
+      })
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
     const email = get(auth, 'email', '')
+    const userProfileRolePath = `/userProfiles/${uid}`
     const possibleRolesToAdd = Object.keys(roles).reduce((acc, roleId) => {
       const roleName = get(roles, `${roleId}.roleName`, '')
       const r = userRoles.map(role => role.roleName)
@@ -71,7 +86,16 @@ class EditProfile extends React.Component {
         return acc
       }
       return [...acc, { roleName, roleId }]
-    }, [])
+    }, []).sort((a, b) => {
+      const aCaps = a.roleName.toUpperCase()
+      const bcaps = b.roleName.toUpperCase()
+      if (aCaps < bcaps) {
+        return -1
+      } else if (aCaps > bcaps) {
+        return 1
+      }
+      return 0
+    })
     const dialogActions = [
       <FlatButton
         label="Cancel"
@@ -82,7 +106,8 @@ class EditProfile extends React.Component {
         label="Submit"
         primary
         keyboardFocused
-        onClick={this.handleClose}
+        disabled={selectedRoles.length === 0}
+        onClick={this.handleSubmit}
       />
     ]
     return (
@@ -105,7 +130,12 @@ class EditProfile extends React.Component {
             <CardTitle title="Roles" />
             <Divider />
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-              {RoleChipDisplays(userRoles, [])}
+              {RoleChipDisplays(userRoles, [], () => {}, (roleId) => {
+                const filteredRoles = userRoles.filter(role => role.roleId !== roleId).map(role => role.roleId)
+                firebase.set(userProfileRolePath, {
+                  roles: filteredRoles
+                })
+              })}
             </div>
             <div>
               <RaisedButton label="Add Roles" onClick={this.handleOpen} />
@@ -137,6 +167,21 @@ class EditProfile extends React.Component {
 }
 
 EditProfile.propTypes = {
+  auth: PropTypes.shape({
+    uid: PropTypes.string
+  }).isRequired,
+  profile: PropTypes.shape({
+    photoURL: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string
+  }).isRequired,
+  data: PropTypes.shape({
+    roles: PropTypes.object,
+    userProfile: PropTypes.object
+  }).isRequired,
+  firebase: PropTypes.shape({
+    set: PropTypes.func
+  }).isRequired
 }
 
 EditProfile.defaultProps = {
