@@ -10,6 +10,7 @@
     "material-ui": "^0.19.1",
     "parsimmon": "^1.6.2",
     "prop-types": "^15.5.10",
+    "query-string": "^5.0.0",
     "react": "^15.6.1",
     "react-algoliasearch": "^2.1.0",
     "react-autosuggest": "^9.3.2",

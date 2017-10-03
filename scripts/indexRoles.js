@@ -17,6 +17,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 
 const roleIndex = algoliaClient.initIndex('roles')
+const profilesIndex = algoliaClient.initIndex('profiles')
 
 firebase.database().ref('/roles').once('value').then((snapshot) => {
   const roles = snapshot.val()
@@ -24,5 +25,17 @@ firebase.database().ref('/roles').once('value').then((snapshot) => {
     const roleName = roles[roleId].roleName
     return { objectID: roleId, roleName }
   })
-  roleIndex.addObjects(rolesToIndex).then(() => firebase.database().goOffline())
+
+  firebase.database().ref('userProfiles').once('value').then((proFileSnapshot) => {
+    const profiles = proFileSnapshot.val()
+    const profilesToIndex = Object.keys(profiles).map((id) => {
+      const profile = profiles[id]
+      const rolesNames = profile.roles.map(roleId => roles[roleId].roleName)
+      return { objectID: id, roles: rolesNames }
+    })
+    return profilesIndex.addObjects(profilesToIndex)
+  })
+    .then(() => {
+      roleIndex.addObjects(rolesToIndex).then(() => firebase.database().goOffline())
+    })
 })
