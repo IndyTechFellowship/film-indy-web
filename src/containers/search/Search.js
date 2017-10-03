@@ -17,6 +17,6 @@ Search.propTypes = {
 }
 
 export default withRouter(connect(
-  state => ({ state }),
+  state => ({ profileIndex: state.algolia.algoliaClient.initIndex('profiles') }),
   { },
 )(Search))
