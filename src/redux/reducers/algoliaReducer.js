@@ -1,16 +1,26 @@
-import algoliasearch from 'algoliasearch'
+import { SEARCH_INDEX, ENRICH_SEARCH_RESULT } from '../actions/types/algoliaActionsTypes'
 
-
-const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
-const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
-
-const algoliaClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY)
 const initalState = {
-  algoliaClient
+  queryResults: [],
+  enrichedResults: []
 }
 
 export default (state = initalState, action) => {
   switch (action.type) {
+    case `${SEARCH_INDEX}_SUCCESS`:
+      return {
+        ...state,
+        queryResults: action.payload.hits
+      }
+    case `${ENRICH_SEARCH_RESULT}_SUCCESS`:
+      return {
+        ...state,
+        enrichedResults: state.queryResults.map((result) => {
+          const objectID = result.objectID
+          const enrichmentData = action.payload.find(enriched => enriched.objectID === objectID)
+          return { ...result, ...enrichmentData.value }
+        })
+      }
     default:
       return state
   }
