@@ -44,21 +44,27 @@ class EditProfile extends React.Component {
     this.setState({ dialogOpen: true, selectedRoles: [] })
   }
   handleSubmit() {
-    const { auth, firebase } = this.props
+    const { auth, firebase, data, partialUpdateAlgoliaObject } = this.props
     const uid = get(auth, 'uid', '')
+    const roles = get(data, 'roles', {})
     const { selectedRoles } = this.state
     const userProfile = get(this.props, `data.userProfiles.${uid}`)
     const userRoleIds = get(userProfile, 'roles', [])
     const userProfileRolePath = `/userProfiles/${uid}`
     const allRoles = [...userRoleIds, ...selectedRoles]
+    const rolesNames = allRoles.map(roleId => roles[roleId].roleName)
     firebase.set(userProfileRolePath, { roles: allRoles })
+    partialUpdateAlgoliaObject('profiles', {
+      objectID: uid,
+      roles: rolesNames
+    })
     this.setState({ dialogOpen: false })
   }
   handleClose() {
     this.setState({ dialogOpen: false })
   }
   render() {
-    const { auth, profile, firebase, data } = this.props
+    const { auth, profile, firebase, data, partialUpdateAlgoliaObject } = this.props
     const uid = get(auth, 'uid', '')
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
@@ -132,9 +138,15 @@ class EditProfile extends React.Component {
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
               {RoleChipDisplays(userRoles, [], () => {}, (roleId) => {
                 const filteredRoles = userRoles.filter(role => role.roleId !== roleId).map(role => role.roleId)
+                const filteredRoleNames = userRoles.filter(role => role.roleId !== roleId).map(role => role.roleName)
                 firebase.set(userProfileRolePath, {
                   roles: filteredRoles
                 })
+                const algoliaUpdateObject = {
+                  objectID: uid,
+                  roles: filteredRoleNames
+                }
+                partialUpdateAlgoliaObject('profiles', algoliaUpdateObject)
               })}
             </div>
             <div>
@@ -181,7 +193,8 @@ EditProfile.propTypes = {
   }).isRequired,
   firebase: PropTypes.shape({
     set: PropTypes.func
-  }).isRequired
+  }).isRequired,
+  partialUpdateAlgoliaObject: PropTypes.func.isRequired
 }
 
 EditProfile.defaultProps = {

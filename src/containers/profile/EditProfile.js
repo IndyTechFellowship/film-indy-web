@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { firebaseConnect } from 'react-redux-firebase'
 import EditProfile from '../../presentation/profile/EditProfile'
+import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
 
 class EditProfileContainer extends React.Component {
   render() {
@@ -43,6 +44,6 @@ const WrappedEditProfile = firebaseConnect((props, firebase) => {
 
 export default withRouter(connect(
   state => ({ firebase: state.firebase, auth: state.firebase.auth, profile: state.firebase.profile, data: state.firebase.data }),
-  {},
+  { ...algoliaActions },
 )(WrappedEditProfile))
 
