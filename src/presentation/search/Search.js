@@ -25,15 +25,15 @@ class Search extends React.Component {
     const { enriched } = this.props
     return (
       <div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20, paddingTop: 20 }}>
           <h1 style={{ textAlign: 'left', paddingLeft: 40, margin: 0 }}> Crew </h1>
           <RaisedButton label="See More" backgroundColor={'#38b5e6'} style={{ marginRight: 500, backgroundColor: '#38b5e6' }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', paddingLeft: 40 }}>
           {enriched.map(enrichedResult => (
-            <Card key={enrichedResult.objectID} containerStyle={{ width: 400, paddingBottom: 0, display: 'flex', flexDirection: 'row' }} style={{ width: 500, height: 300, marginRight: 20, borderRadius: 10 }}>
+            <Card key={enrichedResult.objectID} containerStyle={{ width: 400, paddingBottom: 0, display: 'flex', flexDirection: 'row' }} style={{ width: 400, height: 150, marginRight: 20, borderRadius: 10 }}>
               <CardMedia>
-                <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 300, height: 300, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
               </CardMedia>
               <div>
                 <CardText style={{ fontSize: 25 }}>
