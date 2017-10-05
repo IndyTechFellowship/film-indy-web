@@ -9,7 +9,7 @@ export default (state = initalState, action) => {
   switch (action.type) {
     case `${SEARCH_INDEX}_SUCCESS`:
       return {
-        ...state,
+        enrichedResults: [],
         queryResults: action.payload.hits
       }
     case `${ENRICH_SEARCH_RESULT}_SUCCESS`:

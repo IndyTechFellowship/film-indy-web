@@ -40,6 +40,8 @@ import 'react-instantsearch-theme-algolia/style.css'
 
 import Logo from './film-indy-logo.png'
 
+import * as agoliaActions from './redux/actions/creators/algoliaActions'
+
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
@@ -90,14 +92,14 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, signOut, push } = this.props
+    const { profile, auth, signOut, history } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     return (
       <div className="App">
         <AppBar
           iconElementLeft={
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
               <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
               <Card className="searchCard" style={{ width: 400 }}>
                 <SearchIcon className="searchIcon" />
@@ -106,7 +108,7 @@ class App extends React.Component {
                   apiKey={ALGOLIA_SEARCH_KEY}
                   indexName="roles"
                 >
-                  <AutoCompleteBar onItemSelected={item => push(`/search?query=${encodeURIComponent(item)}`)} />
+                  <AutoCompleteBar onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })} />
                 </InstantSearch>
               </Card>
             </div>
@@ -165,5 +167,5 @@ const wrappedApp = firebaseConnect()(App)
 
 export default withRouter(connect(
   state => ({ firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth }),
-  { ...accountActions, push },
+  { ...accountActions, ...agoliaActions },
 )(wrappedApp))
