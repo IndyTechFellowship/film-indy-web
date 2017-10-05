@@ -27,7 +27,7 @@ class Search extends React.Component {
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20, paddingTop: 20 }}>
           <h1 style={{ textAlign: 'left', paddingLeft: 40, margin: 0 }}> Crew </h1>
-          <RaisedButton label="See More" backgroundColor={'#38b5e6'} style={{ marginRight: 225, backgroundColor: '#38b5e6' }} />
+          <RaisedButton label="See More" labelColor="white" backgroundColor={'#38b5e6'} style={{ marginRight: 225, backgroundColor: '#38b5e6' }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', paddingLeft: 40 }}>
           {take(enriched, 4).map(enrichedResult => (
