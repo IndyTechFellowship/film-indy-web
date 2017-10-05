@@ -1,3 +1,2 @@
 export const SEARCH_INDEX = 'SEARCH_INDEX'
 export const ENRICH_SEARCH_RESULT = 'ENRICH_SEARCH_RESULT'
-export const GO_TO_SEARCH = 'GO_TO_SEARCH'

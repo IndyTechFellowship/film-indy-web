@@ -1,14 +1,13 @@
 import React from 'react'
 import { Route, Link, withRouter } from 'react-router-dom'
-import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { InstantSearch, Configure, Index } from 'react-instantsearch/dom'
+import { InstantSearch, Configure } from 'react-instantsearch/dom'
 import { connectAutoComplete } from 'react-instantsearch/connectors'
-import Autosuggest from 'react-autosuggest'
-import * as accountActions from './redux/actions/creators/accountActions'
+import 'react-instantsearch-theme-algolia/style.css'
+
 
 // Material UI Components
 import AppBar from 'material-ui/AppBar'
@@ -18,7 +17,6 @@ import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover'
 import Snackbar from 'material-ui/Snackbar'
-import TextField from 'material-ui/TextField'
 import AutoComplete from 'material-ui/AutoComplete'
 
 // Material UI SVG Icons
@@ -36,18 +34,18 @@ import Search from './containers/search/Search'
 
 // Style and images
 import './App.css'
-import 'react-instantsearch-theme-algolia/style.css'
+
 
 import Logo from './film-indy-logo.png'
 
-import * as agoliaActions from './redux/actions/creators/algoliaActions'
+import * as accountActions from './redux/actions/creators/accountActions'
 
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
 
 const AutoCompleteBar = connectAutoComplete(
-  ({ hits, currentRefinement, refine, onItemSelected }) => (
+  ({ hits, onItemSelected }) => (
     <AutoComplete
       id="autocomplete"
       filter={AutoComplete.fuzzyFilter}
@@ -108,6 +106,7 @@ class App extends React.Component {
                   apiKey={ALGOLIA_SEARCH_KEY}
                   indexName="roles"
                 >
+                  <Configure hitsPerPage={100} />
                   <AutoCompleteBar onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })} />
                 </InstantSearch>
               </Card>
@@ -160,12 +159,15 @@ App.propTypes = {
   auth: PropTypes.shape({
     uid: PropTypes.string
   }).isRequired,
-  signOut: PropTypes.func.isRequired
+  signOut: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func
+  }).isRequired
 }
 
 const wrappedApp = firebaseConnect()(App)
 
 export default withRouter(connect(
   state => ({ firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth }),
-  { ...accountActions, ...agoliaActions },
+  { ...accountActions },
 )(wrappedApp))

@@ -1,7 +1,6 @@
 import * as firebase from 'firebase'
 import algoliasearch from 'algoliasearch'
-import { push } from 'react-router-redux'
-import { SEARCH_INDEX, ENRICH_SEARCH_RESULT, GO_TO_SEARCH } from '../types/algoliaActionsTypes'
+import { SEARCH_INDEX, ENRICH_SEARCH_RESULT } from '../types/algoliaActionsTypes'
 
 
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
@@ -29,5 +28,3 @@ export const searchIndex = (indexName, query, tableToEnrichFrom) => (dispatch) =
     })
   })
 }
-
-export const goToSearch = query => dispatch => dispatch(push(`/search?query=${encodeURIComponent(query)}`))

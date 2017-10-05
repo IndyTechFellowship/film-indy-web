@@ -14,7 +14,11 @@ class Search extends React.Component {
 }
 
 Search.propTypes = {
-
+  searchIndex: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string.isRequired
+  }).isRequired,
+  enriched: PropTypes.arrayOf(PropTypes.object).isRequired
 }
 
 export default withRouter(connect(
