@@ -35,7 +35,7 @@ const migrate = (email, signUpResult, dispatch) => {
       profilesRef.child(uid).set(val)
     }
   })
-  return dispatch(algoliaActions.migrateProfile(uid, emailKey)).then(() => dispatch(push('account')))
+  return dispatch(algoliaActions.migrateProfile(uid, emailKey)).then(() => dispatch(push('account'))).catch(() => dispatch(push('account')))
 }
 
 export const signIn = (email, password) => dispatch => dispatch({
