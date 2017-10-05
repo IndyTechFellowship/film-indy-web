@@ -13,7 +13,6 @@
     "query-string": "^5.0.0",
     "react": "^15.6.1",
     "react-algoliasearch": "^2.1.0",
-    "react-autosuggest": "^9.3.2",
     "react-dom": "^15.6.1",
     "react-instantsearch": "^4.1.2",
     "react-instantsearch-theme-algolia": "^4.1.2",
