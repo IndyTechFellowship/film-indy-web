@@ -16,28 +16,6 @@ const encodeAsFirebaseKey = string => string.replace(/\%/g, '%25')
   .replace(/\[/g, '%5B')
   .replace(/\]/g, '%5D')
 
-const migrateIfNeeded = (email) => {
-  const userMigrationRef = firebase.database().ref('/userMigration')
-  userMigrationRef.orderByChild('email').equalTo(email).once('value').then((snapshot) => {
-    const dataToMigrate = snapshot.val()
-    if (dataToMigrate !== null) {
-      const uid = firebase.auth().currentUser.uid
-      const key = Object.keys(dataToMigrate)[0]
-      const userToMigrate = dataToMigrate[key]
-      const roles = userToMigrate.roles
-      const firstName = userToMigrate.firstName
-      const lastName = userToMigrate.lastName
-      const profilesRef = firebase.database().ref(`/userProfiles/${uid}/roles`)
-      const accountRef = firebase.database().ref(`/userAccount/${uid}`)
-      profilesRef.set(roles)
-      accountRef.set({
-        firstName,
-        lastName
-      })
-    }
-  })
-}
-
 const migrate = (email, signUpResult, dispatch) => {
   const uid = signUpResult.value.uid
   const emailKey = encodeAsFirebaseKey(email)
@@ -57,7 +35,7 @@ const migrate = (email, signUpResult, dispatch) => {
       profilesRef.child(uid).set(val)
     }
   })
-  dispatch(algoliaActions.migrateProfile(uid, emailKey))
+  return dispatch(algoliaActions.migrateProfile(uid, emailKey)).then(() => dispatch(push('account')))
 }
 
 export const signIn = (email, password) => dispatch => dispatch({
