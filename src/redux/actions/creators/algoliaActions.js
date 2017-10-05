@@ -1,12 +1,12 @@
 import * as firebase from 'firebase'
 import algoliasearch from 'algoliasearch'
-import { SEARCH_INDEX, ENRICH_SEARCH_RESULT } from '../types/algoliaActionsTypes'
+import { SEARCH_INDEX, ENRICH_SEARCH_RESULT, MIGRATE_PROFILE } from '../types/algoliaActionsTypes'
 
 
-const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
+const ALGOLA_ADMIN_KEY = process.env.REACT_APP_ALGOLIA_ADMIN_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
-const algoliaClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY)
+const algoliaClient = algoliasearch(ALGOLIA_APP_ID, ALGOLA_ADMIN_KEY, { protocol: 'https:' })
 
 export const searchIndex = (indexName, query, tableToEnrichFrom) => (dispatch) => {
   const index = algoliaClient.initIndex(indexName)
@@ -26,5 +26,17 @@ export const searchIndex = (indexName, query, tableToEnrichFrom) => (dispatch) =
       type: ENRICH_SEARCH_RESULT,
       payload: enriched
     })
+  })
+}
+
+export const migrateProfile = (uid, email) => (dispatch) => {
+  const profileIndex = algoliaClient.initIndex('profiles')
+  const updatePromise = profileIndex.getObject(email).then((err, content) => profileIndex.addObject({
+    ...content,
+    objectID: uid
+  })).then(() => profileIndex.deleteObject(email))
+  return dispatch({
+    type: MIGRATE_PROFILE,
+    payload: updatePromise
   })
 }
