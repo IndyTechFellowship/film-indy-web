@@ -6,13 +6,19 @@ import PropTypes from 'prop-types'
 import AccountPage from '../../presentation/account/accountPage'
 
 const Account = props => (
-  <AccountPage {...props} />
+  <AccountPage 
+    {...props} 
+    onSubmit={ (values) => { 
+      props.firebase.updateProfile({ firstName: values.firstName, lastName: values.lastName }); 
+      props.firebase.updateEmail(values.email);
+    }} />
 )
 
 Account.propTypes = {
   firebase: PropTypes.shape({
     uploadFile: PropTypes.func.isRequired,
     updateProfile: PropTypes.func.isRequired,
+    updateEmail: PropTypes.func.isRequired,
   }).isRequired,
   auth: PropTypes.shape({
     email: PropTypes.string,

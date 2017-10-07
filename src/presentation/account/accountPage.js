@@ -37,9 +37,7 @@ const validate = values => {
 // Making component const throws an error that it is read-only
 const AccountPage = (props) => {
 
-  function handleSubmit (firstName, lastName, email) { firebase.updateProfile({firstName, lastName, email}) }
-
-  const { profile, firebase, auth } = props;
+  const { handleSubmit, profile, firebase, auth } = props;
   const photoURL = get(profile, 'photoURL', '')
   const firstName = get(profile, 'firstName', '')
   const lastName = get(profile, 'lastName', '')
@@ -137,8 +135,7 @@ const FileUploader = props => {
           photoURL: downloadUrl,
         })
       })
-    }}
-  />
+    }} />
 }
 
 FileUploader.propTypes = {
@@ -165,6 +162,7 @@ AccountPage.propTypes = {
     updateProfile: PropTypes.func.isRequired,
     uploadFile: PropTypes.func.isRequired,
   }).isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const AccountPageFormEnriched = reduxForm({
