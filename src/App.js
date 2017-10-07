@@ -21,12 +21,14 @@ import SearchIcon from 'material-ui/svg-icons/action/search'
 import AccountCircle from 'material-ui/svg-icons/action/account-circle'
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
 import CreateIcon from 'material-ui/svg-icons/social/person-add'
+import EditIcon from 'material-ui/svg-icons/content/create'
 
 // Page components
 import Home from './containers/home'
 import Login from './containers/login/login'
 import SignUp from './containers/signUp'
 import Account from './containers/account/account'
+import EditProfile from './containers/profile/EditProfile'
 
 // Style and images
 import './App.css'
@@ -38,7 +40,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       open: false,
-      signedOut: false,
+      signedOut: false
     }
     this.handleTouchTap = this.handleTouchTap.bind(this)
     this.handleRequestClose = this.handleRequestClose.bind(this)
@@ -51,20 +53,20 @@ class App extends React.Component {
     this.setState({
       open: true,
       anchorEl: event.currentTarget,
-      signedOut: false,
+      signedOut: false
     })
   }
 
   handleRequestClose() {
     this.setState({
-      open: false,
+      open: false
     })
   }
 
   signOutMessage() {
-      this.setState({
-        signedOut: true,
-      })
+    this.setState({
+      signedOut: true
+    })
   }
 
   render() {
@@ -100,15 +102,16 @@ class App extends React.Component {
         >
           <Menu>
             { uid ? ( // renders dropdown items depending on if logged in
-                <div>
-                    <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
-                    <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => {signOut();  this.handleRequestClose(); this.signOutMessage()}}/>
-                </div>
+              <div>
+                <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
+                <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
+                <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { signOut(); this.handleRequestClose(); this.signOutMessage() }} />
+              </div>
             ) : (
-                <div>
-                    <Link to="/login"><MenuItem primaryText="Log In" leftIcon={<AccountCircle />} /></Link>
-                    <Link to="/signup"><MenuItem primaryText="Create Account" leftIcon={<CreateIcon />} /></Link>
-                </div>
+              <div>
+                <Link to="/login"><MenuItem primaryText="Log In" leftIcon={<AccountCircle />} /></Link>
+                <Link to="/signup"><MenuItem primaryText="Create Account" leftIcon={<CreateIcon />} /></Link>
+              </div>
             )}
           </Menu>
         </Popover>
@@ -122,6 +125,7 @@ class App extends React.Component {
         <Route exact path="/login" component={Login} />
         <Route exact path="/account" component={Account} />
         <Route exact path="/signup" component={SignUp} />
+        <Route exact path="/profile/edit" component={EditProfile} />
       </div>
     )
   }
@@ -129,12 +133,12 @@ class App extends React.Component {
 
 App.propTypes = {
   profile: PropTypes.shape({
-    photoURL: PropTypes.string,
+    photoURL: PropTypes.string
   }).isRequired,
   auth: PropTypes.shape({
-    uid: PropTypes.string,
+    uid: PropTypes.string
   }).isRequired,
-  signOut: PropTypes.func.isRequired,
+  signOut: PropTypes.func.isRequired
 }
 
 const wrappedApp = firebaseConnect()(App)
