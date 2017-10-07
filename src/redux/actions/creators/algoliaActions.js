@@ -1,10 +1,10 @@
 import * as firebase from 'firebase'
 import algoliasearch from 'algoliasearch'
-import { SEARCH_INDEX, ENRICH_SEARCH_RESULT, MIGRATE_PROFILE } from '../types/algoliaActionsTypes'
+import { SEARCH_INDEX, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE } from '../types/algoliaActionsTypes'
 
 
-const ALGOLA_ADMIN_KEY = process.env.REACT_APP_ALGOLIA_ADMIN_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
+const ALGOLA_ADMIN_KEY = process.env.REACT_APP_ALGOLIA_ADMIN_KEY
 
 const algoliaClient = algoliasearch(ALGOLIA_APP_ID, ALGOLA_ADMIN_KEY, { protocol: 'https:' })
 
@@ -40,3 +40,8 @@ export const migrateProfile = (uid, email) => (dispatch) => {
     payload: updatePromise
   })
 }
+
+export const partialUpdateAlgoliaObject = (index, updateObject) => dispatch => dispatch({
+  type: PARTIAL_UPDATE_OBJECT,
+  payload: algoliaClient.initIndex(index).partialUpdateObject(updateObject)
+})

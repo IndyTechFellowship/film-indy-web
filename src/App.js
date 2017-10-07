@@ -24,12 +24,14 @@ import SearchIcon from 'material-ui/svg-icons/action/search'
 import AccountCircle from 'material-ui/svg-icons/action/account-circle'
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
 import CreateIcon from 'material-ui/svg-icons/social/person-add'
+import EditIcon from 'material-ui/svg-icons/content/create'
 
 // Page components
 import Home from './containers/home'
 import Login from './containers/login/login'
 import SignUp from './containers/signUp'
 import Account from './containers/account/account'
+import EditProfile from './containers/profile/EditProfile'
 import Search from './containers/search/Search'
 
 // Style and images
@@ -126,6 +128,7 @@ class App extends React.Component {
             { uid ? ( // renders dropdown items depending on if logged in
               <div>
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
+                <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { signOut(); this.handleRequestClose(); this.signOutMessage() }} />
               </div>
             ) : (
@@ -146,7 +149,8 @@ class App extends React.Component {
         <Route exact path="/login" component={Login} />
         <Route exact path="/account" component={Account} />
         <Route exact path="/signup" component={SignUp} />
-        <Route path="/search" component={Search} />
+	<Route path="/search" component={Search} />
+        <Route exact path="/profile/edit" component={EditProfile} />
       </div>
     )
   }
