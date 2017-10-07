@@ -8,9 +8,9 @@ This is a function which takes username and email and and returns a function wit
 which can be used inside the function to dispatch events.
 In this case we dispatch the signIn actions and then then it is finished we dispatch a push to the router to go the /dashboard */
 
-const encodeAsFirebaseKey = string => string.replace(/\%/g, '%25')
+const encodeAsFirebaseKey = string => string.replace(/%/g, '%25')
   .replace(/\./g, '%2E')
-  .replace(/\#/g, '%23')
+  .replace(/#/g, '%23')
   .replace(/\$/g, '%24')
   .replace(/\//g, '%2F')
   .replace(/\[/g, '%5B')
