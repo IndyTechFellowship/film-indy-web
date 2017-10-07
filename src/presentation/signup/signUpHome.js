@@ -15,7 +15,9 @@ const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
 
 const SignUpPage = props => (
     <div>
-      <SignUpForm onSubmit={values => props.signUp(values.email, values.password)}/>
+      <SignUpForm onSubmit={values => {
+	      props.signUp(values.firstName, values.lastName, values.email, values.password);
+      }}/>
       <Snackbar
         bodyStyle={{backgroundColor: '#F44336'}}
         open={props.account.signUpError !== undefined}
@@ -32,6 +34,10 @@ SignUpPage.propTypes = {
             message: PropTypes.string,
         }),
     }),
+	firebase: PropTypes.shape({
+		updateProfile: PropTypes.func.isRequired,
+		uploadFile: PropTypes.func.isRequired,
+	}).isRequired,
     signUp: PropTypes.func.isRequired,
 };
 
