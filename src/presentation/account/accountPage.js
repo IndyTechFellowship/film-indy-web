@@ -18,31 +18,7 @@ import UploadIcon from 'material-ui/svg-icons/file/file-upload'
 import '../../App.css'
 import './accountPage.css'
 
-class accountPage extends React.Component {
-
-    constructor(props) {
-      super(props)
-      this.state = {
-          currentName: "",
-          currentEmail: "",
-      }
-      this.handleNameChange = this.handleNameChange.bind(this)
-      this.handleEmailChange = this.handleEmailChange.bind(this)
-    }
-
-    handleNameChange = (event) =>{
-       this.setState({
-            currentName: event.target.value
-        });
-    }
-
-    handleEmailChange = (event) =>{
-       this.setState({
-            currentEmail: event.target.value
-        });
-    }
-
-    render() {
+const accountPage = (props) => {
       const { profile, firebase, auth } = this.props
       const photoURL = get(profile, 'photoURL', '')
       const email = get(auth, 'email')
@@ -99,7 +75,6 @@ class accountPage extends React.Component {
           </Card>
         </div>
       )
-  }
 }
 
 const FileUploader = props => (
@@ -134,7 +109,8 @@ FileUploader.defaultProps = {
 accountPage.propTypes = {
   profile: PropTypes.shape({
     photoURL: PropTypes.string,
-    displayName: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
   }).isRequired,
   auth: PropTypes.shape({
     uid: PropTypes.string,

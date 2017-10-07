@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Snackbar from 'material-ui/Snackbar'
 import { get } from 'lodash'
 import '../../App.css'
-import SignInForm from './signInForm'
+import SignInForm from './SignInForm'
 
 const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
   switch (errorCode) {

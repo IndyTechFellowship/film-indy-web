@@ -4,11 +4,11 @@ import { push } from 'react-router-redux'
 import { SIGN_IN, SIGN_UP, SIGN_OUT } from '../types/accountActionTypes'
 
 /* this an example of how to chain actions together.
- This is a function which takes username and email and and returns a function with the argument of dispatch
- which can be used inside the function to dispatch events.
- In this case we dispatch the signIn actions and then then it is finished we dispatch a push to the router to go the /dashboard */
+This is a function which takes username and email and and returns a function with the argument of dispatch
+which can be used inside the function to dispatch events.
+In this case we dispatch the signIn actions and then then it is finished we dispatch a push to the router to go the /dashboard */
 
-const migrateOrUpdate = (firstName, lastName, email) => {
+const migrateIfNeeded = (email) => {
   const userMigrationRef = firebase.database().ref('/userMigration')
   userMigrationRef.orderByChild('email').equalTo(email).once('value').then((snapshot) => {
     const dataToMigrate = snapshot.val()
@@ -28,12 +28,6 @@ const migrateOrUpdate = (firstName, lastName, email) => {
       })
     }
   })
-  const uid = firebase.auth().currentUser.uid
-  const accountRef = firebase.database().ref(`/userAccount/${uid}`)
-  accountRef.set({
-    firstName,
-    lastName
-  })
 }
 
 export const signIn = (email, password) => dispatch => dispatch({
@@ -44,9 +38,9 @@ export const signIn = (email, password) => dispatch => dispatch({
 export const signUp = (firstName, lastName, email, password) => dispatch => dispatch({
   type: SIGN_UP,
   payload: firebase.auth().createUserWithEmailAndPassword(email, password)
-}).then(() => dispatch(push('account'))).then(() => (migrateOrUpdate(firstName, lastName, email)))
+}).then(() => dispatch(push('account'))).then(() => migrateIfNeeded(email))
 
 export const signOut = () => dispatch => dispatch({
-    type: SIGN_OUT,
-    payload: firebase.auth().signOut(),
-}).then(() => dispatch(push('home')));
+  type: SIGN_OUT,
+  payload: firebase.auth().signOut()
+}).then(() => dispatch(push('home')))
