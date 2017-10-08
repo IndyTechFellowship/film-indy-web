@@ -30,11 +30,14 @@
     width: 100%;
 }
 
+.imageWrapper img {
+    width: 100%;
+}
+
 .accountImage {
     display: block;
     margin: auto;
     transition: .3s all;
-    cursor: pointer;
 }
 
 .cameraIcon {
@@ -53,23 +56,7 @@
 .imageText {
     opacity: 1;
     cursor: pointer;
-    /*transition: .3s all;*/
     text-align: center;
-}
-
-.accountImage:hover {
-    -webkit-filter: brightness(50%);
-}
-
-
-.accountImage:hover + .cameraIcon {
-    opacity: 1;
-    z-index: 2;
-}
-
-.cameraIcon:hover + .accountImage {
-    -webkit-filter: brightness(50%);
-
 }
 
 .profileField {
