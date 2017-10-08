@@ -22,4 +22,4 @@ export const signUp = (email, password) => dispatch => dispatch({
 export const sendPasswordResetEmail = (emailAddress) => dispatch => dispatch ({
   type: SEND_PASSWORD_RESET_EMAIL,
   payload: firebase.auth().sendPasswordResetEmail(emailAddress),
-}).then(() => dispatch(push('account')));
+}).then(() => dispatch(push('home')));
