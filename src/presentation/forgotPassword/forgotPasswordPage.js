@@ -4,6 +4,10 @@ import Snackbar from 'material-ui/Snackbar'
 import { get } from 'lodash'
 import '../../App.css'
 import ForgotPasswordForm from './ForgotPasswordForm'
+import { Route, Link, withRouter } from 'react-router-dom'
+import FlatButton from 'material-ui/FlatButton'
+
+
 
 const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
   switch (errorCode) {
@@ -21,6 +25,12 @@ const ForgotPasswordPage = props => (
       message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.sendPasswordResetEmailError.code'))}
       autoHideDuration={4000}
     />
+    <Link to="/login">
+      <FlatButton
+        label = "Return to Log In"
+        primary = {true}
+      />
+    </Link>
   </div>
 )
 

@@ -5,6 +5,8 @@ import FlatButton from 'material-ui/FlatButton'
 import { get } from 'lodash'
 import '../../App.css'
 import SignInForm from './SignInForm'
+import { Route, Link, withRouter } from 'react-router-dom'
+
 
 const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
   switch (errorCode) {
@@ -17,10 +19,12 @@ const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
 const LoginPage = props => (
   <div >
     <SignInForm onSubmit={values => props.signIn(values.email, values.password)} />
-    <FlatButton
-      label = "Forgot Password?"
-      primary = { true }
-    />
+    <Link to="/forgotpassword">
+      <FlatButton
+        label = "Forgot Password?"
+        primary = {true}
+      />
+    </Link>
     <Snackbar
       bodyStyle={{ backgroundColor: '#F44336' }}
       open={props.account.signInError !== undefined}
