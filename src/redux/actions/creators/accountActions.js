@@ -24,7 +24,7 @@ const migrateOrUpdate = (firstName, lastName, email) => {
       profilesRef.set(roles)
       accountRef.set({
         firstName,
-        lastName
+        lastName,
       })
     }
   })
@@ -32,7 +32,8 @@ const migrateOrUpdate = (firstName, lastName, email) => {
   const accountRef = firebase.database().ref(`/userAccount/${uid}`)
   accountRef.set({
     firstName,
-    lastName
+    lastName,
+    photoURL
   })
 }
 
@@ -71,7 +72,7 @@ export const signIn = (email, password) => dispatch => dispatch({
   payload: firebase.auth().signInWithEmailAndPassword(email, password)
 }).then(() => dispatch(push('account')))
 
-export const signUp = (firstName, lastName, email, password) => dispatch => dispatch({
+export const signUp = (firstName, lastName, photoURL, email, password) => dispatch => dispatch({
   type: SIGN_UP,
   payload: firebase.auth().createUserWithEmailAndPassword(email, password)
 }).then(result => migrate(email, result, dispatch))
