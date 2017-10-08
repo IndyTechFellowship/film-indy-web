@@ -5,7 +5,7 @@ import FlatButton from 'material-ui/FlatButton'
 import { get } from 'lodash'
 import '../../App.css'
 import SignInForm from './SignInForm'
-import { Route, Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 
 const firebaseErrorCodeToFriendlyMessage = (errorCode) => {

@@ -4,7 +4,7 @@ import Snackbar from 'material-ui/Snackbar'
 import { get } from 'lodash'
 import '../../App.css'
 import ForgotPasswordForm from './ForgotPasswordForm'
-import { Route, Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import FlatButton from 'material-ui/FlatButton'
 
 
