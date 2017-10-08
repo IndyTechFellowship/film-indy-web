@@ -64,8 +64,7 @@ const AccountPage = (props) => {
           </FlatButton>
         </div>
         <form onSubmit={handleSubmit(handleProfileChanges)}>
-          <ul className="fields">
-            <li>
+          <div className="fields">
               <div>
                 <Field
                   name="firstName"
@@ -74,8 +73,6 @@ const AccountPage = (props) => {
                   type="text"
                 />
               </div>
-            </li>
-            <li>
               <div>
                 <Field
                   name="lastName"
@@ -84,8 +81,6 @@ const AccountPage = (props) => {
                   type="text"
                 />
               </div>
-            </li>
-            <li>
               <div>
                 <Field
                   name="email"
@@ -94,8 +89,7 @@ const AccountPage = (props) => {
                   type="email"
                 />
               </div>
-            </li>
-          </ul>
+          </div>
           <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} />
         </form>
       </Card>
@@ -112,19 +106,6 @@ const AccountPage = (props) => {
     </div>
   )
 }
-
-// // Decorate with reduxForm(). It will read the initialValues prop provided by connect()
-// AccountPage = reduxForm({
-//   form: 'accountPage', // a unique identifier for this form
-// })(AccountPage);
-
-// // You have to connect() to any reducers that you wish to connect to yourself
-// AccountPage = connect(
-//   state => ({
-//     initialValues: state.account.data, // pull initial values from account reducer
-//   }),
-//   { load: loadAccount }, // bind account loading action creator
-// )(AccountPage);
 
 const FileUploader = props => (
   <input
@@ -159,7 +140,8 @@ AccountPage.propTypes = {
   profile: PropTypes.shape({
     firstName: PropTypes.string,
     lastName: PropTypes.string,
-    photoURL: PropTypes.string
+    photoURL: PropTypes.string,
+    email: PropTypes.string
   }).isRequired,
   auth: PropTypes.shape({
     uid: PropTypes.string,
@@ -173,7 +155,7 @@ AccountPage.propTypes = {
 }
 
 const AccountPageFormEnriched = reduxForm({
-  form: 'updateProfile',
+  form: 'UpdateProfile',
   validate,
   enableReinitialize: true
 })(AccountPage)
