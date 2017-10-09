@@ -16,6 +16,8 @@ firebase.initializeApp(firebaseConfig)
 const database = firebase.database()
 const rolesRef = firebase.database().ref('/roles')
 const userMigrationRef = firebase.database().ref('/userMigration')
+const userAccountRef = firebase.database().ref('/userAccount')
+const userProfileRef = firebase.database().ref('/userProfiles')
 
 const encodeAsFirebaseKey = string => string.replace(/\%/g, '%25')
   .replace(/\./g, '%2E')
@@ -114,7 +116,17 @@ const addUserMigrationToFirebase = (addRolesPromises, usersToImport) => {
       if (user.email) {
         const emailKey = encodeAsFirebaseKey(user.email)
         const cleanUser = _.omitBy(user, _.isNil)
-        return userMigrationRef.child(emailKey).set(cleanUser)
+        const { email, roles, phone } = cleanUser
+        const firstName = _.get(cleanUser, 'firstName', '')
+        const lastName = _.get(cleanUser, 'lastName', '')
+        return userAccountRef.child(emailKey).set({
+          firstName,
+          lastName,
+          phone,
+          email
+        }).then(() => userProfileRef.child(emailKey).set({
+          roles
+        }))
       }
       return Promise.resolve()
     })
