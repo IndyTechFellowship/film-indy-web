@@ -108,6 +108,7 @@ class App extends React.Component {
                   apiKey={ALGOLIA_SEARCH_KEY}
                   indexName="roles"
                 >
+
                   <Configure hitsPerPage={100} />
                   <AutoCompleteBar onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })} />
                 </InstantSearch>
@@ -149,7 +150,7 @@ class App extends React.Component {
         <Route exact path="/login" component={Login} />
         <Route exact path="/account" component={Account} />
         <Route exact path="/signup" component={SignUp} />
-	<Route path="/search" component={Search} />
+        <Route path="/search" component={Search} />
         <Route exact path="/profile/edit" component={EditProfile} />
       </div>
     )

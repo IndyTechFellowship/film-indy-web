@@ -1,6 +1,7 @@
 import * as firebase from 'firebase'
 import algoliasearch from 'algoliasearch'
-import { SEARCH_INDEX, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE } from '../types/algoliaActionsTypes'
+import { uniq } from 'lodash'
+import { SEARCH_INDEX, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE } from '../types/algoliaActionsTypes'
 
 
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
@@ -25,6 +26,27 @@ export const searchIndex = (indexName, query, tableToEnrichFrom) => (dispatch) =
     return dispatch({
       type: ENRICH_SEARCH_RESULT,
       payload: enriched
+    })
+  })
+}
+
+export const searchForCrew = query => (dispatch) => {
+  const indexNames = ['profiles', 'names']
+  const searchPromises = indexNames.map((indexName) => {
+    const index = algoliaClient.initIndex(indexName)
+    return index.search({ query }).then(results => ({ indexName, results }))
+  })
+  return dispatch({
+    type: SEARCH_FOR_CREW,
+    payload: Promise.all(searchPromises)
+  }).then((searchResults) => {
+    const uniqueHits = uniq(searchResults.value.reduce((acc, result) => [...acc, ...result.results.hits], []), 'objectID')
+    const enrichPromises = Promise.all(uniqueHits.map(uniqueHit => firebase.database().ref(`userAccount/${uniqueHit.objectID}`)
+      .once('value')
+      .then(snapshot => ({ objectID: uniqueHit.objectID, value: snapshot.val() }))))
+    return dispatch({
+      type: SEARCH_FOR_CREW_ENRICHED,
+      payload: enrichPromises
     })
   })
 }

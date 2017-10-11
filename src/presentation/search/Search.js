@@ -8,17 +8,17 @@ import '../../App.css'
 
 class Search extends React.Component {
   componentWillMount() {
-    const { searchIndex, location } = this.props
+    const { searchForCrew, location } = this.props
     const parsed = QueryString.parse(location.search)
     const query = parsed.query
-    searchIndex('profiles', query, 'userAccount')
+    searchForCrew(query)
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
-      const { searchIndex } = this.props
+      const { searchForCrew } = this.props
       const parsed = QueryString.parse(nextProps.location.search)
       const query = parsed.query
-      searchIndex('profiles', query, 'userAccount')
+      searchForCrew(query)
     }
   }
   render() {
@@ -30,7 +30,7 @@ class Search extends React.Component {
           <RaisedButton label="See More" labelColor="white" backgroundColor={'#38b5e6'} style={{ marginRight: 225, backgroundColor: '#38b5e6' }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', paddingLeft: 40 }}>
-          {take(enriched, 4).map(enrichedResult => (
+          {take(enriched, 3).map(enrichedResult => (
             <Card key={enrichedResult.objectID} containerStyle={{ width: 400, paddingBottom: 0, display: 'flex', flexDirection: 'row' }} style={{ width: 400, height: 150, marginRight: 20, borderRadius: 10 }}>
               <CardMedia>
                 <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
