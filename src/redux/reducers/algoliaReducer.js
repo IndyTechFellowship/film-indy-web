@@ -25,8 +25,9 @@ export default (state = initalState, action) => {
       }
     case `${SEARCH_FOR_CREW}_SUCCESS`:
       return {
+        ...state,
         enrichedCrewResults: [],
-        crewQueryResults: action.payload.reduce((acc, r) => [...acc, ...r.results.hits])
+        crewQueryResults: action.payload.reduce((acc, r) => [...acc, ...r.results.hits], [])
       }
     case `${SEARCH_FOR_CREW_ENRICHED}_SUCCESS`:
       return {

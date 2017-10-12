@@ -53,10 +53,17 @@ export const searchForCrew = query => (dispatch) => {
 
 export const migrateProfile = (uid, email) => (dispatch) => {
   const profileIndex = algoliaClient.initIndex('profiles')
+  const nameIndex = algoliaClient.initIndex('names')
   const updatePromise = profileIndex.getObject(email).then((err, content) => profileIndex.addObject({
     ...content,
     objectID: uid
-  })).then(() => profileIndex.deleteObject(email))
+  }))
+    .then(() => profileIndex.deleteObject(email))
+    .then(() => nameIndex.getObject(email).then((err, content) => nameIndex.addObject({
+      ...content,
+      objectID: uid
+    })))
+    .then(() => nameIndex.deleteObject(email))
   return dispatch({
     type: MIGRATE_PROFILE,
     payload: updatePromise
