@@ -16,9 +16,9 @@ const encodeAsFirebaseKey = string => string.replace(/%/g, '%25')
   .replace(/\[/g, '%5B')
   .replace(/\]/g, '%5D')
 
-const migrate = (email, signUpResult, dispatch) => {
+const migrate = (accountDataToSave, signUpResult, dispatch) => {
   const uid = signUpResult.value.uid
-  const emailKey = encodeAsFirebaseKey(email)
+  const emailKey = encodeAsFirebaseKey(accountDataToSave.email)
   const accountRef = firebase.database().ref('/userAccount')
   const profilesRef = firebase.database().ref('/userProfiles')
   accountRef.child(emailKey).once('value').then((snapshot) => {
@@ -35,20 +35,31 @@ const migrate = (email, signUpResult, dispatch) => {
       profilesRef.child(uid).set(val)
     }
   })
-  return dispatch(algoliaActions.migrateProfile(uid, emailKey)).then(() => dispatch(push('account'))).catch(() => dispatch(push('account')))
+  return dispatch(algoliaActions.migrateProfile(uid, emailKey)).then(() => {
+  	dispatch(push('account'))
+	updateAccount(accountDataToSave)
+  }).catch(() => dispatch(push('account')))
 }
 
-const updateAccount = (firstName, lastName, photoFile) => {
+const updateAccount = (accountDataToSave) => {
 	const uid = firebase.auth().currentUser.uid
-	const fbFilePath = `/images/users/account/${uid}/account_image`
-	firebase.UserInfo.uploadFile(fbFilePath, photoFile).then((response) => {
-		const accountRef = firebase.database().ref(`/userAccount/${uid}`)
-		accountRef.set({
-			firstName: firstName,
-			lastName: lastName,
-			photoUrl: response.downloadURL,
+	const accountRef = firebase.database().ref(`/userAccount/${uid}`)
+
+	if (accountDataToSave.firstName) {
+		accountRef.child('firstName').set(accountDataToSave.firstName)
+	}
+	if (accountDataToSave.lastName) {
+		accountRef.child('lastName').set(accountDataToSave.lastName)
+	}
+	if (accountDataToSave.email) {
+		accountRef.child('email').set(accountDataToSave.email)
+	}
+	if (accountDataToSave.photoFile) {
+		const fbFilePath = `/images/users/account/${uid}/account_image`
+		firebase.uploadFile(fbFilePath, accountDataToSave.photoFile).then((response) => {
+			accountRef.child('photoURL').set(response.downloadURL)
 		})
-	})
+	}
 }
 
 export const signIn = (email, password) => dispatch => dispatch({
@@ -60,8 +71,13 @@ export const signUp = (firstName, lastName, photoFile, email, password) => dispa
   type: SIGN_UP,
   payload: firebase.auth().createUserWithEmailAndPassword(email, password)
 }).then(result => {
-	migrate(email, result, dispatch)
-	updateAccount(firstName, lastName, photoFile)
+	const accountDataToSave = {
+		firstName: firstName,
+		lastName: lastName,
+		email: email,
+		photoFile: photoFile
+	}
+	migrate(accountDataToSave, result, dispatch)
 })
 
 export const signOut = () => dispatch => dispatch({
