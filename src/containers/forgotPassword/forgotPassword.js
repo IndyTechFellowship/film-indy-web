@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import * as exampleActions from '../../redux/actions/creators/exampleActions'
 import * as accountActions from '../../redux/actions/creators/accountActions'
 import ForgotPasswordPage from '../../presentation/forgotPassword/forgotPasswordPage'
 
