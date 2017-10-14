@@ -1,6 +1,6 @@
 import * as firebase from 'firebase'
 import { push } from 'react-router-redux'
-import { SIGN_IN, SIGN_UP, SIGN_OUT } from '../types/accountActionTypes'
+import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL } from '../types/accountActionTypes'
 import * as algoliaActions from './algoliaActions'
 
 /* this an example of how to chain actions together.
@@ -52,3 +52,8 @@ export const signOut = () => dispatch => dispatch({
   type: SIGN_OUT,
   payload: firebase.auth().signOut()
 }).then(() => dispatch(push('home')))
+
+export const sendPasswordResetEmail = emailAddress => dispatch => dispatch({
+  type: SEND_PASSWORD_RESET_EMAIL,
+  payload: firebase.auth().sendPasswordResetEmail(emailAddress)
+}).then(() => dispatch(push('login')))
