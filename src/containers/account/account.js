@@ -4,32 +4,21 @@ import { withRouter } from 'react-router-dom'
 import { firebaseConnect } from 'react-redux-firebase'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
+import * as firebase from 'firebase'
 import AccountPage from '../../presentation/account/accountPage'
-import Snackbar from 'material-ui/Snackbar'
 
-const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
-  switch (errorCode) {
-    case 'auth/invalid-email': return 'Invalid Email'
-    case 'auth/email-already-in-use': return 'Email already in use'
-    case 'auth/requires-recent-login': return 'Recent login required. Please sign out and back in'
-    default: return 'There was an issue changing your email. Please try again'
-  }
-}
 
 const Account = props => (
   <div>
     <AccountPage
       {...props}
       handleProfileChanges={(values) => {
-        props.firebase.updateProfile({ firstName: values.firstName, lastName: values.lastName });
-        props.firebase.updateEmail(values.email);
+        const oldEmail = get(props, 'auth.email')
+        props.firebase.updateProfile({ firstName: values.firstName, lastName: values.lastName })
+        if (values.email !== oldEmail) {
+          props.firebase.updateEmail(values.email)
+        }
       }}
-    />
-    <Snackbar
-      bodyStyle={{ backgroundColor: '#F44336' }}
-      open={props.account.signInError !== undefined}
-      message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.signInError.code'))}
-      autoHideDuration={4000}
     />
   </div>
 )
@@ -43,17 +32,11 @@ Account.propTypes = {
   auth: PropTypes.shape({
     email: PropTypes.string,
     uid: PropTypes.string
-  }).isRequired,
-  account: PropTypes.shape({
-    signInError: PropTypes.shape({
-      code: PropTypes.string,
-      message: PropTypes.string,
-    }),
-  }),
+  }).isRequired
 }
 
 Account.defaultProps = {
-  account: {},
+  account: {}
 }
 
 const wrappedAccount = firebaseConnect()(Account)
@@ -63,6 +46,6 @@ export default withRouter(connect(
     firebase: state.firebase,
     auth: state.firebase.auth,
     profile: state.firebase.profile,
-    initialValues: { firstName: state.firebase.profile.firstName, lastName: state.firebase.profile.lastName, email: state.firebase.auth.email } }),
+    initialValues: { firstName: state.firebase.profile.firstName, lastName: state.firebase.profile.lastName, email: get(firebase.auth(), 'currentUser.email') } }),
   { },
 )(wrappedAccount))

@@ -65,30 +65,30 @@ const AccountPage = (props) => {
         </div>
         <form onSubmit={handleSubmit(handleProfileChanges)}>
           <div className="fields">
-              <div>
-                <Field
-                  name="firstName"
-                  component={renderTextField}
-                  floatingLabelText="First Name"
-                  type="text"
-                />
-              </div>
-              <div>
-                <Field
-                  name="lastName"
-                  component={renderTextField}
-                  floatingLabelText="Last Name"
-                  type="text"
-                />
-              </div>
-              <div>
-                <Field
-                  name="email"
-                  component={renderTextField}
-                  floatingLabelText="Email"
-                  type="email"
-                />
-              </div>
+            <div>
+              <Field
+                name="firstName"
+                component={renderTextField}
+                floatingLabelText="First Name"
+                type="text"
+              />
+            </div>
+            <div>
+              <Field
+                name="lastName"
+                component={renderTextField}
+                floatingLabelText="Last Name"
+                type="text"
+              />
+            </div>
+            <div>
+              <Field
+                name="email"
+                component={renderTextField}
+                floatingLabelText="Email"
+                type="email"
+              />
+            </div>
           </div>
           <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} />
         </form>
