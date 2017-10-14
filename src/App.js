@@ -39,6 +39,7 @@ import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
 import SignUpForm from './presentation/signup/SignUpForm'
 import SignInForm from './presentation/login/SignInForm'
+import ResetPassword from './containers/resetPassword/resetPassword'
 
 // Style and images
 import './App.css'
