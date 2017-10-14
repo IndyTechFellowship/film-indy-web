@@ -33,6 +33,7 @@ import SignUp from './containers/signUp'
 import Account from './containers/account/account'
 import EditProfile from './containers/profile/EditProfile'
 import Search from './containers/search/Search'
+import ForgotPassword from './containers/forgotPassword/forgotPassword'
 
 // Style and images
 import './App.css'
@@ -151,6 +152,7 @@ class App extends React.Component {
         <Route exact path="/account" component={Account} />
         <Route exact path="/signup" component={SignUp} />
         <Route path="/search" component={Search} />
+        <Route exact path="/forgotpassword" component={ForgotPassword} />
         <Route exact path="/profile/edit" component={EditProfile} />
       </div>
     )

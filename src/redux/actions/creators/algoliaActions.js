@@ -1,7 +1,7 @@
 import * as firebase from 'firebase'
 import algoliasearch from 'algoliasearch'
 import { uniq } from 'lodash'
-import { SEARCH_INDEX, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE } from '../types/algoliaActionsTypes'
+import { SEARCH_INDEX, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE,  MIGRATE_NAME, ADD_TO_NAME_INDEX  } from '../types/algoliaActionsTypes'
 
 
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
@@ -69,6 +69,27 @@ export const migrateProfile = (uid, email) => (dispatch) => {
     payload: updatePromise
   })
 }
+
+export const migrateName = (uid, email, namesObject) => (dispatch) => {
+  const nameIndex = algoliaClient.initIndex('names')
+  const updatePromise = nameIndex.getObject(email).then((err, content) => nameIndex.addObject({
+    ...content,
+    ...namesObject,
+    objectID: uid
+  })).then(() => nameIndex.deleteObject(email))
+  return dispatch({
+    type: MIGRATE_NAME,
+    payload: updatePromise
+  })
+}
+
+export const addToNameIndex = (uid, namesObject) => dispatch => dispatch({
+  type: ADD_TO_NAME_INDEX,
+  payload: algoliaClient.initIndex('names').addObject({
+    ...namesObject,
+    objectID: uid
+  })
+})
 
 export const partialUpdateAlgoliaObject = (index, updateObject) => dispatch => dispatch({
   type: PARTIAL_UPDATE_OBJECT,
