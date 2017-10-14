@@ -93,7 +93,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, signOut, history } = this.props
+    const { profile, auth, firebase, history } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     return (
@@ -130,7 +130,7 @@ class App extends React.Component {
               <div>
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
                 <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
-                <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { signOut(); this.handleRequestClose(); this.signOutMessage() }} />
+                <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.handleRequestClose(); this.signOutMessage() }} />
               </div>
             ) : (
               <div>
