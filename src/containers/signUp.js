@@ -15,7 +15,7 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
-  signUp: PropTypes.func.isRequired,
+  signUp: PropTypes.func.isRequired
 }
 
 export default withRouter(connect(
