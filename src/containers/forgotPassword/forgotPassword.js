@@ -15,10 +15,10 @@ class ForgotPassword extends React.Component {
 }
 
 ForgotPassword.propTypes = {
-  sendPasswordResetEmail: PropTypes.func.isRequired,
-};
+  sendPasswordResetEmail: PropTypes.func.isRequired
+}
 
 export default withRouter(connect(
   state => ({ home: state.home, account: state.account }),
-  { ...exampleActions, ...accountActions },
+  { ...accountActions },
 )(ForgotPassword))
