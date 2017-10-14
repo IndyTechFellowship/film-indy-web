@@ -7,6 +7,7 @@ import { get } from 'lodash'
 import * as firebase from 'firebase'
 import AccountPage from '../../presentation/account/accountPage'
 import * as accountActions from '../../redux/actions/creators/accountActions'
+import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
 
 
 const Account = props => (
@@ -15,7 +16,9 @@ const Account = props => (
       {...props}
       handleProfileChanges={(values) => {
         const oldEmail = get(props, 'auth.email')
+        const uid = get(props, 'auth.uid')
         props.firebase.updateProfile({ firstName: values.firstName, lastName: values.lastName })
+        props.partialUpdateAlgoliaObject('names', { firstName: values.firstName, lastName: values.lastName, objectID: uid })
         if (values.email !== oldEmail) {
           props.firebase.updateEmail(values.email)
             .then(() => props.firebase.reloadAuth())
@@ -30,12 +33,15 @@ Account.propTypes = {
   firebase: PropTypes.shape({
     uploadFile: PropTypes.func.isRequired,
     updateProfile: PropTypes.func.isRequired,
-    updateEmail: PropTypes.func.isRequired
+    updateEmail: PropTypes.func.isRequired,
+    reloadAuth: PropTypes.func.isRequired
   }).isRequired,
   auth: PropTypes.shape({
     email: PropTypes.string,
     uid: PropTypes.string
-  }).isRequired
+  }).isRequired,
+  partialUpdateAlgoliaObject: PropTypes.func.isRequired,
+  updateAuth: PropTypes.func.isRequired
 }
 
 Account.defaultProps = {
@@ -50,5 +56,5 @@ export default withRouter(connect(
     auth: state.firebase.auth,
     profile: state.firebase.profile,
     initialValues: { firstName: state.firebase.profile.firstName, lastName: state.firebase.profile.lastName, email: get(firebase.auth(), 'currentUser.email') } }),
-  { ...accountActions },
+  { ...accountActions, ...algoliaActions },
 )(wrappedAccount))
