@@ -1,6 +1,5 @@
 import React from 'react'
-
-
+import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
 
@@ -18,14 +17,39 @@ import UploadIcon from 'material-ui/svg-icons/file/file-upload'
 import '../../App.css'
 import './accountPage.css'
 
-const firstname = 'Rick'
-const lastname = 'Sanchez'
-const email = 'ilovemygrandkids@hotmail.com'
+const renderTextField = ({ input, label, meta: { touched, error }, ...custom }) => (
+  <TextField
+    hintText={label}
+    floatingLabelText={label}
+    errorText={touched && error}
+    {...input}
+    {...custom}
+  />
+)
 
-const accountPage = (props) => {
-  const { profile, firebase, auth } = props
+const validate = (values) => {
+  const errors = {}
+
+  if (!values.firstName || !values.lastName || !values.email) {
+    if (!values.firstName) {
+      errors.firstName = 'You forgot to enter your first name!'
+    }
+    if (!values.lastName) {
+      errors.lastName = 'You forgot to enter your last name!'
+    }
+    if (!values.email) {
+      errors.email = 'You forgot to enter an email!'
+    }
+  }
+  return errors
+}
+
+// Making component const throws an error that it is read-only
+const AccountPage = (props) => {
+  const { handleSubmit, pristine, submitting, handleProfileChanges, profile, firebase, auth } = props
   const photoURL = get(profile, 'photoURL', '')
   const uid = get(auth, 'uid')
+
   return (
     <div>
       <h1>Account Settings</h1>
@@ -39,13 +63,37 @@ const accountPage = (props) => {
             <FileUploader uid={uid} uploadFile={firebase.uploadFile} updateProfile={firebase.updateProfile} />
           </FlatButton>
         </div>
-        <ul className="fields">
-          <li><TextField className="profileField" hintText="Enter your first name" floatingLabelText="First Name" defaultValue={firstname} /></li>
-          <li><TextField className="profileField" hintText="Enter your last name" floatingLabelText="Last Name" defaultValue={lastname} /></li>
-          <li><TextField className="profileField" hintText="Enter your email address" floatingLabelText="Email" defaultValue={email} type="email" /></li>
-        </ul>
-        <RaisedButton className="accountButton" primary label="Save" />
+        <form onSubmit={handleSubmit(handleProfileChanges)}>
+          <div className="fields">
+            <div>
+              <Field
+                name="firstName"
+                component={renderTextField}
+                floatingLabelText="First Name"
+                type="text"
+              />
+            </div>
+            <div>
+              <Field
+                name="lastName"
+                component={renderTextField}
+                floatingLabelText="Last Name"
+                type="text"
+              />
+            </div>
+            <div>
+              <Field
+                name="email"
+                component={renderTextField}
+                floatingLabelText="Email"
+                type="email"
+              />
+            </div>
+          </div>
+          <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} />
+        </form>
       </Card>
+
       <Card className="passwordCard">
         <CardTitle title="Reset Password" />
         <Divider />
@@ -71,7 +119,7 @@ const FileUploader = props => (
       uploadFile(fbFilePath, file).then((response) => {
         const downloadUrl = response.downloadURL
         updateProfile({
-          photoURL: downloadUrl,
+          photoURL: downloadUrl
         })
       })
     }}
@@ -81,26 +129,35 @@ const FileUploader = props => (
 FileUploader.propTypes = {
   uid: PropTypes.string,
   uploadFile: PropTypes.func.isRequired,
-  updateProfile: PropTypes.func.isRequired,
+  updateProfile: PropTypes.func.isRequired
 }
 
 FileUploader.defaultProps = {
-  uid: '',
+  uid: ''
 }
-accountPage.propTypes = {
+
+AccountPage.propTypes = {
   profile: PropTypes.shape({
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
     photoURL: PropTypes.string,
+    email: PropTypes.string
   }).isRequired,
   auth: PropTypes.shape({
     uid: PropTypes.string,
+    email: PropTypes.string
   }).isRequired,
   firebase: PropTypes.shape({
     updateProfile: PropTypes.func.isRequired,
-    uploadFile: PropTypes.func.isRequired,
+    uploadFile: PropTypes.func.isRequired
   }).isRequired,
+  handleSubmit: PropTypes.func.isRequired
 }
 
-accountPage.defaultProps = {
-}
+const AccountPageFormEnriched = reduxForm({
+  form: 'UpdateProfile',
+  validate,
+  enableReinitialize: true
+})(AccountPage)
 
-export default accountPage
+export default AccountPageFormEnriched

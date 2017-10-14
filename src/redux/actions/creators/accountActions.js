@@ -105,3 +105,8 @@ export const sendPasswordResetEmail = emailAddress => dispatch => dispatch({
   type: SEND_PASSWORD_RESET_EMAIL,
   payload: firebase.auth().sendPasswordResetEmail(emailAddress)
 }).then(() => dispatch(push('login')))
+
+export const updateAuth = result => dispatch => dispatch({
+  type: '@@reactReduxFirebase/AUTH_UPDATE_SUCCESS',
+  auth: result
+})

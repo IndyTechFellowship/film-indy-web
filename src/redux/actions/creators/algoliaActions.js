@@ -3,7 +3,6 @@ import algoliasearch from 'algoliasearch'
 import { uniq } from 'lodash'
 import { SEARCH_INDEX, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE,  MIGRATE_NAME, ADD_TO_NAME_INDEX  } from '../types/algoliaActionsTypes'
 
-
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 const ALGOLA_ADMIN_KEY = process.env.REACT_APP_ALGOLIA_ADMIN_KEY
 
