@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import * as firebase from 'firebase'
 import AccountPage from '../../presentation/account/accountPage'
+import * as accountActions from '../../redux/actions/creators/accountActions'
 
 
 const Account = props => (
@@ -17,6 +18,8 @@ const Account = props => (
         props.firebase.updateProfile({ firstName: values.firstName, lastName: values.lastName })
         if (values.email !== oldEmail) {
           props.firebase.updateEmail(values.email)
+            .then(() => props.firebase.reloadAuth())
+            .then(result => props.updateAuth(result))
         }
       }}
     />
@@ -47,5 +50,5 @@ export default withRouter(connect(
     auth: state.firebase.auth,
     profile: state.firebase.profile,
     initialValues: { firstName: state.firebase.profile.firstName, lastName: state.firebase.profile.lastName, email: get(firebase.auth(), 'currentUser.email') } }),
-  { },
+  { ...accountActions },
 )(wrappedAccount))
