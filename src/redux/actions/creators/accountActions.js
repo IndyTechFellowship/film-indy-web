@@ -1,33 +1,81 @@
 import * as firebase from 'firebase'
 import { push } from 'react-router-redux'
+import { omitBy } from 'lodash'
+import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL } from '../types/accountActionTypes'
+import * as algoliaActions from './algoliaActions'
 
-import { SIGN_IN, SIGN_UP, SIGN_OUT } from '../types/accountActionTypes'
 
 /* this an example of how to chain actions together.
-This is a function which takes username and email and and returns a function with the argument of dispatch
-which can be used inside the function to dispatch events.
-In this case we dispatch the signIn actions and then then it is finished we dispatch a push to the router to go the /dashboard */
+ This is a function which takes username and email and and returns a function with the argument of dispatch
+ which can be used inside the function to dispatch events.
+ In this case we dispatch the signIn actions and then then it is finished we dispatch a push to the router to go the /dashboard */
 
-const migrateIfNeeded = (email) => {
-  const userMigrationRef = firebase.database().ref('/userMigration')
-  userMigrationRef.orderByChild('email').equalTo(email).once('value').then((snapshot) => {
-    const dataToMigrate = snapshot.val()
-    if (dataToMigrate !== null) {
-      const uid = firebase.auth().currentUser.uid
-      const key = Object.keys(dataToMigrate)[0]
-      const userToMigrate = dataToMigrate[key]
-      const roles = userToMigrate.roles
-      const firstName = userToMigrate.firstName
-      const lastName = userToMigrate.lastName
-      const profilesRef = firebase.database().ref(`/userProfiles/${uid}/roles`)
-      const accountRef = firebase.database().ref(`/userAccount/${uid}`)
-      profilesRef.set(roles)
-      accountRef.set({
-        firstName,
-        lastName
+const encodeAsFirebaseKey = string => string.replace(/%/g, '%25')
+  .replace(/\./g, '%2E')
+  .replace(/#/g, '%23')
+  .replace(/\$/g, '%24')
+  .replace(/\//g, '%2F')
+  .replace(/\[/g, '%5B')
+  .replace(/\]/g, '%5D')
+
+const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToSave, accountRef, dispatch) => {
+  const val = snapshot.val()
+  if (val) {
+    // an account already exists, migrate the account
+    const accountData = omitBy(accountDataToSave, i => !i)
+    const nameUpdates = omitBy({ firstName: accountDataToSave.firstName, lastName: accountDataToSave.lastName }, i => !i)
+    // migrate the name index with the new uid
+    dispatch(algoliaActions.migrateName(uid, emailKey, nameUpdates))
+    accountRef.child(emailKey).remove()
+    if (accountData.photoFile) {
+      firebase.uploadFile(`/images/users/account/${uid}/account_image`, accountData.photoFile).then((response) => {
+        accountRef.child(uid).set({
+          ...val,
+          ...accountData,
+          photoURL: response.downloadURL
+        })
+      })
+    } else {
+      accountRef.child(uid).set({
+        ...val,
+        ...accountData
       })
     }
+  } else {
+    // no row in the userAccount table exists with that email, totally new user
+    const accountData = omitBy(accountDataToSave, i => !i)
+    const nameUpdates = omitBy({ firstName: accountDataToSave.firstName, lastName: accountDataToSave.lastName }, i => !i)
+    dispatch(algoliaActions.addToNameIndex(uid, nameUpdates))
+    if (accountData.photoFile) {
+      firebase.uploadFile(`/images/users/account/${uid}/account_image`, accountData.photoFile).then((response) => {
+        accountRef.child(uid).set({
+          ...accountData,
+          photoURL: response.downloadURL
+        })
+      })
+    } else {
+      accountRef.child(uid).set(accountData)
+    }
+  }
+}
+
+const migrate = (accountDataToSave, signUpResult, dispatch) => {
+  const uid = firebase.auth().currentUser.uid
+  const emailKey = encodeAsFirebaseKey(accountDataToSave.email)
+  const accountRef = firebase.database().ref('/userAccount')
+  const profilesRef = firebase.database().ref('/userProfiles')
+  accountRef.child(emailKey).once('value').then((snapshot) => {
+    migrateOrCreateUserAccountEntry(uid, emailKey, snapshot, accountDataToSave, accountRef, dispatch)
   })
+  profilesRef.child(emailKey).once('value').then((snapshot) => {
+    const val = snapshot.val()
+    if (val) {
+      profilesRef.child(emailKey).remove()
+      profilesRef.child(uid).set(val)
+      algoliaActions.migrateProfile(uid, emailKey)
+    }
+  })
+  return dispatch(push('account'))
 }
 
 export const signIn = (email, password) => dispatch => dispatch({
@@ -35,12 +83,25 @@ export const signIn = (email, password) => dispatch => dispatch({
   payload: firebase.auth().signInWithEmailAndPassword(email, password)
 }).then(() => dispatch(push('account')))
 
-export const signUp = (firstName, lastName, email, password) => dispatch => dispatch({
+export const signUp = (firstName, lastName, photoFile, email, password) => dispatch => dispatch({
   type: SIGN_UP,
   payload: firebase.auth().createUserWithEmailAndPassword(email, password)
-}).then(() => dispatch(push('account'))).then(() => migrateIfNeeded(email))
+}).then((result) => {
+  const accountDataToSave = {
+    firstName,
+    lastName,
+    email,
+    photoFile
+  }
+  migrate(accountDataToSave, result, dispatch)
+})
 
 export const signOut = () => dispatch => dispatch({
   type: SIGN_OUT,
   payload: firebase.auth().signOut()
 }).then(() => dispatch(push('home')))
+
+export const sendPasswordResetEmail = emailAddress => dispatch => dispatch({
+  type: SEND_PASSWORD_RESET_EMAIL,
+  payload: firebase.auth().sendPasswordResetEmail(emailAddress)
+}).then(() => dispatch(push('login')))

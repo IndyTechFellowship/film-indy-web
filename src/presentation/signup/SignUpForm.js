@@ -136,3 +136,4 @@ const SignUpFormFormConnected = connect(
 )(SignUpFormFormEnriched)
 
 export default SignUpFormFormConnected
+
