@@ -8,7 +8,6 @@ import { InstantSearch, Configure } from 'react-instantsearch/dom'
 import { connectAutoComplete } from 'react-instantsearch/connectors'
 import 'react-instantsearch-theme-algolia/style.css'
 
-
 // Material UI Components
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
@@ -18,6 +17,7 @@ import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover'
 import Snackbar from 'material-ui/Snackbar'
 import AutoComplete from 'material-ui/AutoComplete'
+import FlatButton from 'material-ui/FlatButton'
 
 // Material UI SVG Icons
 import SearchIcon from 'material-ui/svg-icons/action/search'
@@ -37,7 +37,6 @@ import ForgotPassword from './containers/forgotPassword/forgotPassword'
 
 // Style and images
 import './App.css'
-
 
 import Logo from './film-indy-logo.png'
 
@@ -116,7 +115,14 @@ class App extends React.Component {
               </Card>
             </div>
           }
-          iconElementRight={<Avatar className="accountIcon" src={photoURL} size={60} onClick={this.handleTouchTap} />}
+          iconElementRight={uid ? (
+            <Avatar className="accountIcon" src={photoURL} size={60} onClick={this.handleTouchTap} />
+          ) : (
+            <div>
+              <Link to="/signup"><FlatButton style={{ color: 'white' }} label="Sign Up" size={60} /> </Link>
+              <Link to="/login"><FlatButton style={{ color: 'white' }} label="Login" size={60} /> </Link>
+            </div>
+          )}
           zDepth={2}
         />
         <Popover

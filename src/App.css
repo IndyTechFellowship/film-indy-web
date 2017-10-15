@@ -42,8 +42,13 @@
 }
 .accountIcon {
     margin-right: 1em;
-    margin-top: 0.25em;
+    /*margin-top: 0.25em;*/
     cursor: pointer;
+}
+.accountLogin {
+	margin-top: 18px !important;
+	margin-right: 1em;
+	cursor: pointer;
 }
 
 .logo {
