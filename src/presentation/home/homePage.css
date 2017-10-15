@@ -1,1 +1,83 @@
+.container {
+    display: block;
+    margin: auto;
+    width: 100vw;
+    height: 90vh;
+}
+
+.wrapper {
+	position: relative;
+	display: block;
+	margin: auto;
+	width: 45%;
+	text-align: left;
+	top: 20%;
+}
+
+.header {
+	color: #38b5e6;
+	font-size: 24pt;
+	font-weight: 600;
+}
+
+.subheader {
+	font-size: 18pt;
+	font-weight: 300;
+}
+
+.searchCard {
+	position: relative;
+	display: block !important;
+	margin: auto !important;
+	top: 30%;
+	margin-top: 25px !important;
+
+}
+
+.searchIcon {
+	color: #38b5e6 !important;
+	margin-left: 1.25em;
+	float: left;
+	margin-top: 0.75em;
+}
+
+.searchButton {
+	display: inline !important;
+	float: right;
+}
+
+.explore {
+	position: relative;
+	top: 40%;
+}
+
+.categories {
+	position: relative;
+	top: 40%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-content: space-around;
+}
+
+.category-card {
+	margin: 10px;
+	width: 33% !important;
+	height: 100% !important;
+}
+
+.roles-header {
+	position: relative;
+	top: 55%;
+}
+
+.roles {
+	position: relative;
+	top: 55%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-content: space-around;
+}
+
 

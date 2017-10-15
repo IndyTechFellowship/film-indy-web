@@ -4,23 +4,17 @@ import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { InstantSearch, Configure } from 'react-instantsearch/dom'
-import { connectAutoComplete } from 'react-instantsearch/connectors'
-import 'react-instantsearch-theme-algolia/style.css'
 
 // Material UI Components
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
-import { Card } from 'material-ui/Card'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover'
 import Snackbar from 'material-ui/Snackbar'
-import AutoComplete from 'material-ui/AutoComplete'
 import FlatButton from 'material-ui/FlatButton'
 
 // Material UI SVG Icons
-import SearchIcon from 'material-ui/svg-icons/action/search'
 import AccountCircle from 'material-ui/svg-icons/action/account-circle'
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
 import CreateIcon from 'material-ui/svg-icons/social/person-add'
@@ -41,21 +35,6 @@ import './App.css'
 import Logo from './film-indy-logo.png'
 
 import * as accountActions from './redux/actions/creators/accountActions'
-
-const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
-const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
-
-
-const AutoCompleteBar = connectAutoComplete(
-  ({ hits, onItemSelected }) => (
-    <AutoComplete
-      id="autocomplete"
-      filter={AutoComplete.fuzzyFilter}
-      onNewRequest={onItemSelected}
-      dataSource={hits.map(hit => hit.roleName)}
-    />
-  )
-)
 
 class App extends React.Component {
   constructor(props) {
@@ -101,18 +80,6 @@ class App extends React.Component {
           iconElementLeft={
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
-              <Card className="searchCard" style={{ width: 400 }}>
-                <SearchIcon className="searchIcon" />
-                <InstantSearch
-                  appId={ALGOLIA_APP_ID}
-                  apiKey={ALGOLIA_SEARCH_KEY}
-                  indexName="roles"
-                >
-
-                  <Configure hitsPerPage={100} />
-                  <AutoCompleteBar onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })} />
-                </InstantSearch>
-              </Card>
             </div>
           }
           iconElementRight={uid ? (
