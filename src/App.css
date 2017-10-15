@@ -32,9 +32,10 @@
 
 /****** APP BAR STYLES ******/
 
-.raisedButton {
-    width: 200px;
+.buttons {
+  margin-top: 35px !important;
 }
+
 .accountIcon {
     margin-right: 1em;
     /*margin-top: 0.25em;*/

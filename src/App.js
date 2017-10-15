@@ -85,9 +85,9 @@ class App extends React.Component {
           iconElementRight={uid ? (
             <Avatar className="accountIcon" src={photoURL} size={60} onClick={this.handleTouchTap} />
           ) : (
-            <div>
-              <Link to="/signup"><FlatButton style={{ color: 'white' }} label="Sign Up" size={60} /> </Link>
-              <Link to="/login"><FlatButton style={{ color: 'white' }} label="Login" size={60} /> </Link>
+            <div className="buttons">
+              <Link to="/signup"><FlatButton labelStyle={{fontSize: '17px'}} style={{ color: 'white' }} label="Sign Up" size={60} /> </Link>
+              <Link to="/login"><FlatButton labelStyle={{fontSize: '17px'}} style={{ color: 'white' }} label="Login" size={60} /> </Link>
             </div>
           )}
           zDepth={2}

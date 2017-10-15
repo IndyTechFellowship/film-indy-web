@@ -21,12 +21,14 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^4.0.8",
     "react-scripts": "1.0.13",
+    "react-slick": "^0.15.4",
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.7.2",
     "redux-form": "^7.0.4",
     "redux-form-material-ui": "^4.2.0",
     "redux-promise-middleware": "^4.4.1",
     "redux-thunk": "^2.2.0",
+    "slick-carousel": "^1.8.1",
     "xlsx": "^0.11.4"
   },
   "scripts": {
