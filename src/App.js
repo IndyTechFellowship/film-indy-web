@@ -34,6 +34,7 @@ import Account from './containers/account/account'
 import EditProfile from './containers/profile/EditProfile'
 import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
+import AuthenticatedComponent from './AuthenticatedComponent'
 
 // Style and images
 import './App.css'
@@ -44,7 +45,6 @@ import * as accountActions from './redux/actions/creators/accountActions'
 
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
-
 
 const AutoCompleteBar = connectAutoComplete(
   ({ hits, onItemSelected }) => (
