@@ -27,7 +27,7 @@ import ScoutImage from './scout.jpg'
 
 
 // Material UI component imports
-import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card'
+import { Card, CardMedia, CardTitle } from 'material-ui/Card'
 import AutoComplete from 'material-ui/AutoComplete'
 import RaisedButton from 'material-ui/RaisedButton'
 
@@ -175,3 +175,4 @@ homePage.defaultProps = {
 };
 
 export default homePage
+

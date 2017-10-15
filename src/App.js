@@ -71,7 +71,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, firebase, history } = this.props
+    const { profile, auth, firebase } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     return (
