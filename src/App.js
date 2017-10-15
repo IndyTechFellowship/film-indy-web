@@ -115,11 +115,14 @@ class App extends React.Component {
               </Card>
             </div>
           }
-          iconElementRight={ uid ? (
-                  <Avatar className="accountIcon" src={photoURL} size={60} onClick={this.handleTouchTap} />
-                  ) : (
-                  <FlatButton className="accountLogin" label="Login" size={60} onClick={this.handleTouchTap} />
-                  )}
+          iconElementRight={uid ? (
+            <Avatar className="accountIcon" src={photoURL} size={60} onClick={this.handleTouchTap} />
+          ) : (
+            <div>
+              <Link to="/signup"><FlatButton style={{ color: 'white' }} label="Sign Up" size={60} /> </Link>
+              <Link to="/login"><FlatButton style={{ color: 'white' }} label="Login" size={60} /> </Link>
+            </div>
+          )}
           zDepth={2}
         />
         <Popover
