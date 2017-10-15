@@ -2,6 +2,8 @@ import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
+import { Link } from 'react-router-dom'
+
 
 // Material UI Imports
 import Avatar from 'material-ui/Avatar'
@@ -120,6 +122,7 @@ class AccountPage extends React.Component {
               <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} onClick={this.updateMessage} />
             </form>
           </div>
+<<<<<<< HEAD
         </Card>
 
         <h2 className="privacyHeader"> Profile Privacy Settings </h2>
@@ -136,6 +139,35 @@ class AccountPage extends React.Component {
                   setPublic(toggleValue, uid)
                 }}
               />
+=======
+<<<<<<< HEAD
+          <form onSubmit={handleSubmit(handleProfileChanges)}>
+            <div className="fields">
+              <div>
+                <Field
+                  name="firstName"
+                  component={renderTextField}
+                  floatingLabelText="First Name"
+                  type="text"
+                />
+              </div>
+              <div>
+                <Field
+                  name="lastName"
+                  component={renderTextField}
+                  floatingLabelText="Last Name"
+                  type="text"
+                />
+              </div>
+              <div>
+                <Field
+                  name="email"
+                  component={renderTextField}
+                  floatingLabelText="Email"
+                  type="email"
+                />
+              </div>
+>>>>>>> Add button on account
             </div>
             <div>
               Allow others to search and view my profile
@@ -185,6 +217,32 @@ class AccountPage extends React.Component {
       </div>
     )
   }
+=======
+          <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} />
+        </form>
+      </Card>
+<<<<<<< HEAD
+
+=======
+      <Link to="/resetpassword">
+        <FlatButton
+          label = "Update Password"
+          primary = {true}
+        />
+      </Link>
+>>>>>>> Add button on account
+      <Card className="passwordCard">
+        <CardTitle title="Reset Password" />
+        <Divider />
+        <ul className="fields">
+          <li><TextField hintText="New Password" floatingLabelText="Password" type="password" /></li>
+          <li><TextField hintText="Confirm Password" floatingLabelText="Confirm Password" type="password" /></li>
+        </ul>
+        <RaisedButton className="accountButton" primary label="Submit" />
+      </Card>
+    </div>
+  )
+>>>>>>> Add button on account
 }
 
 const FileUploader = props => (

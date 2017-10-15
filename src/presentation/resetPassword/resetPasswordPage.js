@@ -12,22 +12,23 @@ import FlatButton from 'material-ui/FlatButton'
 const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
   switch (errorCode) {
     case 'auth/user-not-found': return 'A valid email is required.'
-    default: return 'There was an issue processing your email. Please try again'
+    default: return 'There was an issue resetting your password. Please try again'
   }
 }
 
 const ResetPasswordPage = props => (
+
   <div >
-    <ResetPasswordForm onSubmit={values => props.sendPasswordResetEmail(values.email)} />
+    <ResetPasswordForm onSubmit={values => props.resetPassword(values.newPassword)} />
     <Snackbar
       bodyStyle={{ backgroundColor: '#F44336' }}
-      open={props.account.sendPasswordResetEmailError !== undefined}
-      message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.sendPasswordResetEmailError.code'))}
+      open={props.account.resetPasswordError !== undefined}
+      message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.resetPasswordError.code'))}
       autoHideDuration={4000}
     />
-    <Link to="/login">
+    <Link to="/account">
       <FlatButton
-        label = "Return to Log In"
+        label = "Return to Account Settings"
         primary = {true}
       />
     </Link>
@@ -36,12 +37,12 @@ const ResetPasswordPage = props => (
 
 ResetPasswordPage.propTypes = {
   account: PropTypes.shape({
-    sendPasswordResetEmailError: PropTypes.shape({
+    resetPasswordError: PropTypes.shape({
       code: PropTypes.string,
       message: PropTypes.string,
     }),
   }),
-  sendPasswordResetEmail: PropTypes.func.isRequired,
+  resetPassword: PropTypes.func.isRequired,
 }
 
 ResetPasswordPage.defaultProps = {

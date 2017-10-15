@@ -8,15 +8,15 @@ const validate = (values) => {
   const errors = {}
 
   if (!values.password || !values.confirmPassword) {
-    if (!values.password) {
-      errors.password = 'You forgot to enter a password'
+    if (!values.newPassword) {
+      errors.newPassword = 'You forgot to enter a password'
     }
-    if (!values.confirmPassword) {
-      errors.confirmPassword = 'You forgot to confirm your password'
+    if (!values.confirmNewPassword) {
+      errors.confirmNewPassword = 'You forgot to confirm your password'
     }
   }
-  if (values.password && values.confirmPassword && !(values.password === values.confirmPassword)) {
-    errors.confirmPassword = 'Passwords do not match'
+  if (values.newPassword && values.confirmNewPassword && !(values.newPassword === values.confirmNewPassword)) {
+    errors.confirmNewPassword = 'Passwords do not match'
   }
 
   return errors
@@ -32,7 +32,7 @@ const ResetPasswordForm = (props) => {
           component={TextField}
           hintText="New Password"
           floatingLabelText="New Password"
-          type="newPassword"
+          type="password"
         />
       </div>
       <div>
@@ -41,7 +41,7 @@ const ResetPasswordForm = (props) => {
           component={TextField}
           hintText="Confirm New Password"
           floatingLabelText="Confirm New Password"
-          type="newPassword"
+          type="password"
         />
       </div>
       <RaisedButton type="submit">Reset Password</RaisedButton>

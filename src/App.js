@@ -326,7 +326,11 @@ class App extends React.Component {
         <Route path="/search" component={Search} />
         <Route exact path="/forgotpassword" component={ForgotPassword} />
         <Route exact path="/profile/edit" component={EditProfile} />
+<<<<<<< HEAD
         <Route path="/profile" component={ViewProfile} />
+=======
+        <Route exact path="/resetpassword" component={ResetPassword} />
+>>>>>>> Add button on account
       </div>
     )
   }
