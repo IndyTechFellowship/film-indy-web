@@ -32,7 +32,7 @@ firebase.database().ref('/roles').once('value').then((snapshot) => {
     const profilesToIndex = Object.keys(profiles).map((id) => {
       const profile = profiles[id]
       const rolesNames = profile.roles.map(roleId => roles[roleId].roleName)
-      return { objectID: id, roles: rolesNames }
+      return { objectID: id, roles: rolesNames, public: true }
     })
     return profilesIndex.addObjects(profilesToIndex)
   })
