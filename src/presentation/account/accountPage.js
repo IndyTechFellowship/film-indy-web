@@ -10,6 +10,7 @@ import Divider from 'material-ui/Divider'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
+import Toggle from 'material-ui/Toggle'
 
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera'
 import UploadIcon from 'material-ui/svg-icons/file/file-upload'
@@ -46,15 +47,30 @@ const validate = (values) => {
 
 // Making component const throws an error that it is read-only
 const AccountPage = (props) => {
-  const { handleSubmit, pristine, submitting, handleProfileChanges, profile, firebase, auth } = props
+  const { handleSubmit, pristine, submitting, handleProfileChanges, profile, firebase, auth, setPublic } = props
   const photoURL = get(profile, 'photoURL', '')
   const uid = get(auth, 'uid')
+  const isPublic = get(profile, 'public', false)
 
   return (
     <div>
       <h1>Account Settings</h1>
       <Card className="profileCard" >
-        <CardTitle title="Your Profile" />
+        <CardTitle title="Your Profile">
+          <div style={{ maxWidth: 150 }}>
+            <Toggle
+              label="Public"
+              style={{ marginLeft: 265, marginTop: 20 }}
+              toggled={isPublic}
+              onToggle={(event, toggleValue) => {
+                firebase.updateProfile({
+                  public: toggleValue
+                })
+                setPublic(toggleValue, uid)
+              }}
+            />
+          </div>
+        </CardTitle>
         <Divider />
         <div className="imageWrapper">
           <Avatar className="accountImage" src={photoURL} size={150} />
@@ -151,6 +167,7 @@ AccountPage.propTypes = {
     updateProfile: PropTypes.func.isRequired,
     uploadFile: PropTypes.func.isRequired
   }).isRequired,
+  setPublic: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired
 }
 

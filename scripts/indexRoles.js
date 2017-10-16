@@ -41,7 +41,7 @@ firebase.database().ref('/roles').once('value').then((snapshot) => {
       const accounts = accountSnapshot.val()
       const namesToIndex = Object.keys(accounts).map((id) => {
         const account = accounts[id]
-        return { firstName: account.firstName, lastName: account.lastName, objectID: id }
+        return { firstName: account.firstName, lastName: account.lastName, objectID: id, public: true }
       })
       return nameIndex.addObjects(namesToIndex)
     }))
