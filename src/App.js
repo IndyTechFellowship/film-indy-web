@@ -34,7 +34,6 @@ import Account from './containers/account/account'
 import EditProfile from './containers/profile/EditProfile'
 import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
-import AuthenticatedComponent from './AuthenticatedComponent'
 
 // Style and images
 import './App.css'
