@@ -29,11 +29,11 @@ import EditIcon from 'material-ui/svg-icons/content/create'
 // Page components
 import Home from './containers/home'
 import Login from './containers/login/login'
-import SignUp from './containers/signUp'
 import Account from './containers/account/account'
 import EditProfile from './containers/profile/EditProfile'
 import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
+import SignUpForm from './presentation/signup/SignUpForm'
 
 // Style and images
 import './App.css'
@@ -92,7 +92,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, firebase, history } = this.props
+    const { profile, auth, firebase, history, signUp, submitSignUp } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     return (
@@ -118,8 +118,13 @@ class App extends React.Component {
           iconElementRight={uid ? (
             <Avatar className="accountIcon" src={photoURL} size={60} onClick={this.handleTouchTap} />
           ) : (
-            <div>
-              <Link to="/signup"><FlatButton style={{ color: 'white' }} label="Sign Up" size={60} /> </Link>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <SignUpForm
+                onSubmit={(values) => {
+                  signUp(values.firstName, values.lastName, values.photoFile, values.email, values.password)
+                }}
+                sendSubmit={submitSignUp}
+              />
               <Link to="/login"><FlatButton style={{ color: 'white' }} label="Login" size={60} /> </Link>
             </div>
           )}
@@ -156,7 +161,6 @@ class App extends React.Component {
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/account" component={Account} />
-        <Route exact path="/signup" component={SignUp} />
         <Route path="/search" component={Search} />
         <Route exact path="/forgotpassword" component={ForgotPassword} />
         <Route exact path="/profile/edit" component={EditProfile} />
@@ -173,6 +177,8 @@ App.propTypes = {
     uid: PropTypes.string
   }).isRequired,
   signOut: PropTypes.func.isRequired,
+  signUp: PropTypes.func.isRequired,
+  submitSignUp: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func
   }).isRequired
