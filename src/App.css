@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700');
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
 
 * { font-family: 'Roboto'; }
 
@@ -30,21 +30,25 @@
   font-size: large;
 }
 
-/****** APP BAR STYLES ******/
-
-.buttons {
-  margin-top: 35px !important;
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
+/****** APP BAR STYLES ******/
+
+.raisedButton {
+    width: 200px;
+}
 .accountIcon {
     margin-right: 1em;
     /*margin-top: 0.25em;*/
     cursor: pointer;
 }
 .accountLogin {
-	margin-top: 18px !important;
-	margin-right: 1em;
-	cursor: pointer;
+  margin-top: 18px !important;
+  margin-right: 1em;
+  cursor: pointer;
 }
 
 .logo {
@@ -52,4 +56,29 @@
     width: 3.5em;
     padding: 5px;
     cursor: pointer;
+}
+
+.mainContent {
+    display: block;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+}
+
+.menuSearchCard {
+  display: inline-block !important;
+  margin: auto !important;
+  margin-left: 4em !important;
+  margin-bottom: 1em !important;
+}
+
+.searchIcon {
+  color: #38b5e6 !important;
+  margin-left: 1.25em;
+  float: left;
+  margin-top: 0.75em;
+}
+
+.searchField {
+  left: -2em;
 }
