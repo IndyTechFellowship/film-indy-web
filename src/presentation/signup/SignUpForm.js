@@ -2,7 +2,8 @@ import React from 'react'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
 import PropTypes from 'prop-types'
 import { TextField } from 'redux-form-material-ui'
-import RaisedButton from 'material-ui/RaisedButton'
+import Dialog from 'material-ui/Dialog'
+import FlatButton from 'material-ui/FlatButton'
 import { connect } from 'react-redux'
 import './signUp.css'
 
@@ -56,6 +57,102 @@ const FileInput = ({
   </div>
 )
 
+class SignUpForm extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { open: false }
+    this.handleClose = this.handleClose.bind(this)
+    this.handleOpen = this.handleOpen.bind(this)
+  }
+  handleOpen() {
+    this.setState({ open: true })
+  }
+  handleClose() {
+    this.setState({ open: false })
+  }
+  render() {
+    const { handleSubmit, error, submitting, pristine, sendSubmit } = this.props
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onClick={this.handleClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary
+        disabled={error || pristine || submitting}
+        onClick={() => {
+          sendSubmit()
+        }}
+      />
+    ]
+    return (
+      <div>
+        <FlatButton label="Sign Up" style={{ color: 'white' }} onClick={this.handleOpen} />
+        <Dialog
+          title="Sign Up"
+          actions={actions}
+          modal
+          open={this.state.open}
+          autoScrollBodyContent
+        >
+          <form
+            onSubmit={handleSubmit}
+          >
+            <div>
+              <Field
+                name="firstName"
+                component={TextField}
+                floatingLabelText="First Name"
+              />
+            </div>
+            <div>
+              <Field
+                name="lastName"
+                component={TextField}
+                floatingLabelText="Last Name"
+              />
+            </div>
+            <br />
+            <div>
+              <Field
+                name="photoFile"
+                component={FileInput}
+                type="file"
+              />
+            </div>
+            <div>
+              <Field
+                name="email"
+                component={TextField}
+                floatingLabelText="Email"
+                type="email"
+              />
+            </div>
+            <div>
+              <Field
+                name="password"
+                component={TextField}
+                floatingLabelText="Password"
+                type="password"
+              />
+            </div>
+            <div id="confirmPasswordInput">
+              <Field
+                name="confirmPassword"
+                component={TextField}
+                floatingLabelText="Confirm Password"
+                type="password"
+              />
+            </div>
+          </form>
+        </Dialog>
+      </div>
+    )
+  }
+}
+/*
 const SignUpForm = (props) => {
   const { handleSubmit, submitting } = props
   return (
@@ -112,10 +209,12 @@ const SignUpForm = (props) => {
     </form>
   )
 }
+*/
 
 
 SignUpForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired
+  handleSubmit: PropTypes.func.isRequired,
+  sendSubmit: PropTypes.func.isRequired
 }
 
 const SignUpFormFormEnriched = reduxForm({
