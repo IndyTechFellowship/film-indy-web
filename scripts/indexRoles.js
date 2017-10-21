@@ -32,7 +32,7 @@ firebase.database().ref('/roles').once('value').then((snapshot) => {
     const profilesToIndex = Object.keys(profiles).map((id) => {
       const profile = profiles[id]
       const rolesNames = profile.roles.map(roleId => roles[roleId].roleName)
-      return { objectID: id, roles: rolesNames }
+      return { objectID: id, roles: rolesNames, public: true }
     })
     return profilesIndex.addObjects(profilesToIndex)
   })
@@ -41,7 +41,7 @@ firebase.database().ref('/roles').once('value').then((snapshot) => {
       const accounts = accountSnapshot.val()
       const namesToIndex = Object.keys(accounts).map((id) => {
         const account = accounts[id]
-        return { firstName: account.firstName, lastName: account.lastName, objectID: id }
+        return { firstName: account.firstName, lastName: account.lastName, objectID: id, public: true }
       })
       return nameIndex.addObjects(namesToIndex)
     }))

@@ -123,7 +123,8 @@ const addUserMigrationToFirebase = (addRolesPromises, usersToImport) => {
           firstName,
           lastName,
           phone,
-          email
+          email,
+          public: true
         }).then(() => userProfileRef.child(emailKey).set({
           roles
         }))
