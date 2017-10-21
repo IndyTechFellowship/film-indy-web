@@ -91,6 +91,8 @@ class SignUpForm extends React.Component {
       <div>
         <FlatButton label="Sign Up" style={{ color: 'white' }} onClick={this.handleOpen} />
         <Dialog
+          contentStyle={{ width: '100%', marginBottom: 300 }}
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           title="Sign Up"
           actions={actions}
           modal
