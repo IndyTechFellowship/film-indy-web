@@ -45,7 +45,6 @@ import * as accountActions from './redux/actions/creators/accountActions'
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
-
 const AutoCompleteBar = connectAutoComplete(
   ({ hits, onItemSelected }) => (
     <AutoComplete
