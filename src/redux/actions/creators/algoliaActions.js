@@ -1,7 +1,7 @@
 import * as firebase from 'firebase'
 import algoliasearch from 'algoliasearch'
 import { uniq } from 'lodash'
-import { SEARCH_INDEX, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE, MIGRATE_NAME, ADD_TO_NAME_INDEX } from '../types/algoliaActionsTypes'
+import { SEARCH_INDEX, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE, MIGRATE_NAME, ADD_TO_NAME_INDEX, CREATE_PROFILE_RECORD, SET_PUBLIC } from '../types/algoliaActionsTypes'
 
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 const ALGOLA_ADMIN_KEY = process.env.REACT_APP_ALGOLIA_ADMIN_KEY
@@ -52,17 +52,13 @@ export const searchForCrew = query => (dispatch) => {
 
 export const migrateProfile = (uid, email) => (dispatch) => {
   const profileIndex = algoliaClient.initIndex('profiles')
-  const nameIndex = algoliaClient.initIndex('names')
-  const updatePromise = profileIndex.getObject(email).then((err, content) => profileIndex.addObject({
-    ...content,
-    objectID: uid
-  }))
-    .then(() => profileIndex.deleteObject(email))
-    .then(() => nameIndex.getObject(email).then((err, content) => nameIndex.addObject({
-      ...content,
-      objectID: uid
-    })))
-    .then(() => nameIndex.deleteObject(email))
+  const updatePromise =
+  profileIndex.getObject(email)
+    .then(content => profileIndex.deleteObject(email)
+      .then(() => profileIndex.addObject({
+        ...content,
+        objectID: uid
+      })))
   return dispatch({
     type: MIGRATE_PROFILE,
     payload: updatePromise
@@ -71,11 +67,11 @@ export const migrateProfile = (uid, email) => (dispatch) => {
 
 export const migrateName = (uid, email, namesObject) => (dispatch) => {
   const nameIndex = algoliaClient.initIndex('names')
-  const updatePromise = nameIndex.getObject(email).then((err, content) => nameIndex.addObject({
+  const updatePromise = nameIndex.getObject(email).then(content => nameIndex.deleteObject(email).then(() => nameIndex.addObject({
     ...content,
     ...namesObject,
     objectID: uid
-  })).then(() => nameIndex.deleteObject(email))
+  })))
   return dispatch({
     type: MIGRATE_NAME,
     payload: updatePromise
@@ -90,7 +86,29 @@ export const addToNameIndex = (uid, namesObject) => dispatch => dispatch({
   })
 })
 
+export const createProfileRecord = (uid, profile) => dispatch => dispatch({
+  type: CREATE_PROFILE_RECORD,
+  payload: algoliaClient.initIndex('profiles').addObject({
+    ...profile,
+    objectID: uid
+  })
+})
+
 export const partialUpdateAlgoliaObject = (index, updateObject) => dispatch => dispatch({
   type: PARTIAL_UPDATE_OBJECT,
   payload: algoliaClient.initIndex(index).partialUpdateObject(updateObject)
 })
+
+export const setPublic = (isPublic, uid) => (dispatch) => {
+  const nameIndex = algoliaClient.initIndex('names')
+  const profileIndex = algoliaClient.initIndex('profiles')
+  const promise = nameIndex.partialUpdateObject({
+    public: isPublic,
+    objectID: uid
+  })
+    .then(() => profileIndex.partialUpdateObject({ public: isPublic, objectID: uid }))
+  return dispatch({
+    type: SET_PUBLIC,
+    payload: promise
+  })
+}
