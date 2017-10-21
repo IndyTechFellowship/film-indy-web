@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { InstantSearch, Configure } from 'react-instantsearch/dom'
+import { InstantSearch } from 'react-instantsearch/dom'
 import { connectAutoComplete } from 'react-instantsearch/connectors'
 import 'react-instantsearch-theme-algolia/style.css'
 
@@ -18,6 +18,7 @@ import Popover from 'material-ui/Popover'
 import Snackbar from 'material-ui/Snackbar'
 import AutoComplete from 'material-ui/AutoComplete'
 import FlatButton from 'material-ui/FlatButton'
+import RaisedButton from 'material-ui/RaisedButton'
 
 // Material UI SVG Icons
 import SearchIcon from 'material-ui/svg-icons/action/search'
@@ -46,12 +47,19 @@ const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
 const AutoCompleteBar = connectAutoComplete(
-  ({ hits, onItemSelected }) => (
+  ({ hits, onItemSelected, onUpdateInput }) => (
     <AutoComplete
+      onUpdateInput={onUpdateInput}
       id="autocomplete"
-      filter={AutoComplete.fuzzyFilter}
+      maxSearchResults={10}
+      filter={(searchText, key) => {
+        if (searchText === '') {
+          return false
+        }
+        return AutoComplete.fuzzyFilter(searchText, key)
+      }}
       onNewRequest={onItemSelected}
-      dataSource={hits.map(hit => hit.roleName)}
+      dataSource={hits.sort((a, b) => a.roleName.localeCompare(b.roleName)).map(hit => hit.roleName)}
     />
   )
 )
@@ -101,16 +109,30 @@ class App extends React.Component {
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
               <Card className="searchCard" style={{ width: 400 }}>
-                <SearchIcon className="searchIcon" />
-                <InstantSearch
-                  appId={ALGOLIA_APP_ID}
-                  apiKey={ALGOLIA_SEARCH_KEY}
-                  indexName="roles"
-                >
-
-                  <Configure hitsPerPage={100} />
-                  <AutoCompleteBar onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })} />
-                </InstantSearch>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <SearchIcon className="searchIcon" />
+                  <InstantSearch
+                    appId={ALGOLIA_APP_ID}
+                    apiKey={ALGOLIA_SEARCH_KEY}
+                    indexName="roles"
+                  >
+                    <AutoCompleteBar
+                      onUpdateInput={query => this.searchQuery = query}
+                      onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })}
+                    />
+                  </InstantSearch>
+                  <RaisedButton
+                    label="Search"
+                    labelColor="#fff"
+                    backgroundColor={'#38b5e6'}
+                    style={{ height: 30, marginTop: 10, marginLeft: 5 }}
+                    onClick={() => {
+                      if (this.searchQuery !== '') {
+                        history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}` })
+                      }
+                    }}
+                  />
+                </div>
               </Card>
             </div>
           }

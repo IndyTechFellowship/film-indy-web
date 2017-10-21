@@ -33,7 +33,7 @@ export const searchForCrew = query => (dispatch) => {
   const indexNames = ['profiles', 'names']
   const searchPromises = indexNames.map((indexName) => {
     const index = algoliaClient.initIndex(indexName)
-    return index.search({ query }).then(results => ({ indexName, results }))
+    return index.search({ query, facetFilters: [['public:true']] }).then(results => ({ indexName, results }))
   })
   return dispatch({
     type: SEARCH_FOR_CREW,
