@@ -57,7 +57,7 @@ const AccountPage = (props) => {
         <CardTitle title="Your Profile" />
         <Divider />
         <div className="imageWrapper">
-          <Avatar className="accountImage" src={photoURL} size={150} />
+          <Avatar className="accountImage avatar" src={photoURL} size={150} />
           <CameraIcon className="cameraIcon" color="white" />
           <FlatButton className="imageText" icon={<UploadIcon />} label="Upload Picture" labelPosition="before" containerElement="label">
             <FileUploader uid={uid} uploadFile={firebase.uploadFile} updateProfile={firebase.updateProfile} />
