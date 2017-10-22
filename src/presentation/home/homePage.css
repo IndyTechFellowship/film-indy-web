@@ -54,9 +54,8 @@
 	position: relative;
 	display: block !important;
 	margin: auto !important;
+	margin-top: 10px !important;
 	margin-bottom: 25px !important;
-	margin-left: 25px !important;
-
 }
 
 .searchIcon {
@@ -64,6 +63,10 @@
 	margin-left: .50em;
 	float: left;
 	margin-top: 0.75em;
+}
+
+.searchField {
+	padding-left: 10px;
 }
 
 .searchButton {
