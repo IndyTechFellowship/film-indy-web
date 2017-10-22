@@ -42,7 +42,8 @@ Account.propTypes = {
     uid: PropTypes.string
   }).isRequired,
   partialUpdateAlgoliaObject: PropTypes.func.isRequired,
-  updateAuth: PropTypes.func.isRequired
+  updateAuth: PropTypes.func.isRequired,
+  sendPasswordResetEmail: PropTypes.func.isRequired
 }
 
 Account.defaultProps = {

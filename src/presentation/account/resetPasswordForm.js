@@ -1,10 +1,8 @@
 import React from 'react'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, reset } from 'redux-form'
 import PropTypes from 'prop-types'
 import { TextField } from 'redux-form-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
-import { get } from 'lodash'
-
 
 const validate = (values) => {
   const errors = {}
@@ -24,9 +22,10 @@ const validate = (values) => {
   return errors
 }
 
+const afterSubmit = (result, dispatch) => {dispatch(reset('resetPassword'))}
+
 const ResetPasswordForm = (props) => {
-  const { handleSubmit, auth } = props
-  const uid = get(auth, 'uid')
+  const { handleSubmit, pristine, submitting } = props
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -47,7 +46,7 @@ const ResetPasswordForm = (props) => {
           type="password"
         />
       </div>
-      <RaisedButton type="submit" >Reset Password</RaisedButton>
+      <RaisedButton type="submit" label="submit" primary disabled ={pristine || submitting}></RaisedButton>
     </form>
   )
 };
@@ -61,7 +60,8 @@ ResetPasswordForm.propTypes = {
 
 const ResetPasswordFormEnriched = reduxForm({
   form: 'resetPassword',
-  validate
+  validate,
+  onSubmitSuccess: afterSubmit,
 })(ResetPasswordForm);
 
 export default ResetPasswordFormEnriched

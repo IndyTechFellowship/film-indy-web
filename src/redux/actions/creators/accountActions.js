@@ -5,7 +5,6 @@ import { submit } from 'redux-form'
 import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD } from '../types/accountActionTypes'
 import * as algoliaActions from './algoliaActions'
 
-
 /* this an example of how to chain actions together.
  This is a function which takes username and email and and returns a function with the argument of dispatch
  which can be used inside the function to dispatch events.
@@ -143,4 +142,4 @@ export const submitVendorCreate = () => dispatch => dispatch(submit('addVendor')
 export const resetPassword = newPassword => dispatch => dispatch({
   type: RESET_PASSWORD,
   payload: firebase.auth().currentUser.updatePassword(newPassword)
-}).then(() => dispatch(push('/account')))
+})

@@ -2,7 +2,7 @@ import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
-import { Link } from 'react-router-dom'
+import ResetPasswordForm from './resetPasswordForm'
 
 
 // Material UI Imports
@@ -14,6 +14,8 @@ import Chip from 'material-ui/Chip'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import Toggle from 'material-ui/Toggle'
+import Snackbar from 'material-ui/Snackbar'
+
 
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera'
 import UploadIcon from 'material-ui/svg-icons/file/file-upload'
@@ -48,6 +50,14 @@ const validate = (values) => {
     }
   }
   return errors
+}
+
+const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
+  switch (errorCode) {
+    case 'auth/weak-password': return 'Password is not Strong Enough'
+    case 'auth/requires-recent-login': return 'Password Reset requires a more recent login'
+    default: return 'There was an issue resetting your password. Please try again'
+  }
 }
 
 // Making component const throws an error that it is read-only
@@ -222,20 +232,16 @@ class AccountPage extends React.Component {
         </form>
       </Card>
 
-      <Link to="/resetpassword">
-        <FlatButton
-          label = "Update Password"
-          primary = {true}
-        />
-      </Link>
-      <Card className="passwordCard">
-        <CardTitle title="Reset Password" />
+      <Card className = "passwordCard">
+        <CardTitle title="Reset Password"/>
         <Divider />
-        <ul className="fields">
-          <li><TextField hintText="New Password" floatingLabelText="Password" type="password" /></li>
-          <li><TextField hintText="Confirm Password" floatingLabelText="Confirm Password" type="password" /></li>
-        </ul>
-        <RaisedButton className="accountButton" primary label="Submit" disabled={!uid} />
+        <ResetPasswordForm onSubmit={values => props.resetPassword(values.newPassword)} />
+        <Snackbar
+          bodyStyle={{ backgroundColor: '#F44336' }}
+          open={props.account.resetPasswordError !== undefined}
+          message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.resetPasswordError.code'))}
+          autoHideDuration={4000}
+        />
       </Card>
     </div>
   )
@@ -287,6 +293,7 @@ AccountPage.propTypes = {
     uploadFile: PropTypes.func.isRequired
   }).isRequired,
   setPublic: PropTypes.func.isRequired,
+<<<<<<< HEAD
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   handleProfileChanges: PropTypes.func.isRequired,
@@ -304,6 +311,16 @@ AccountPage.defaultProps = {
     creator: PropTypes.string,
     name: PropTypes.string
   }))
+=======
+  handleSubmit: PropTypes.func.isRequired,
+  account: PropTypes.shape({
+    resetPasswordError: PropTypes.shape({
+      code: PropTypes.string,
+      message: PropTypes.string,
+    }),
+  }),
+  resetPassword: PropTypes.func.isRequired,
+>>>>>>> Reset password and reset form
 }
 
 const AccountPageFormEnriched = reduxForm({
