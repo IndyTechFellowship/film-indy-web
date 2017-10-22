@@ -42,7 +42,7 @@
 }
 .accountIcon {
     margin-right: 1em;
-    /*margin-top: 0.25em;*/
+    margin-top: 0.25em;
     cursor: pointer;
 }
 .accountLogin {
@@ -77,4 +77,14 @@
   margin-left: 1.25em;
   float: left;
   margin-top: 0.75em;
+}
+
+.searchField {
+  left: -2em;
+}
+
+/* prevents Avatar component images from stretching */
+.avatar {
+  object-fit: cover;
+  border: 0;
 }

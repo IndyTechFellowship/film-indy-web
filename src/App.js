@@ -101,7 +101,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, firebase, history, location, signUp, submitSignUp } = this.props
+    const { profile, auth, firebase, history, signUp, submitSignUp, location } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     return (
@@ -141,7 +141,7 @@ class App extends React.Component {
             </div>
           }
           iconElementRight={uid ? (
-            <Avatar className="accountIcon" src={photoURL} size={60} onClick={this.handleTouchTap} />
+            <Avatar className="accountIcon avatar" src={photoURL} size={60} onClick={this.handleTouchTap} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <SignUpForm
