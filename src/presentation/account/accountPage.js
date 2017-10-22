@@ -79,21 +79,23 @@ class AccountPage extends React.Component {
       <div>
         <h1>Account Settings</h1>
         <Card className="profileCard" >
-          <CardTitle title="Your Profile">
-            <div style={{ maxWidth: 150, marginLeft: 125 }}>
-              <Toggle
-                label="Public"
-                style={{ marginLeft: '2.5em', marginTop: 20 }}
-                toggled={isPublic}
-                onToggle={(event, toggleValue) => {
-                  firebase.updateProfile({
-                    public: toggleValue
-                  })
-                  setPublic(toggleValue, uid)
-                }}
-              />
-            </div>
-          </CardTitle>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <CardTitle title="Your Profile">
+              <div style={{ width: '10%' }}>
+                <Toggle
+                  label="Public"
+                  style={{ marginLeft: '2.5em', marginTop: 20 }}
+                  toggled={isPublic}
+                  onToggle={(event, toggleValue) => {
+                    firebase.updateProfile({
+                      public: toggleValue
+                    })
+                    setPublic(toggleValue, uid)
+                  }}
+                />
+              </div>
+            </CardTitle>
+          </div>
           <Divider />
           <div className="imageWrapper">
             <Avatar className="accountImage avatar" src={photoURL} size={150} />
