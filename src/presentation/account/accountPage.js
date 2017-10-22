@@ -163,13 +163,16 @@ class AccountPage extends React.Component {
           onRequestClose={this.handleUpdateClose}
         />
 
-        <h2 className="resetHeader"> Change My Password </h2>
         <Card className="passwordCard">
-          <ul className="fields">
-            <li><TextField hintText="New Password" floatingLabelText="Password" type="password" /></li>
-            <li><TextField hintText="Confirm Password" floatingLabelText="Confirm Password" type="password" /></li>
-          </ul>
-          <RaisedButton className="accountButton" primary label="Submit" />
+          <CardTitle title="Reset Password" />
+          <Divider />
+          <ResetPasswordForm onSubmit={values => props.resetPassword(values.newPassword)} />
+          <Snackbar
+            bodyStyle={{ backgroundColor: '#F44336' }}
+            open={props.account.resetPassword !== undefined}
+            message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.resetPasswordError.code'))}
+            autoHideDuration={4000}
+          />
         </Card>
         <h2 className="resetHeader">Vendors</h2>
         <Card className="passwordCard">
@@ -197,26 +200,9 @@ class AccountPage extends React.Component {
       </div>
     )
   }
-=======
-          <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} />
-        </form>
-      </Card>
-
-      <Card className = "passwordCard">
-        <CardTitle title="Reset Password"/>
-        <Divider />
-        <ResetPasswordForm onSubmit={values => props.resetPassword(values.newPassword)} />
-        <Snackbar
-          bodyStyle={{ backgroundColor: '#F44336' }}
-          open={props.account.resetPasswordError !== undefined}
-          message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.resetPasswordError.code'))}
-          autoHideDuration={4000}
-        />
-      </Card>
-    </div>
-  )
->>>>>>> Add button on account
 }
+=======
+>>>>>>> nope
 }
 
 const FileUploader = props => (
