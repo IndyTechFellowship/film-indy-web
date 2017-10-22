@@ -98,7 +98,8 @@ class App extends React.Component {
 
   signOutMessage() {
     this.setState({
-      signedOut: true
+      signedOut: true,
+      open: false
     })
   }
 
