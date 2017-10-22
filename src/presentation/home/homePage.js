@@ -42,6 +42,7 @@ const AutoCompleteBar = connectAutoComplete(
     <AutoComplete
       className="searchField"
       fullWidth
+      hintText="Search our database..."
       style={{ width: '40em' }}
       onUpdateInput={onUpdateInput}
       id="autocomplete"

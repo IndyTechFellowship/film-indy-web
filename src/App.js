@@ -51,6 +51,7 @@ const AutoCompleteBar = connectAutoComplete(
   ({ hits, onItemSelected, onUpdateInput }) => (
     <AutoComplete
       className="searchField"
+      hintText="Search our database..."
       onUpdateInput={onUpdateInput}
       id="autocomplete"
       maxSearchResults={10}
@@ -111,7 +112,7 @@ class App extends React.Component {
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
               { location.pathname !== '/' &&
-              <Card className="searchCard" style={{ width: 400 }}>
+              <Card className="menuSearchCard" style={{ width: 420 }}>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                   <SearchIcon className="searchIcon" />
                   <InstantSearch
@@ -128,7 +129,7 @@ class App extends React.Component {
                     label="Search"
                     labelColor="#fff"
                     backgroundColor={'#38b5e6'}
-                    style={{ height: 30, marginTop: 10, marginLeft: 5 }}
+                    style={{ height: 30, marginTop: 10, marginLeft: 30 }}
                     onClick={() => {
                       if (this.searchQuery !== '') {
                         history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}` })
@@ -143,14 +144,14 @@ class App extends React.Component {
           iconElementRight={uid ? (
             <Avatar className="accountIcon" src={photoURL} size={60} onClick={this.handleTouchTap} />
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
               <SignUpForm
                 onSubmit={(values) => {
                   signUp(values.firstName, values.lastName, values.photoFile, values.email, values.password)
                 }}
                 sendSubmit={submitSignUp}
               />
-              <Link to="/login"><FlatButton style={{ color: 'white' }} label="Login" size={60} /> </Link>
+              <Link to="/login"><FlatButton style={{ color: 'white' }} label="Login" labelStyle={{fontSize: '12pt'}} size={60} /> </Link>
             </div>
           )}
           zDepth={2}
