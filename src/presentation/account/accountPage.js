@@ -132,7 +132,6 @@ class AccountPage extends React.Component {
               <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} onClick={this.updateMessage} />
             </form>
           </div>
-<<<<<<< HEAD
         </Card>
 
         <h2 className="privacyHeader"> Profile Privacy Settings </h2>
@@ -149,35 +148,6 @@ class AccountPage extends React.Component {
                   setPublic(toggleValue, uid)
                 }}
               />
-=======
-<<<<<<< HEAD
-          <form onSubmit={handleSubmit(handleProfileChanges)}>
-            <div className="fields">
-              <div>
-                <Field
-                  name="firstName"
-                  component={renderTextField}
-                  floatingLabelText="First Name"
-                  type="text"
-                />
-              </div>
-              <div>
-                <Field
-                  name="lastName"
-                  component={renderTextField}
-                  floatingLabelText="Last Name"
-                  type="text"
-                />
-              </div>
-              <div>
-                <Field
-                  name="email"
-                  component={renderTextField}
-                  floatingLabelText="Email"
-                  type="email"
-                />
-              </div>
->>>>>>> Add button on account
             </div>
             <div>
               Allow others to search and view my profile
@@ -293,7 +263,6 @@ AccountPage.propTypes = {
     uploadFile: PropTypes.func.isRequired
   }).isRequired,
   setPublic: PropTypes.func.isRequired,
-<<<<<<< HEAD
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   handleProfileChanges: PropTypes.func.isRequired,
@@ -311,16 +280,6 @@ AccountPage.defaultProps = {
     creator: PropTypes.string,
     name: PropTypes.string
   }))
-=======
-  handleSubmit: PropTypes.func.isRequired,
-  account: PropTypes.shape({
-    resetPasswordError: PropTypes.shape({
-      code: PropTypes.string,
-      message: PropTypes.string,
-    }),
-  }),
-  resetPassword: PropTypes.func.isRequired,
->>>>>>> Reset password and reset form
 }
 
 const AccountPageFormEnriched = reduxForm({
