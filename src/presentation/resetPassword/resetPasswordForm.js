@@ -3,6 +3,8 @@ import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 import { TextField } from 'redux-form-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
+import { get } from 'lodash'
+
 
 const validate = (values) => {
   const errors = {}
@@ -23,7 +25,8 @@ const validate = (values) => {
 }
 
 const ResetPasswordForm = (props) => {
-  const { handleSubmit } = props;
+  const { handleSubmit, auth } = props
+  const uid = get(auth, 'uid')
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -44,13 +47,17 @@ const ResetPasswordForm = (props) => {
           type="password"
         />
       </div>
-      <RaisedButton type="submit">Reset Password</RaisedButton>
+      <RaisedButton type="submit" >Reset Password</RaisedButton>
     </form>
   )
 };
 ResetPasswordForm.propTypes = {
+  auth: PropTypes.shape({
+    uid: PropTypes.string,
+  }).isRequired,
   handleSubmit: PropTypes.func.isRequired,
 };
+
 
 const ResetPasswordFormEnriched = reduxForm({
   form: 'resetPassword',

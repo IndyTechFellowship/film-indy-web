@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import * as accountActions from '../../redux/actions/creators/accountActions'
 import ResetPasswordPage from '../../presentation/resetPassword/resetPasswordPage'
 
+
 class ResetPassword extends React.Component {
   render() {
     return (

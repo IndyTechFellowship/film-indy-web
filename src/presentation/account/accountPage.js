@@ -221,16 +221,13 @@ class AccountPage extends React.Component {
           <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} />
         </form>
       </Card>
-<<<<<<< HEAD
 
-=======
       <Link to="/resetpassword">
         <FlatButton
           label = "Update Password"
           primary = {true}
         />
       </Link>
->>>>>>> Add button on account
       <Card className="passwordCard">
         <CardTitle title="Reset Password" />
         <Divider />
@@ -238,7 +235,7 @@ class AccountPage extends React.Component {
           <li><TextField hintText="New Password" floatingLabelText="Password" type="password" /></li>
           <li><TextField hintText="Confirm Password" floatingLabelText="Confirm Password" type="password" /></li>
         </ul>
-        <RaisedButton className="accountButton" primary label="Submit" />
+        <RaisedButton className="accountButton" primary label="Submit" disabled={!uid} />
       </Card>
     </div>
   )
