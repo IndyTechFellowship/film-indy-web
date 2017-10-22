@@ -79,10 +79,6 @@
   margin-top: 0.75em;
 }
 
-.searchField {
-  left: -2em;
-}
-
 /* prevents Avatar component images from stretching */
 .avatar {
   object-fit: cover;
