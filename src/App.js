@@ -42,7 +42,7 @@ import SignInForm from './presentation/login/SignInForm'
 import ResetPassword from './containers/resetPassword/resetPassword'
 
 // Style and images
-import './App.css'
+gimport './App.css'
 
 import Logo from './film-indy-logo.png'
 
