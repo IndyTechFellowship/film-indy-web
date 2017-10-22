@@ -9,6 +9,7 @@ import { Card, CardTitle } from 'material-ui/Card'
 import Divider from 'material-ui/Divider'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera'
@@ -45,66 +46,98 @@ const validate = (values) => {
 }
 
 // Making component const throws an error that it is read-only
-const AccountPage = (props) => {
-  const { handleSubmit, pristine, submitting, handleProfileChanges, profile, firebase, auth } = props
-  const photoURL = get(profile, 'photoURL', '')
-  const uid = get(auth, 'uid')
+class AccountPage extends React.Component {
 
-  return (
-    <div>
-      <h1>Account Settings</h1>
-      <Card className="profileCard" >
-        <CardTitle title="Your Profile" />
-        <Divider />
-        <div className="imageWrapper">
-          <Avatar className="accountImage avatar" src={photoURL} size={150} />
-          <CameraIcon className="cameraIcon" color="white" />
-          <FlatButton className="imageText" icon={<UploadIcon />} label="Upload Picture" labelPosition="before" containerElement="label">
-            <FileUploader uid={uid} uploadFile={firebase.uploadFile} updateProfile={firebase.updateProfile} />
-          </FlatButton>
-        </div>
-        <form onSubmit={handleSubmit(handleProfileChanges)}>
-          <div className="fields">
-            <div>
-              <Field
-                name="firstName"
-                component={renderTextField}
-                floatingLabelText="First Name"
-                type="text"
-              />
-            </div>
-            <div>
-              <Field
-                name="lastName"
-                component={renderTextField}
-                floatingLabelText="Last Name"
-                type="text"
-              />
-            </div>
-            <div>
-              <Field
-                name="email"
-                component={renderTextField}
-                floatingLabelText="Email"
-                type="email"
-              />
-            </div>
+  constructor(props) {
+    super(props)
+    this.state = {
+      updated: false
+    }
+    this.handleUpdateClose = this.handleUpdateClose.bind(this)
+    this.updateMessage = this.updateMessage.bind(this)
+  }
+
+  updateMessage() {
+    this.setState({
+      updated: true
+    })
+  }
+
+  handleUpdateClose() {
+    this.setState({
+      updated: false
+    })
+  }
+
+  render() {
+    const { handleSubmit, pristine, submitting, handleProfileChanges, profile, firebase, auth } = this.props
+    const photoURL = get(profile, 'photoURL', '')
+    const uid = get(auth, 'uid')
+
+    return (
+      <div>
+        <h1>Account Settings</h1>
+        <Card className="profileCard" >
+          <CardTitle title="Your Profile" />
+          <Divider />
+          <div className="imageWrapper">
+            <Avatar className="accountImage avatar" src={photoURL} size={150} />
+            <CameraIcon className="cameraIcon" color="white" />
+            <FlatButton className="imageText" icon={<UploadIcon />} label="Upload Picture" labelPosition="before" containerElement="label">
+              <FileUploader uid={uid} uploadFile={firebase.uploadFile} updateProfile={firebase.updateProfile} />
+            </FlatButton>
           </div>
-          <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} />
-        </form>
-      </Card>
+          <form onSubmit={handleSubmit(handleProfileChanges)}>
+            <div className="fields">
+              <div>
+                <Field
+                  name="firstName"
+                  component={renderTextField}
+                  floatingLabelText="First Name"
+                  type="text"
+                />
+              </div>
+              <div>
+                <Field
+                  name="lastName"
+                  component={renderTextField}
+                  floatingLabelText="Last Name"
+                  type="text"
+                />
+              </div>
+              <div>
+                <Field
+                  name="email"
+                  component={renderTextField}
+                  floatingLabelText="Email"
+                  type="email"
+                />
+              </div>
+            </div>
+            <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} onTouchTap={this.updateMessage}/>
+          </form>
+        </Card>
 
-      <Card className="passwordCard">
-        <CardTitle title="Reset Password" />
-        <Divider />
-        <ul className="fields">
-          <li><TextField hintText="New Password" floatingLabelText="Password" type="password" /></li>
-          <li><TextField hintText="Confirm Password" floatingLabelText="Confirm Password" type="password" /></li>
-        </ul>
-        <RaisedButton className="accountButton" primary label="Submit" />
-      </Card>
-    </div>
-  )
+        <Snackbar
+          bodyStyle={{ backgroundColor: '#00C853' }}
+          open={this.state.updated}
+          message={'Successfully Updated.'}
+          autoHideDuration={4000}
+          onRequestClose={this.handleUpdateClose}
+        />
+
+        <Card className="passwordCard">
+          <CardTitle title="Reset Password" />
+          <Divider />
+          <ul className="fields">
+            <li><TextField hintText="New Password" floatingLabelText="Password" type="password" /></li>
+            <li><TextField hintText="Confirm Password" floatingLabelText="Confirm Password" type="password" /></li>
+          </ul>
+          <RaisedButton className="accountButton" primary label="Submit" />
+        </Card>
+      </div>
+    )
+  }
 }
 
 const FileUploader = props => (

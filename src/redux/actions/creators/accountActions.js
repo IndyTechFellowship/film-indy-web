@@ -99,7 +99,7 @@ export const signUp = (firstName, lastName, photoFile, email, password) => dispa
 export const signOut = () => dispatch => dispatch({
   type: SIGN_OUT,
   payload: firebase.auth().signOut()
-}).then(() => dispatch(push('home')))
+}).then(() => dispatch(push('/')))
 
 export const sendPasswordResetEmail = emailAddress => dispatch => dispatch({
   type: SEND_PASSWORD_RESET_EMAIL,
