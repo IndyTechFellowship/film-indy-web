@@ -46,9 +46,11 @@ import * as accountActions from './redux/actions/creators/accountActions'
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
+
 const AutoCompleteBar = connectAutoComplete(
   ({ hits, onItemSelected, onUpdateInput }) => (
     <AutoComplete
+      className="searchField"
       onUpdateInput={onUpdateInput}
       id="autocomplete"
       maxSearchResults={10}
@@ -99,7 +101,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, firebase, history, signUp, submitSignUp } = this.props
+    const { profile, auth, firebase, history, location, signUp, submitSignUp } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     return (
@@ -108,6 +110,7 @@ class App extends React.Component {
           iconElementLeft={
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
+              { location.pathname !== '/' &&
               <Card className="searchCard" style={{ width: 400 }}>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                   <SearchIcon className="searchIcon" />
@@ -134,6 +137,7 @@ class App extends React.Component {
                   />
                 </div>
               </Card>
+              }
             </div>
           }
           iconElementRight={uid ? (
@@ -197,11 +201,13 @@ App.propTypes = {
   auth: PropTypes.shape({
     uid: PropTypes.string
   }).isRequired,
-  signOut: PropTypes.func.isRequired,
   signUp: PropTypes.func.isRequired,
   submitSignUp: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func
+  }).isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired
   }).isRequired
 }
 

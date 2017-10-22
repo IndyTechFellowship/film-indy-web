@@ -46,9 +46,9 @@
     cursor: pointer;
 }
 .accountLogin {
-	margin-top: 18px !important;
-	margin-right: 1em;
-	cursor: pointer;
+  margin-top: 18px !important;
+  margin-right: 1em;
+  cursor: pointer;
 }
 
 .logo {
@@ -65,21 +65,16 @@
     height: 100%;
 }
 
-.searchCard {
-	display: inline-block !important;
-	margin: auto !important;
-	margin-left: 4em !important;
-    margin-bottom: 1em !important;
+.menuSearchCard {
+  display: inline-block !important;
+  margin: auto !important;
+  margin-left: 4em !important;
+  margin-bottom: 1em !important;
 }
 
 .searchIcon {
-	color: #38b5e6 !important;
-	margin-left: 1.25em;
-	float: left;
-	margin-top: 0.75em;
-}
-
-.searchField {
-	float: left;
-	margin-left: 1em;
+  color: #38b5e6 !important;
+  margin-left: 1.25em;
+  float: left;
+  margin-top: 0.75em;
 }

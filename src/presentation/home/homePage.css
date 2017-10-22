@@ -1,1 +1,137 @@
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
+.container {
+    display: block;
+    margin: auto;
+    width: 100vw;
+    height: 100vh;
+}
+
+.bg-image {
+	position: relative;
+	top: -150px;
+	width: 100%;
+	height: 70%;
+	background: url('./bg2.jpg');
+	background-size: cover;
+}
+
+.header-wrapper {
+	position: relative;
+	display: block;
+	margin: auto;
+	width: 40%;
+	text-align: left;
+	top: 65%;
+}
+
+.main-header {
+	color: #38b5e6;
+	color: #004b8d;
+	font-size: 28pt;
+	font-weight: 600; 
+	margin: auto;
+	text-align: left;
+}
+
+.header {
+	color: #38b5e6;
+	color: #004b8d;
+	font-size: 24pt;
+	font-weight: 600; 
+	margin: auto;
+	text-align: center;
+}
+
+.subheader {
+	color: white;
+	font-size: 18pt;
+	font-weight: 300;
+}
+
+.searchCard {
+	position: relative;
+	display: block !important;
+	margin: auto !important;
+	margin-bottom: 25px !important;
+	margin-left: 25px !important;
+
+}
+
+.searchIcon {
+	color: #38b5e6 !important;
+	margin-left: .50em;
+	float: left;
+	margin-top: 0.75em;
+}
+
+.searchButton {
+	display: inline !important;
+	float: right;
+}
+
+.explore {
+	position: relative;
+	top: 2%;
+	margin: auto;
+}
+
+.category-wrapper {
+	position: relative;
+	display: block;
+	margin: auto;
+	width: 60%;
+	top: -12%;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-content: space-around;
+	text-align: left;
+}
+
+.category-card {
+	margin: 10px;
+	width: 100%;
+	cursor: pointer;
+}
+
+.category-card img {
+	min-height: 200px;
+	max-height: 200px;
+	height: 200px;
+}
+
+.roles-wrapper {
+	position: relative;
+	top: -5%;
+	text-align: left;
+
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
+
+.nextArrow {
+	display: block;
+	top: 25%;
+	width: 40px;
+	height: 40px;
+	right: -45px;
+}
+
+.prevArrow {
+	display: block;
+	top: 25%;
+	width: 40px;
+	height: 40px;
+	left: -45px;
+}
+
+.nextArrow:before, .prevArrow:before {
+	font-size: 40px;
+	color: #38b5e6;
+}
+
 
