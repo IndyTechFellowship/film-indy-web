@@ -46,6 +46,7 @@ import * as accountActions from './redux/actions/creators/accountActions'
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
+
 const AutoCompleteBar = connectAutoComplete(
   ({ hits, onItemSelected, onUpdateInput }) => (
     <AutoComplete
@@ -117,8 +118,8 @@ class App extends React.Component {
           iconElementLeft={
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
-              { location.pathname !== '/' && // do not render search in app bar on home page
-                <Card className="menuSearchCard" style={{ width: 400 }}>
+              { location.pathname !== '/' &&
+              <Card className="menuSearchCard" style={{ width: 400 }}>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                   <SearchIcon className="searchIcon" />
                   <InstantSearch
@@ -144,6 +145,7 @@ class App extends React.Component {
                   />
                 </div>
               </Card>
+              }
             </div>
           }
           iconElementRight={uid ? (
@@ -208,13 +210,14 @@ App.propTypes = {
   auth: PropTypes.shape({
     uid: PropTypes.string
   }).isRequired,
-  signOut: PropTypes.func.isRequired,
   signUp: PropTypes.func.isRequired,
   submitSignUp: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func
   }).isRequired,
-  location: PropTypes.object.isRequired
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired
+  }).isRequired
 }
 
 const wrappedApp = firebaseConnect()(App)
