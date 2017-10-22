@@ -83,7 +83,7 @@ class AccountPage extends React.Component {
             <div style={{ maxWidth: 150, marginLeft: 125 }}>
               <Toggle
                 label="Public"
-                style={{ marginLeft: 265, marginTop: 20 }}
+                style={{ marginLeft: '2.5em', marginTop: 20 }}
                 toggled={isPublic}
                 onToggle={(event, toggleValue) => {
                   firebase.updateProfile({
