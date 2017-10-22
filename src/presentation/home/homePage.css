@@ -54,14 +54,14 @@
 	position: relative;
 	display: block !important;
 	margin: auto !important;
-	top: 50%;
-	margin-top: 25px !important;
+	margin-bottom: 25px !important;
+	margin-left: 25px !important;
 
 }
 
 .searchIcon {
 	color: #38b5e6 !important;
-	margin-left: 1.25em;
+	margin-left: .50em;
 	float: left;
 	margin-top: 0.75em;
 }

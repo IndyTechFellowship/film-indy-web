@@ -1,6 +1,7 @@
 import * as firebase from 'firebase'
 import { push } from 'react-router-redux'
 import { omitBy } from 'lodash'
+import { submit } from 'redux-form'
 import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL } from '../types/accountActionTypes'
 import * as algoliaActions from './algoliaActions'
 
@@ -23,7 +24,7 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
   if (val) {
     // an account already exists, migrate the account
     const accountData = omitBy(accountDataToSave, i => !i)
-    const nameUpdates = omitBy({ firstName: accountDataToSave.firstName, lastName: accountDataToSave.lastName }, i => !i)
+    const nameUpdates = omitBy({ firstName: accountDataToSave.firstName, lastName: accountDataToSave.lastName, public: true }, i => !i)
     // migrate the name index with the new uid
     dispatch(algoliaActions.migrateName(uid, emailKey, nameUpdates))
     accountRef.child(emailKey).remove()
@@ -32,29 +33,35 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
         accountRef.child(uid).set({
           ...val,
           ...accountData,
-          photoURL: response.downloadURL
+          photoURL: response.downloadURL,
+          public: true
         })
       })
     } else {
       accountRef.child(uid).set({
         ...val,
-        ...accountData
+        ...accountData,
+        public: true
       })
     }
   } else {
     // no row in the userAccount table exists with that email, totally new user
     const accountData = omitBy(accountDataToSave, i => !i)
     const nameUpdates = omitBy({ firstName: accountDataToSave.firstName, lastName: accountDataToSave.lastName }, i => !i)
-    dispatch(algoliaActions.addToNameIndex(uid, nameUpdates))
+    dispatch(algoliaActions.addToNameIndex(uid, { ...nameUpdates, public: false }))
     if (accountData.photoFile) {
       firebase.uploadFile(`/images/users/account/${uid}/account_image`, accountData.photoFile).then((response) => {
         accountRef.child(uid).set({
           ...accountData,
-          photoURL: response.downloadURL
+          photoURL: response.downloadURL,
+          public: false
         })
       })
     } else {
-      accountRef.child(uid).set(accountData)
+      accountRef.child(uid).set({
+        ...accountData,
+        public: false
+      })
     }
   }
 }
@@ -72,7 +79,11 @@ const migrate = (accountDataToSave, signUpResult, dispatch) => {
     if (val) {
       profilesRef.child(emailKey).remove()
       profilesRef.child(uid).set(val)
-      algoliaActions.migrateProfile(uid, emailKey)
+      dispatch(algoliaActions.migrateProfile(uid, emailKey))
+    } else {
+      profilesRef.child(uid).set({
+        public: false
+      }).then(() => dispatch(algoliaActions.createProfileRecord(uid, { public: false, roles: [] })))
     }
   })
   return dispatch(push('account'))
@@ -110,3 +121,5 @@ export const updateAuth = result => dispatch => dispatch({
   type: '@@reactReduxFirebase/AUTH_UPDATE_SUCCESS',
   auth: result
 })
+
+export const submitSignUp = () => dispatch => dispatch(submit('signUp'))
