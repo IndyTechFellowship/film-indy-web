@@ -217,6 +217,7 @@ class AccountPage extends React.Component {
   )
 >>>>>>> Add button on account
 }
+}
 
 const FileUploader = props => (
   <input
