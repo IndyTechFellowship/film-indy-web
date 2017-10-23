@@ -19,6 +19,7 @@ import Snackbar from 'material-ui/Snackbar'
 import AutoComplete from 'material-ui/AutoComplete'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import { Tabs, Tab } from 'material-ui/Tabs'
 
 // Material UI SVG Icons
 import SearchIcon from 'material-ui/svg-icons/action/search'
@@ -45,6 +46,15 @@ import * as accountActions from './redux/actions/creators/accountActions'
 
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
+
+const styles = {
+  headline: {
+    fontSize: 24,
+    paddingTop: 16,
+    marginBottom: 12,
+    fontWeight: 400
+  }
+}
 
 
 const AutoCompleteBar = connectAutoComplete(
@@ -114,40 +124,48 @@ class App extends React.Component {
     const { profile, auth, firebase, history, signUp, submitSignUp, location } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
+    const appBarStyle = location.pathname === '/search' ? { boxShadow: 'none' } : {}
     return (
       <div className="App">
         <AppBar
+          style={{ ...appBarStyle }}
           iconElementLeft={
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
-              { location.pathname !== '/' &&
-              <Card className="menuSearchCard" style={{ width: 420 }}>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <SearchIcon className="searchIcon" />
-                  <InstantSearch
-                    appId={ALGOLIA_APP_ID}
-                    apiKey={ALGOLIA_SEARCH_KEY}
-                    indexName="roles"
-                  >
-                    <AutoCompleteBar
-                      onUpdateInput={query => this.searchQuery = query}
-                      onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })}
+            <div className="dhjkaf"style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
+                { location.pathname !== '/' &&
+                <Card className="menuSearchCard" style={{ width: 420 }}>
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <SearchIcon className="searchIcon" />
+                    <InstantSearch
+                      appId={ALGOLIA_APP_ID}
+                      apiKey={ALGOLIA_SEARCH_KEY}
+                      indexName="roles"
+                    >
+                      <AutoCompleteBar
+                        onUpdateInput={query => this.searchQuery = query}
+                        onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })}
+                      />
+                    </InstantSearch>
+                    <RaisedButton
+                      label="Search"
+                      labelColor="#fff"
+                      backgroundColor={'#38b5e6'}
+                      style={{ height: 30, marginTop: 10, marginLeft: 30 }}
+                      onClick={() => {
+                        if (this.searchQuery !== '') {
+                          history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}` })
+                        }
+                      }}
                     />
-                  </InstantSearch>
-                  <RaisedButton
-                    label="Search"
-                    labelColor="#fff"
-                    backgroundColor={'#38b5e6'}
-                    style={{ height: 30, marginTop: 10, marginLeft: 30 }}
-                    onClick={() => {
-                      if (this.searchQuery !== '') {
-                        history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}` })
-                      }
-                    }}
-                  />
-                </div>
-              </Card>
-              }
+                  </div>
+                </Card>
+                }
+              </div>
+              <Tabs tabItemContainerStyle={{ width: '30%' }} style={{ marginLeft: 200 }}>
+                <Tab label="All" />
+                <Tab label="Crew" />
+              </Tabs>
             </div>
           }
           iconElementRight={uid ? (
@@ -160,7 +178,7 @@ class App extends React.Component {
                 }}
                 sendSubmit={submitSignUp}
               />
-              <Link to="/login"><FlatButton style={{ color: 'white' }} label="Login" labelStyle={{fontSize: '12pt'}} size={60} /> </Link>
+              <Link to="/login"><FlatButton style={{ color: 'white' }} label="Login" labelStyle={{ fontSize: '12pt' }} size={60} /> </Link>
             </div>
           )}
           zDepth={2}
