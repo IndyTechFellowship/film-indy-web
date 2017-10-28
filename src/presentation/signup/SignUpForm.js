@@ -74,11 +74,13 @@ class SignUpForm extends React.Component {
     const { handleSubmit, error, submitting, pristine, sendSubmit } = this.props
     const actions = [
       <FlatButton
+        contentStyle={{ width: '50%', marginBottom: 50 }}
         label="Cancel"
         primary
         onClick={this.handleClose}
       />,
       <FlatButton
+        contentStyle={{ width: '50%', marginBottom: 50 }}
         label="Submit"
         primary
         disabled={error || pristine || submitting}
