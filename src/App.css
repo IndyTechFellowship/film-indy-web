@@ -87,3 +87,9 @@
   object-fit: cover;
   border: 0;
 }
+
+/*
+.test>* {
+  width: 33% !important;
+}
+*/

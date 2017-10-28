@@ -6,6 +6,7 @@ import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import { InstantSearch } from 'react-instantsearch/dom'
 import { connectAutoComplete } from 'react-instantsearch/connectors'
+import QueryString from 'query-string'
 import 'react-instantsearch-theme-algolia/style.css'
 
 // Material UI Components
@@ -47,15 +48,10 @@ import * as accountActions from './redux/actions/creators/accountActions'
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
-const styles = {
-  headline: {
-    fontSize: 24,
-    paddingTop: 16,
-    marginBottom: 12,
-    fontWeight: 400
-  }
+const tabIndex = {
+  all: 0,
+  crew: 1
 }
-
 
 const AutoCompleteBar = connectAutoComplete(
   ({ hits, onItemSelected, onUpdateInput }) => (
@@ -124,6 +120,8 @@ class App extends React.Component {
     const { profile, auth, firebase, history, signUp, submitSignUp, location } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
+    const parsed = QueryString.parse(location.search)
+    const showOnly = get(parsed, 'show', 'all')
     const appBarStyle = location.pathname === '/search' ? { boxShadow: 'none' } : {}
     return (
       <div className="App">
@@ -144,7 +142,7 @@ class App extends React.Component {
                     >
                       <AutoCompleteBar
                         onUpdateInput={query => this.searchQuery = query}
-                        onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })}
+                        onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}&show=all` })}
                       />
                     </InstantSearch>
                     <RaisedButton
@@ -153,8 +151,8 @@ class App extends React.Component {
                       backgroundColor={'#38b5e6'}
                       style={{ height: 30, marginTop: 10, marginLeft: 30 }}
                       onClick={() => {
-                        if (this.searchQuery !== '') {
-                          history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}` })
+                        if (this.searchQuery) {
+                          history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
                         }
                       }}
                     />
@@ -162,10 +160,23 @@ class App extends React.Component {
                 </Card>
                 }
               </div>
-              <Tabs tabItemContainerStyle={{ width: '30%' }} style={{ marginLeft: 200 }}>
-                <Tab label="All" />
-                <Tab label="Crew" />
-              </Tabs>
+              {location.pathname === '/search' ?
+                (<Tabs tabItemContainerStyle={{ width: '30%' }} style={{ marginLeft: 200 }} initialSelectedIndex={tabIndex[showOnly]}>
+                  <Tab
+                    label="All"
+                    onActive={() => {
+                      const query = get(parsed, 'query', ' ')
+                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=all` })
+                    }}
+                  />
+                  <Tab
+                    label="Crew"
+                    onActive={() => {
+                      const query = get(parsed, 'query', ' ')
+                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=crew` })
+                    }}
+                  />
+                </Tabs>) : null}
             </div>
           }
           iconElementRight={uid ? (
