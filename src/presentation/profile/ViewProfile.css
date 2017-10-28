@@ -1,0 +1,48 @@
+.crew-name {
+	font-size: 25px;
+	font-weight: 600;
+}
+
+.crew-headline {
+	font-weight: 500;
+}
+
+.crew-text {
+	font-weight: 400;
+}
+
+.profile-card {
+	width: 800px;
+	border-radius: 2;
+	margin: auto;
+	margin-bottom: 5%;
+}
+
+.small-card {
+	height: 20%;
+}
+
+.big-card {
+	height: 45%;
+}
+
+.role-column {
+	width: 50%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.rounded-header {
+	width: 120px;
+	height: 40px;
+	background-color: blue;
+	border-radius: 100px;
+}
+
+.credits {
+	display: block;
+	width: 150px;
+	border-left: 2px solid blue;
+	height: auto;
+}

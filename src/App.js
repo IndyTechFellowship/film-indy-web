@@ -142,7 +142,7 @@ class App extends React.Component {
             </div>
           }
           iconElementRight={uid ? (
-            <Avatar className="accountIcon" src={photoURL} size={60} onClick={this.handleTouchTap} />
+            <Avatar className="accountIcon avatar" src={photoURL} size={60} onClick={this.handleTouchTap} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
               <SignUpForm

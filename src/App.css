@@ -2,6 +2,8 @@
 
 * { font-family: 'Roboto'; }
 
+a { text-decoration: none; }
+
 .App {
   text-align: center;
 }
@@ -80,4 +82,8 @@
   margin-left: 1.25em;
   float: left;
   margin-top: 0.75em;
+}
+
+.avatar {
+  object-fit: cover;
 }
