@@ -50,7 +50,6 @@ class Search extends React.Component {
             </Link>
           ))}
         </div>
-        <Route exact path="/profile/view" component={ViewProfile} />
       </div>
     )
   }
