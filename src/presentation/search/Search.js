@@ -90,8 +90,8 @@ class Search extends React.Component {
             hasMore
             sizes={[
               { columns: 1, gutter: 5 },
-              { columns: 2, mq: '900px', gutter: 10 },
-              { columns: 3, mq: '1200px', gutter: 40 },
+              { columns: 2, mq: '900px', gutter: 100 },
+              { columns: 3, mq: '1330px', gutter: 40 },
               { columns: 4, mq: '1900px', gutter: 40 },
               { columns: 5, mq: '2500px', gutter: 40 }
             ]}
