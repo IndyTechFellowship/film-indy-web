@@ -210,10 +210,7 @@ class App extends React.Component {
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
               </div>
             ) : (
-              <div>
-                <Link to="/login"><MenuItem primaryText="Log In" leftIcon={<AccountCircle />} /></Link>
-                <Link to="/signup"><MenuItem primaryText="Create Account" leftIcon={<CreateIcon />} /></Link>
-              </div>
+              <div />
             )}
           </Menu>
         </Popover>
