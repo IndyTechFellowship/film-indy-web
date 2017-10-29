@@ -33,7 +33,7 @@ class Search extends React.Component {
         </div>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', paddingLeft: 40 }}>
           {take(enriched, 3).map(enrichedResult => (
-            <Link to="/profile/view">
+            <Link to="/profile/{uid}">
               <Card key={enrichedResult.objectID} containerStyle={{ width: 400, paddingBottom: 0, display: 'flex', flexDirection: 'row' }} style={{ width: 400, height: 150, marginRight: 20, borderRadius: 2, cursor: 'pointer' }}>
                 <CardMedia>
                   <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />

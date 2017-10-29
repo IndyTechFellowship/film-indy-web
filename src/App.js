@@ -26,6 +26,7 @@ import AccountCircle from 'material-ui/svg-icons/action/account-circle'
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
 import CreateIcon from 'material-ui/svg-icons/social/person-add'
 import EditIcon from 'material-ui/svg-icons/content/create'
+import ViewIcon from 'material-ui/svg-icons/image/remove-red-eye'
 
 // Page components
 import Home from './containers/home'
@@ -169,6 +170,7 @@ class App extends React.Component {
               <div>
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
                 <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
+                <Link to="/profile/{uid}"><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.handleRequestClose(); this.signOutMessage() }} />
               </div>
             ) : (
@@ -191,7 +193,7 @@ class App extends React.Component {
         <Route path="/search" component={Search} />
         <Route exact path="/forgotpassword" component={ForgotPassword} />
         <Route exact path="/profile/edit" component={EditProfile} />
-        <Route exact path="/profile/view" component={ViewProfile} />
+        <Route exact path="/profile/{uid}" component={ViewProfile} />
       </div>
     )
   }

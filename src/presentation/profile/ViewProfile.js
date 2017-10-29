@@ -52,6 +52,7 @@ const creditsArray = [
 class ViewProfile extends React.Component {
 
   render() {
+    const { auth, profile, firebase, data } = this.props
     return (
       <div className="ViewProfile">
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20, paddingTop: 20 }}>
