@@ -29,47 +29,61 @@ class Search extends React.Component {
     const parsed = QueryString.parse(location.search)
     const query = get(parsed, 'query', ' ')
     const showOnly = get(parsed, 'show', 'all')
-    if (showOnly === 'all') {
+    if (enriched.length === 0 && totalHits.hasLoaded) {
       return (
-        <div>
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20, paddingTop: 20 }}>
-            <h1 style={{ textAlign: 'left', paddingLeft: 40, margin: 0 }}> Crew </h1>
-            {showOnly === 'all' ?
-              <RaisedButton
-                label="See More"
-                labelColor="white"
-                backgroundColor={'#38b5e6'}
-                onClick={() => {
-                  history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=crew` })
-                }}
-                style={{ marginRight: 225, backgroundColor: '#38b5e6' }}
-              />
-              : null }
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
-            <GridList style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto' }}padding={4}>
-              {take(enriched, 4).map((enrichedResult, i) => (
-                <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row' }} style={{ width: 400, height: 150, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
-                  <CardMedia>
-                    <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
-                  </CardMedia>
-                  <div>
-                    <CardText style={{ fontSize: 25 }}>
-                      {`${get(enrichedResult, 'firstName', '')} ${get(enrichedResult, 'lastName', '')}`}
-                    </CardText>
-                    <CardText>
-                  Headline
-                    </CardText>
-                  </div>
-                </Card>
-              ))}
-            </GridList>
-          </div>
+        <div style={{ marginTop: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <h2 style={{ fontWeight: 200 }}>  Yikes! Your search didn't return any results. Try searching for a media specialist role or a name </h2>
         </div>
       )
+    }
+    if (showOnly === 'all') {
+      if (totalHits.hasLoaded && enriched.length > 0) {
+        return (
+          <div>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20, paddingTop: 20 }}>
+              <h1 style={{ textAlign: 'left', paddingLeft: 40, margin: 0 }}> Crew </h1>
+              {showOnly === 'all' ?
+                <RaisedButton
+                  label="See More"
+                  labelColor="white"
+                  backgroundColor={'#38b5e6'}
+                  onClick={() => {
+                    history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=crew` })
+                  }}
+                  style={{ marginRight: 225, backgroundColor: '#38b5e6' }}
+                />
+                : null }
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+              <GridList style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto' }}padding={4}>
+                {take(enriched, 4).map((enrichedResult, i) => (
+                  <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row' }} style={{ width: 400, height: 150, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
+                    <CardMedia>
+                      <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                    </CardMedia>
+                    <div>
+                      <CardText style={{ fontSize: 25 }}>
+                        {`${get(enrichedResult, 'firstName', '')} ${get(enrichedResult, 'lastName', '')}`}
+                      </CardText>
+                      <CardText>
+                    Headline
+                      </CardText>
+                    </div>
+                  </Card>
+                ))}
+              </GridList>
+            </div>
+          </div>
+        )
+      } else if (totalHits.hasLoaded && enriched.length === 0) {
+        return (
+          <div style={{ marginTop: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <h2 style={{ fontWeight: 200 }}>  Yikes! Your search didn't return any results. Try searching for a media specialist role or a name </h2>
+          </div>
+        )
+      }
     } else if (showOnly === 'crew') {
       const hasMore = totalHits.hasLoaded && totalHits.profiles !== 0 && totalHits.names !== 0
-      // console.log(hasMore)
       return (
         <div style={{ marginTop: 15 }}>
           <MasonryInfiniteScroller
@@ -96,7 +110,7 @@ class Search extends React.Component {
                     {`${get(enrichedResult, 'firstName', '')} ${get(enrichedResult, 'lastName', '')}`}
                   </CardText>
                   <CardText>
-                  Headline
+                    Headline
                   </CardText>
                 </div>
               </Card>
@@ -106,7 +120,7 @@ class Search extends React.Component {
       )
     }
     return (
-      <div> test </div>
+      <div> {' '} </div>
     )
   }
 }

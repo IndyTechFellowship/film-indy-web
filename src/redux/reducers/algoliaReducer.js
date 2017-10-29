@@ -77,7 +77,13 @@ export default (state = initalState, action) => {
           enrichedCrewResults: uniqBy(newResults, 'objectID')
         }
       }
-      return state
+      return {
+        ...state,
+        totalHits: {
+          ...state.totalHits,
+          hasLoaded: true
+        }
+      }
 
 
     default:

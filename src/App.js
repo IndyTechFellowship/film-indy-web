@@ -48,11 +48,6 @@ import * as accountActions from './redux/actions/creators/accountActions'
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
-const tabIndex = {
-  all: 0,
-  crew: 1
-}
-
 const AutoCompleteBar = connectAutoComplete(
   ({ hits, onItemSelected, onUpdateInput }) => (
     <AutoComplete
@@ -161,9 +156,10 @@ class App extends React.Component {
                 }
               </div>
               {location.pathname === '/search' ?
-                (<Tabs tabItemContainerStyle={{ width: '30%' }} style={{ marginLeft: 200 }} initialSelectedIndex={tabIndex[showOnly]}>
+                (<Tabs tabItemContainerStyle={{ width: '30%' }} style={{ marginLeft: 200 }} value={showOnly}>
                   <Tab
                     label="All"
+                    value="all"
                     onActive={() => {
                       const query = get(parsed, 'query', ' ')
                       history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=all` })
@@ -171,6 +167,7 @@ class App extends React.Component {
                   />
                   <Tab
                     label="Crew"
+                    value="crew"
                     onActive={() => {
                       const query = get(parsed, 'query', ' ')
                       history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=crew` })
