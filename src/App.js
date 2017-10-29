@@ -18,7 +18,6 @@ import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover'
 import Snackbar from 'material-ui/Snackbar'
 import AutoComplete from 'material-ui/AutoComplete'
-import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import { Tabs, Tab } from 'material-ui/Tabs'
 
@@ -31,12 +30,12 @@ import EditIcon from 'material-ui/svg-icons/content/create'
 
 // Page components
 import Home from './containers/home'
-import Login from './containers/login/login'
 import Account from './containers/account/account'
 import EditProfile from './containers/profile/EditProfile'
 import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
 import SignUpForm from './presentation/signup/SignUpForm'
+import SignInForm from './presentation/login/SignInForm'
 
 // Style and images
 import './App.css'
@@ -112,7 +111,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, firebase, history, signUp, submitSignUp, location } = this.props
+    const { profile, auth, firebase, history, signUp, submitSignUp, signIn, submitSignIn, location } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const parsed = QueryString.parse(location.search)
@@ -186,7 +185,12 @@ class App extends React.Component {
                 }}
                 sendSubmit={submitSignUp}
               />
-              <Link to="/login"><FlatButton style={{ color: 'white' }} label="Login" labelStyle={{ fontSize: '12pt' }} size={60} /> </Link>
+              <SignInForm
+                onSubmit={(values) => {
+                  signIn(values.email, values.password)
+                }}
+                sendSubmit={submitSignIn}
+              />
             </div>
           )}
           zDepth={2}
@@ -221,7 +225,6 @@ class App extends React.Component {
           onRequestClose={this.handleSignOutClose}
         />
         <Route exact path="/" component={Home} />
-        <Route exact path="/login" component={Login} />
         <Route exact path="/account" component={Account} />
         <Route path="/search" component={Search} />
         <Route exact path="/forgotpassword" component={ForgotPassword} />
@@ -240,6 +243,8 @@ App.propTypes = {
   }).isRequired,
   signUp: PropTypes.func.isRequired,
   submitSignUp: PropTypes.func.isRequired,
+  signIn: PropTypes.func.isRequired,
+  submitSignIn: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func
   }).isRequired,
