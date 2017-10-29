@@ -25,9 +25,9 @@ const ForgotPasswordPage = props => (
       message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.sendPasswordResetEmailError.code'))}
       autoHideDuration={4000}
     />
-    <Link to="/login">
+    <Link to="/">
       <FlatButton
-        label = "Return to Log In"
+        label = "Return to Home Page"
         primary = {true}
       />
     </Link>

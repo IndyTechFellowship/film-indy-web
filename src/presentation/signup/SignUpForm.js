@@ -74,11 +74,13 @@ class SignUpForm extends React.Component {
     const { handleSubmit, error, submitting, pristine, sendSubmit } = this.props
     const actions = [
       <FlatButton
+        contentStyle={{ width: '50%', marginBottom: 50 }}
         label="Cancel"
         primary
         onClick={this.handleClose}
       />,
       <FlatButton
+        contentStyle={{ width: '50%', marginBottom: 50 }}
         label="Submit"
         primary
         disabled={error || pristine || submitting}
@@ -154,65 +156,6 @@ class SignUpForm extends React.Component {
     )
   }
 }
-/*
-const SignUpForm = (props) => {
-  const { handleSubmit, submitting } = props
-  return (
-    <form
-      onSubmit={handleSubmit}
-    >
-      <div>
-        <Field
-          name="firstName"
-          component={TextField}
-          floatingLabelText="First Name"
-        />
-      </div>
-      <div>
-        <Field
-          name="lastName"
-          component={TextField}
-          floatingLabelText="Last Name"
-        />
-      </div>
-      <br />
-      <div>
-        <Field
-          name="photoFile"
-          component={FileInput}
-          type="file"
-        />
-      </div>
-      <div>
-        <Field
-          name="email"
-          component={TextField}
-          floatingLabelText="Email"
-          type="email"
-        />
-      </div>
-      <div>
-        <Field
-          name="password"
-          component={TextField}
-          floatingLabelText="Password"
-          type="password"
-        />
-      </div>
-      <div id="confirmPasswordInput">
-        <Field
-          name="confirmPassword"
-          component={TextField}
-          floatingLabelText="Confirm Password"
-          type="password"
-        />
-      </div>
-      <RaisedButton type="submit" disabled={props.error || submitting}>Sign Up</RaisedButton>
-    </form>
-  )
-}
-*/
-
 
 SignUpForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
