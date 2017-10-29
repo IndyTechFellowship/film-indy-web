@@ -92,7 +92,8 @@ class Search extends React.Component {
               { columns: 1, gutter: 5 },
               { columns: 2, mq: '900px', gutter: 10 },
               { columns: 3, mq: '1200px', gutter: 40 },
-              { columns: 4, mq: '1500px', gutter: 10 }
+              { columns: 4, mq: '1900px', gutter: 40 },
+              { columns: 5, mq: '2500px', gutter: 40 }
             ]}
             pageStart={1}
             loadMore={() => {
