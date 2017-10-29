@@ -91,7 +91,7 @@ class SignUpForm extends React.Component {
     ]
     return (
       <div>
-        <FlatButton label="Sign Up" style={{ color: 'white' }} labelStyle={{fontSize: '12pt'}} onClick={this.handleOpen} />
+        <FlatButton label="Sign Up" style={{ color: 'white' }} labelStyle={{ fontSize: '12pt' }} onClick={this.handleOpen} />
         <Dialog
           contentStyle={{ width: '100%', marginBottom: 150 }}
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}

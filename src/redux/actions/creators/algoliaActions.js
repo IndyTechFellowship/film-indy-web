@@ -1,7 +1,6 @@
 import * as firebase from 'firebase'
 import algoliasearch from 'algoliasearch'
-import { uniq } from 'lodash'
-import { SEARCH_INDEX, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE, MIGRATE_NAME, ADD_TO_NAME_INDEX, CREATE_PROFILE_RECORD, SET_PUBLIC } from '../types/algoliaActionsTypes'
+import { RESET_SEARCH_RESULTS, SEARCH_INDEX, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE, MIGRATE_NAME, ADD_TO_NAME_INDEX, CREATE_PROFILE_RECORD, SET_PUBLIC } from '../types/algoliaActionsTypes'
 
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 const ALGOLA_ADMIN_KEY = process.env.REACT_APP_ALGOLIA_ADMIN_KEY
@@ -29,26 +28,44 @@ export const searchIndex = (indexName, query, tableToEnrichFrom) => (dispatch) =
   })
 }
 
-export const searchForCrew = query => (dispatch) => {
+export const searchForCrew = (query, offset = 0, length = 10) => (dispatch) => {
   const indexNames = ['profiles', 'names']
   const searchPromises = indexNames.map((indexName) => {
     const index = algoliaClient.initIndex(indexName)
-    return index.search({ query, facetFilters: [['public:true']] }).then(results => ({ indexName, results }))
+    return index.search({ query, facetFilters: [['public:true']], offset, length }).then(results => ({ indexName, results }))
   })
   return dispatch({
     type: SEARCH_FOR_CREW,
-    payload: Promise.all(searchPromises)
+    payload: {
+      data: { offset, length },
+      promise: Promise.all(searchPromises)
+    }
   }).then((searchResults) => {
-    const uniqueHits = uniq(searchResults.value.reduce((acc, result) => [...acc, ...result.results.hits], []), 'objectID')
+    const totalHits = searchResults.value.reduce((acc, results) => {
+      const indexName = results.indexName
+      return { ...acc, [indexName]: results.results.hits.length }
+    }, {})
+    const uniqueHits = searchResults.value.reduce((acc, result) => [...acc, ...result.results.hits], [])
     const enrichPromises = Promise.all(uniqueHits.map(uniqueHit => firebase.database().ref(`userAccount/${uniqueHit.objectID}`)
       .once('value')
       .then(snapshot => ({ objectID: uniqueHit.objectID, value: snapshot.val() }))))
     return dispatch({
       type: SEARCH_FOR_CREW_ENRICHED,
-      payload: enrichPromises
+      payload: {
+        data: { totalHits },
+        promise: enrichPromises
+      }
     })
   })
 }
+
+export const resetAndSearch = (query, offset = 0, length = 10) => dispatch => dispatch({
+  type: RESET_SEARCH_RESULTS,
+  payload: {
+    data: { offset, length },
+    promise: Promise.resolve()
+  }
+}).then(() => dispatch(searchForCrew(query, offset, length)))
 
 export const migrateProfile = (uid, email) => (dispatch) => {
   const profileIndex = algoliaClient.initIndex('profiles')

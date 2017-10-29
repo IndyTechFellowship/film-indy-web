@@ -6,6 +6,7 @@ import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import { InstantSearch } from 'react-instantsearch/dom'
 import { connectAutoComplete } from 'react-instantsearch/connectors'
+import QueryString from 'query-string'
 import 'react-instantsearch-theme-algolia/style.css'
 
 // Material UI Components
@@ -18,6 +19,7 @@ import Popover from 'material-ui/Popover'
 import Snackbar from 'material-ui/Snackbar'
 import AutoComplete from 'material-ui/AutoComplete'
 import RaisedButton from 'material-ui/RaisedButton'
+import { Tabs, Tab } from 'material-ui/Tabs'
 
 // Material UI SVG Icons
 import SearchIcon from 'material-ui/svg-icons/action/search'
@@ -43,7 +45,6 @@ import * as accountActions from './redux/actions/creators/accountActions'
 
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
-
 
 const AutoCompleteBar = connectAutoComplete(
   ({ hits, onItemSelected, onUpdateInput }) => (
@@ -112,40 +113,65 @@ class App extends React.Component {
     const { profile, auth, firebase, history, signUp, submitSignUp, signIn, submitSignIn, location } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
+    const parsed = QueryString.parse(location.search)
+    const showOnly = get(parsed, 'show', 'all')
+    const appBarStyle = location.pathname === '/search' ? { boxShadow: 'none' } : {}
     return (
       <div className="App">
         <AppBar
+          style={{ ...appBarStyle }}
           iconElementLeft={
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
-              { location.pathname !== '/' &&
-              <Card className="menuSearchCard" style={{ width: 420 }}>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <SearchIcon className="searchIcon" />
-                  <InstantSearch
-                    appId={ALGOLIA_APP_ID}
-                    apiKey={ALGOLIA_SEARCH_KEY}
-                    indexName="roles"
-                  >
-                    <AutoCompleteBar
-                      onUpdateInput={query => this.searchQuery = query}
-                      onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })}
+            <div className="dhjkaf"style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
+                { location.pathname !== '/' &&
+                <Card className="menuSearchCard" style={{ width: 420 }}>
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <SearchIcon className="searchIcon" />
+                    <InstantSearch
+                      appId={ALGOLIA_APP_ID}
+                      apiKey={ALGOLIA_SEARCH_KEY}
+                      indexName="roles"
+                    >
+                      <AutoCompleteBar
+                        onUpdateInput={query => this.searchQuery = query}
+                        onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}&show=all` })}
+                      />
+                    </InstantSearch>
+                    <RaisedButton
+                      label="Search"
+                      labelColor="#fff"
+                      backgroundColor={'#38b5e6'}
+                      style={{ height: 30, marginTop: 10, marginLeft: 30 }}
+                      onClick={() => {
+                        if (this.searchQuery) {
+                          history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
+                        }
+                      }}
                     />
-                  </InstantSearch>
-                  <RaisedButton
-                    label="Search"
-                    labelColor="#fff"
-                    backgroundColor={'#38b5e6'}
-                    style={{ height: 30, marginTop: 10, marginLeft: 30 }}
-                    onClick={() => {
-                      if (this.searchQuery !== '') {
-                        history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}` })
-                      }
+                  </div>
+                </Card>
+                }
+              </div>
+              {location.pathname === '/search' ?
+                (<Tabs tabItemContainerStyle={{ width: '30%' }} style={{ marginLeft: 200 }} value={showOnly}>
+                  <Tab
+                    label="All"
+                    value="all"
+                    onActive={() => {
+                      const query = get(parsed, 'query', ' ')
+                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=all` })
                     }}
                   />
-                </div>
-              </Card>
-              }
+                  <Tab
+                    label="Crew"
+                    value="crew"
+                    onActive={() => {
+                      const query = get(parsed, 'query', ' ')
+                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=crew` })
+                    }}
+                  />
+                </Tabs>) : null}
             </div>
           }
           iconElementRight={uid ? (
@@ -160,7 +186,7 @@ class App extends React.Component {
               />
               <SignInForm
                 onSubmit={(values) => {
-                    signIn(values.email, values.password)
+                  signIn(values.email, values.password)
                 }}
                 sendSubmit={submitSignIn}
               />
@@ -176,11 +202,15 @@ class App extends React.Component {
           onRequestClose={this.handleDropdownClose}
         >
           <Menu>
+            { uid ? ( // renders dropdown items depending on if logged in
               <div>
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
                 <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
               </div>
+            ) : (
+              <div />
+            )}
           </Menu>
         </Popover>
         <Snackbar

@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom'
 import FlatButton from 'material-ui/FlatButton'
 
 
-
 const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
   switch (errorCode) {
     case 'auth/user-not-found': return 'A valid email is required.'
@@ -27,8 +26,8 @@ const ForgotPasswordPage = props => (
     />
     <Link to="/">
       <FlatButton
-        label = "Return to Home Page"
-        primary = {true}
+        label="Return to Home Page"
+        primary
       />
     </Link>
   </div>
@@ -38,14 +37,14 @@ ForgotPasswordPage.propTypes = {
   account: PropTypes.shape({
     sendPasswordResetEmailError: PropTypes.shape({
       code: PropTypes.string,
-      message: PropTypes.string,
-    }),
+      message: PropTypes.string
+    })
   }),
-  sendPasswordResetEmail: PropTypes.func.isRequired,
+  sendPasswordResetEmail: PropTypes.func.isRequired
 }
 
 ForgotPasswordPage.defaultProps = {
-  account: {},
+  account: {}
 }
 
 export default ForgotPasswordPage
