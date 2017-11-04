@@ -27,6 +27,7 @@ import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
 import CreateIcon from 'material-ui/svg-icons/social/person-add'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import ViewIcon from 'material-ui/svg-icons/image/remove-red-eye'
+import ArrowIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 // Page components
 import Home from './containers/home'
@@ -153,7 +154,11 @@ class App extends React.Component {
             </div>
           }
           iconElementRight={uid ? (
-            <Avatar className="accountIcon avatar" src={photoURL} size={60} onClick={this.handleAvatarTouch} />
+            <div className="avatar-wrapper" onClick={this.handleAvatarTouch}>
+              <Avatar className="accountIcon avatar" src={photoURL} size={60} />
+              <ArrowIcon className="arrowIcon" />
+            </div>
+
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
               <SignUpForm

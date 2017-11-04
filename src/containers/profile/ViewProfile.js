@@ -40,16 +40,16 @@ ViewProfileContainer.propTypes = {
   }).isRequired
 } 
 
-// const WrappedViewProfile = firebaseConnect((props, firebase) => {
-//   const uid = get(firebase.auth(), 'currentUser.uid', '')
-//   return [
-//     `/userProfiles/${uid}`,
-//     'roles'
-//   ]
-// })(AuthenticatedComponent(ViewProfileContainer))
+const WrappedViewProfile = firebaseConnect((props, firebase) => {
+  const uid = get(firebase.auth(), 'currentUser.uid', '')
+  return [
+    `/userProfiles/${uid}`,
+    'roles'
+  ]
+})(AuthenticatedComponent(ViewProfileContainer))
 
 
 export default withRouter(connect(
-  state => ({ firebase: state.firebase, profile: state.firebase.profile, data: state.firebase.data }),
+  state => ({ firebase: state.firebase, auth: state.firebase.auth, profile: state.firebase.profile, data: state.firebase.data }),
   { ...algoliaActions },
-)(ViewProfileContainer))
+)(WrappedViewProfile))

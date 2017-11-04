@@ -68,7 +68,7 @@ class ViewProfile extends React.Component {
     const uid = get(auth, 'uid', '')
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
-    const userProfile = get(data, `userProfiles.${queryUid}`)
+    const userProfile = get(data, `userProfiles.${auth.uid}`)
     console.log("userProfile: ", userProfile)
 
     const userRoles = get(userProfile, 'roles', [])
@@ -86,7 +86,7 @@ class ViewProfile extends React.Component {
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
     const email = get(profile, 'email', '')
-    const userProfileRolePath = `/userProfiles/${queryUid}`
+    const userProfileRolePath = `/userProfiles/${uid}`
     console.log("roles: ", userRoles)
 
 

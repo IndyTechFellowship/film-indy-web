@@ -42,10 +42,28 @@ a { text-decoration: none; }
 .raisedButton {
     width: 200px;
 }
+
+.avatar-wrapper {
+  cursor: pointer;
+}
+
+/* prevents Avatar component images from stretching */
+.avatar {
+  object-fit: cover;
+  border: 0;
+}
 .accountIcon {
     margin-right: 1em;
     margin-top: 0.25em;
     cursor: pointer;
+}
+
+.arrowIcon {
+  color: white !important;
+  width: 35px !important;
+  height: 35px !important;
+  margin-left: -25px !important;
+  margin-bottom: 5px !important;
 }
 .accountLogin {
   margin-top: 18px !important;
@@ -84,8 +102,3 @@ a { text-decoration: none; }
   margin-top: 0.75em;
 }
 
-/* prevents Avatar component images from stretching */
-.avatar {
-  object-fit: cover;
-  border: 0;
-}
