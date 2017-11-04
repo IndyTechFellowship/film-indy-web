@@ -11,12 +11,16 @@ import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 const name = "Bill Murray"
 const aboutText = "Bill Murray is an American actor, comedian, and writer. The fifth of nine children, he was born William James Murray in Wilmette, Illinois, to Lucille (Collins), a mailroom clerk, and Edward Joseph Murray II, who sold lumber. He is of Irish descent. Among his siblings are actors Brian Doyle-Murray, Joel Murray, and John Murray. He and most of his siblings worked as caddies, which paid his tuition to Loyola Academy, a Jesuit school. He played sports and did some acting while in that school, but in his words, mostly 'screwed off.'";
 const headline = "I'm a nut, but not just a nut."
+const experience = "44 years in industry"
+const phone = "1-800-GHOSTBUSTERS"
+const email = "billmurray@gmail.com"
 const photo = 'https://static.comicvine.com/uploads/scale_small/3/35374/804803-bill_murray.jpg'
 const defaultImage = 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png'
 
 const portfolioURL = "http://www.imdb.com/name/nm0000195/bio"
 const resumeURL = "https://codepen.io/gabrielhidalgow/details/yoWyEx"
 const imdbURL = "http://www.imdb.com/name/nm0000195/bio"
+
 
 const creditsArray = [
   {
@@ -55,25 +59,22 @@ class ViewProfile extends React.Component {
     const { auth, profile, firebase, data } = this.props
     return (
       <div className="ViewProfile">
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20, paddingTop: 20 }}>
-          <h1 style={{ textAlign: 'left', paddingLeft: 40, margin: 0 }}> Profile </h1>
-        </div>
         <div style={{ display: 'block', margin: 'auto' }}>
               <Card className="profile-card top-card" containerStyle={{ width: '50%', paddingBottom: 0, display: 'flex', flexDirection: 'row' }}>
                 <CardMedia className="crew-image">
-                  <img src={photo} alt="" style={{ objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />
+                  <img src={photo} alt="" style={{ width: 250, height: 250, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />
                 </CardMedia>
                 <div>
-                  <CardTitle title={name} titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={headline} subtitleStyle={{ width: '100%' }} >
+                  <CardTitle title={name} titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={headline} subtitleStyle={{ minWidth: '250%', fontStyle: 'italic' }} >
                   </CardTitle>
                   <CardText className="crew-text">
-                    44 yrs in industry
+                    {experience}
                   </CardText>
                   <CardText className="crew-text">
-                   billmurray@gmail.com
+                    {phone}
                   </CardText>                
                   <CardText className="crew-text">
-                   1-800-GHOSTBUSTERS
+                    {email}
                   </CardText>
                 </div>
               </Card>

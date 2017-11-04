@@ -76,11 +76,13 @@ class App extends React.Component {
       open: false,
       signedOut: false
     }
-    this.handleTouchTap = this.handleTouchTap.bind(this)
-    this.handleRequestClose = this.handleRequestClose.bind(this)
+    this.handleAvatarTouch = this.handleAvatarTouch.bind(this)
+    this.handleDropdownClose = this.handleDropdownClose.bind(this)
+    this.handleSignOutClose = this.handleSignOutClose.bind(this)
+    this.signOutMessage = this.signOutMessage.bind(this)
   }
 
-  handleTouchTap(event) {
+  handleAvatarTouch(event) {
     // This prevents ghost click.
     event.preventDefault()
 
@@ -91,7 +93,7 @@ class App extends React.Component {
     })
   }
 
-  handleRequestClose() {
+  handleDropdownClose() {
     this.setState({
       open: false
     })
@@ -99,12 +101,19 @@ class App extends React.Component {
 
   signOutMessage() {
     this.setState({
-      signedOut: true
+      signedOut: true,
+      open: false
+    })
+  }
+
+  handleSignOutClose() {
+    this.setState({
+      signedOut: false
     })
   }
 
   render() {
-    const { profile, auth, firebase, history, location, signUp, submitSignUp } = this.props
+    const { profile, auth, firebase, history, signUp, submitSignUp, location } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     return (
@@ -144,7 +153,7 @@ class App extends React.Component {
             </div>
           }
           iconElementRight={uid ? (
-            <Avatar className="accountIcon avatar" src={photoURL} size={60} onClick={this.handleTouchTap} />
+            <Avatar className="accountIcon avatar" src={photoURL} size={60} onClick={this.handleAvatarTouch} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
               <SignUpForm
@@ -163,7 +172,7 @@ class App extends React.Component {
           anchorEl={this.state.anchorEl}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
+          onRequestClose={this.handleDropdownClose}
         >
           <Menu>
             { uid ? ( // renders dropdown items depending on if logged in
@@ -171,7 +180,7 @@ class App extends React.Component {
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
                 <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
                 <Link to="/profile/{uid}"><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
-                <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.handleRequestClose(); this.signOutMessage() }} />
+                <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
               </div>
             ) : (
               <div>
@@ -182,10 +191,11 @@ class App extends React.Component {
           </Menu>
         </Popover>
         <Snackbar
-          bodyStyle={{ backgroundColor: '#F44336' }}
+          bodyStyle={{ backgroundColor: '#00C853' }}
           open={this.state.signedOut}
           message={'Successfully Logged Out.'}
           autoHideDuration={4000}
+          onRequestClose={this.handleSignOutClose}
         />
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />

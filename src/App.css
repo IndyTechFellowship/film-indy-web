@@ -44,7 +44,7 @@ a { text-decoration: none; }
 }
 .accountIcon {
     margin-right: 1em;
-    /*margin-top: 0.25em;*/
+    margin-top: 0.25em;
     cursor: pointer;
 }
 .accountLogin {
@@ -84,6 +84,8 @@ a { text-decoration: none; }
   margin-top: 0.75em;
 }
 
+/* prevents Avatar component images from stretching */
 .avatar {
   object-fit: cover;
+  border: 0;
 }
