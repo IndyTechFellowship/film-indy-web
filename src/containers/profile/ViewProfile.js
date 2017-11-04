@@ -25,11 +25,15 @@ ViewProfileContainer.propTypes = {
   profile: PropTypes.shape({
     photoURL: PropTypes.string,
     firstName: PropTypes.string,
-    lastName: PropTypes.string
+    lastName: PropTypes.string,
+    email: PropTypes.string,
   }).isRequired,
   data: PropTypes.shape({
     roles: PropTypes.object,
     userProfile: PropTypes.object
+  }).isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string.isRequired
   }).isRequired,
   firebase: PropTypes.shape({
     set: PropTypes.func

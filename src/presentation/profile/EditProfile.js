@@ -6,6 +6,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import Chip from 'material-ui/Chip'
+import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import '../../App.css'
@@ -150,7 +151,7 @@ class EditProfile extends React.Component {
               })}
             </div>
             <div>
-              <RaisedButton label="Add Roles" onClick={this.handleOpen} />
+              <RaisedButton label="Add Roles" icon={<AddIcon />} primary onClick={this.handleOpen} style={{ marginTop: '20px'}}/>
               <Dialog
                 title="Add Roles"
                 actions={dialogActions}

@@ -179,7 +179,7 @@ class App extends React.Component {
               <div>
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
                 <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
-                <Link to="/profile/{uid}"><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
+                <Link to={{ pathname: '/profile', search: `?query=${uid}` }}><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
               </div>
             ) : (
@@ -203,7 +203,7 @@ class App extends React.Component {
         <Route path="/search" component={Search} />
         <Route exact path="/forgotpassword" component={ForgotPassword} />
         <Route exact path="/profile/edit" component={EditProfile} />
-        <Route exact path="/profile/{uid}" component={ViewProfile} />
+        <Route path="/profile" component={ViewProfile} />
       </div>
     )
   }
