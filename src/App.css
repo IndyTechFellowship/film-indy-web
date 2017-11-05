@@ -102,3 +102,8 @@ a { text-decoration: none; }
   margin-top: 0.75em;
 }
 
+/* prevents Avatar component images from stretching */
+.avatar {
+  object-fit: cover;
+  border: 0;
+}

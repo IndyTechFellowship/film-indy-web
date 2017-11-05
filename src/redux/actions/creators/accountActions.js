@@ -123,3 +123,6 @@ export const updateAuth = result => dispatch => dispatch({
 })
 
 export const submitSignUp = () => dispatch => dispatch(submit('signUp'))
+
+export const submitSignIn = () => dispatch => dispatch(submit('signIn'))
+

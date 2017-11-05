@@ -111,7 +111,7 @@ const homePage = (props) => {
                 <Configure hitsPerPage={100} />
                 <AutoCompleteBar
                   onUpdateInput={query => this.searchQuery = query}
-                  onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })}
+                  onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}&show=all` })}
                 />
               </InstantSearch>
             </div>

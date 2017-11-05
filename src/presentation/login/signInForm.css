@@ -6,3 +6,15 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
 }
+
+form {
+    margin: 0 0 0 0;
+}
+
+#actionContainer{
+    text-align: center;
+}
+
+#forgotPasswordContainer {
+    margin: 20px 0 0 0;
+}

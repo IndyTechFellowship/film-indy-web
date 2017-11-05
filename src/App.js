@@ -6,6 +6,7 @@ import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import { InstantSearch } from 'react-instantsearch/dom'
 import { connectAutoComplete } from 'react-instantsearch/connectors'
+import QueryString from 'query-string'
 import 'react-instantsearch-theme-algolia/style.css'
 
 // Material UI Components
@@ -17,27 +18,26 @@ import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover'
 import Snackbar from 'material-ui/Snackbar'
 import AutoComplete from 'material-ui/AutoComplete'
-import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import { Tabs, Tab } from 'material-ui/Tabs'
 
 // Material UI SVG Icons
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import AccountCircle from 'material-ui/svg-icons/action/account-circle'
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
-import CreateIcon from 'material-ui/svg-icons/social/person-add'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import ViewIcon from 'material-ui/svg-icons/image/remove-red-eye'
 import ArrowIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 // Page components
 import Home from './containers/home'
-import Login from './containers/login/login'
 import Account from './containers/account/account'
 import EditProfile from './containers/profile/EditProfile'
 import ViewProfile from './containers/profile/ViewProfile'
 import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
 import SignUpForm from './presentation/signup/SignUpForm'
+import SignInForm from './presentation/login/SignInForm'
 
 // Style and images
 import './App.css'
@@ -48,7 +48,6 @@ import * as accountActions from './redux/actions/creators/accountActions'
 
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
-
 
 const AutoCompleteBar = connectAutoComplete(
   ({ hits, onItemSelected, onUpdateInput }) => (
@@ -114,43 +113,68 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, firebase, history, signUp, submitSignUp, location } = this.props
+    const { profile, auth, firebase, history, signUp, submitSignUp, signIn, submitSignIn, location } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
+    const parsed = QueryString.parse(location.search)
+    const showOnly = get(parsed, 'show', 'all')
+    const appBarStyle = location.pathname === '/search' ? { boxShadow: 'none' } : {}
     return (
       <div className="App">
         <AppBar
+          style={{ ...appBarStyle }}
           iconElementLeft={
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
-              { location.pathname !== '/' &&
-              <Card className="menuSearchCard" style={{ width: 420 }}>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <SearchIcon className="searchIcon" />
-                  <InstantSearch
-                    appId={ALGOLIA_APP_ID}
-                    apiKey={ALGOLIA_SEARCH_KEY}
-                    indexName="roles"
-                  >
-                    <AutoCompleteBar
-                      onUpdateInput={query => this.searchQuery = query}
-                      onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}` })}
+            <div className="dhjkaf"style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
+                { location.pathname !== '/' &&
+                <Card className="menuSearchCard" style={{ width: 420 }}>
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <SearchIcon className="searchIcon" />
+                    <InstantSearch
+                      appId={ALGOLIA_APP_ID}
+                      apiKey={ALGOLIA_SEARCH_KEY}
+                      indexName="roles"
+                    >
+                      <AutoCompleteBar
+                        onUpdateInput={query => this.searchQuery = query}
+                        onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}&show=all` })}
+                      />
+                    </InstantSearch>
+                    <RaisedButton
+                      label="Search"
+                      labelColor="#fff"
+                      backgroundColor={'#38b5e6'}
+                      style={{ height: 30, marginTop: 10, marginLeft: 30 }}
+                      onClick={() => {
+                        if (this.searchQuery) {
+                          history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
+                        }
+                      }}
                     />
-                  </InstantSearch>
-                  <RaisedButton
-                    label="Search"
-                    labelColor="#fff"
-                    backgroundColor={'#38b5e6'}
-                    style={{ height: 30, marginTop: 10, marginLeft: 30 }}
-                    onClick={() => {
-                      if (this.searchQuery !== '') {
-                        history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}` })
-                      }
+                  </div>
+                </Card>
+                }
+              </div>
+              {location.pathname === '/search' ?
+                (<Tabs tabItemContainerStyle={{ width: '30%' }} style={{ marginLeft: 200 }} value={showOnly}>
+                  <Tab
+                    label="All"
+                    value="all"
+                    onActive={() => {
+                      const query = get(parsed, 'query', ' ')
+                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=all` })
                     }}
                   />
-                </div>
-              </Card>
-              }
+                  <Tab
+                    label="Crew"
+                    value="crew"
+                    onActive={() => {
+                      const query = get(parsed, 'query', ' ')
+                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=crew` })
+                    }}
+                  />
+                </Tabs>) : null}
             </div>
           }
           iconElementRight={uid ? (
@@ -158,7 +182,6 @@ class App extends React.Component {
               <Avatar className="accountIcon avatar" src={photoURL} size={60} />
               <ArrowIcon className="arrowIcon" />
             </div>
-
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
               <SignUpForm
@@ -167,7 +190,12 @@ class App extends React.Component {
                 }}
                 sendSubmit={submitSignUp}
               />
-              <Link to="/login"><FlatButton style={{ color: 'white' }} label="Login" labelStyle={{fontSize: '12pt'}} size={60} /> </Link>
+              <SignInForm
+                onSubmit={(values) => {
+                  signIn(values.email, values.password)
+                }}
+                sendSubmit={submitSignIn}
+              />
             </div>
           )}
           zDepth={2}
@@ -188,10 +216,7 @@ class App extends React.Component {
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
               </div>
             ) : (
-              <div>
-                <Link to="/login"><MenuItem primaryText="Log In" leftIcon={<AccountCircle />} /></Link>
-                <Link to="/signup"><MenuItem primaryText="Create Account" leftIcon={<CreateIcon />} /></Link>
-              </div>
+              <div />
             )}
           </Menu>
         </Popover>
@@ -203,7 +228,6 @@ class App extends React.Component {
           onRequestClose={this.handleSignOutClose}
         />
         <Route exact path="/" component={Home} />
-        <Route exact path="/login" component={Login} />
         <Route exact path="/account" component={Account} />
         <Route path="/search" component={Search} />
         <Route exact path="/forgotpassword" component={ForgotPassword} />
@@ -223,6 +247,8 @@ App.propTypes = {
   }).isRequired,
   signUp: PropTypes.func.isRequired,
   submitSignUp: PropTypes.func.isRequired,
+  signIn: PropTypes.func.isRequired,
+  submitSignIn: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func
   }).isRequired,
