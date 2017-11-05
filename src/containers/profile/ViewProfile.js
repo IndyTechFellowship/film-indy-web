@@ -1,7 +1,6 @@
 import React from 'react'
 import QueryString from 'query-string'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { firebaseConnect } from 'react-redux-firebase'
@@ -36,7 +35,7 @@ ViewProfileContainer.propTypes = {
   }).isRequired,
   firebase: PropTypes.shape({
     set: PropTypes.func
-  }).isRequired
+  }).isRequired,
 } 
 
 const WrappedViewProfile = firebaseConnect((props, firebase) => {
@@ -45,10 +44,10 @@ const WrappedViewProfile = firebaseConnect((props, firebase) => {
   const { location } = props;
   const parsed = QueryString.parse(location.search)
   const uid = parsed.query 
-  console.log("uid: ", uid)
 
   return [
     `/userProfiles/${uid}`,
+    `/userAccount/${uid}`,
     'roles'
   ]
 })(ViewProfileContainer)
