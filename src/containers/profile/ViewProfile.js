@@ -1,4 +1,5 @@
 import React from 'react'
+import QueryString from 'query-string'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { connect } from 'react-redux'
@@ -6,8 +7,6 @@ import { withRouter } from 'react-router-dom'
 import { firebaseConnect } from 'react-redux-firebase'
 import ViewProfilePage from '../../presentation/profile/ViewProfile'
 import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
-import AuthenticatedComponent from '../../AuthenticatedComponent'
-
 
 
 class ViewProfileContainer extends React.Component {
@@ -41,12 +40,18 @@ ViewProfileContainer.propTypes = {
 } 
 
 const WrappedViewProfile = firebaseConnect((props, firebase) => {
-  const uid = get(firebase.auth(), 'currentUser.uid', '')
+
+  // gets uid of current public profile from URL
+  const { location } = props;
+  const parsed = QueryString.parse(location.search)
+  const uid = parsed.query 
+  console.log("uid: ", uid)
+
   return [
     `/userProfiles/${uid}`,
     'roles'
   ]
-})(AuthenticatedComponent(ViewProfileContainer))
+})(ViewProfileContainer)
 
 
 export default withRouter(connect(

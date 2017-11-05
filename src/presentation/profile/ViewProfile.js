@@ -1,8 +1,7 @@
 import React from 'react'
-import QueryString from 'query-string'
-import { Card, CardMedia, CardText, CardTitle, CardActions, CardHeader } from 'material-ui/Card'
+import { Card, CardMedia, CardText, CardTitle, CardActions } from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
-import { get, take } from 'lodash'
+import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import '../../App.css'
 import './ViewProfile.css'
@@ -59,16 +58,13 @@ class ViewProfile extends React.Component {
 
   render() {
 
-    // gets uid of current public profile from URL
-    const { auth, profile, firebase, data, location, partialUpdateAlgoliaObject } = this.props
-    const parsed = QueryString.parse(location.search)
-    const queryUid = parsed.query // the uid 
+    const { auth, profile, firebase, data } = this.props
 
     // grabs data using this uid to populate page
     const uid = get(auth, 'uid', '')
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
-    const userProfile = get(data, `userProfiles.${auth.uid}`)
+    const userProfile = get(data, `userProfiles.${uid}`)
     console.log("userProfile: ", userProfile)
 
     const userRoles = get(userProfile, 'roles', [])
@@ -88,6 +84,7 @@ class ViewProfile extends React.Component {
     const email = get(profile, 'email', '')
     const userProfileRolePath = `/userProfiles/${uid}`
     console.log("roles: ", userRoles)
+    console.log("name: ", name)
 
 
     return (
@@ -129,11 +126,11 @@ class ViewProfile extends React.Component {
                 <div className="roles">
                 { 
                   userRoles.map(role => (
-                    <div className="role-column">
-                      <div className="rounded-header"><span>{role}</span></div>
+                    <div className="role-column" key={role.roleId}>
+                      <div className="rounded-header"><span>{role.roleName}</span></div>
                       <div className="credits">
                         { creditsArray[0].credits.map(credit => (
-                            <p>{credit.year} : {credit.title}</p>
+                            <p key={credit.title}>{credit.year} : {credit.title}</p>
                           ) 
                         )}
                       </div>
