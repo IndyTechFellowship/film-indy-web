@@ -69,6 +69,7 @@ class AccountPage extends React.Component {
     }
     this.handleUpdateClose = this.handleUpdateClose.bind(this)
     this.updateMessage = this.updateMessage.bind(this)
+    this.resetPassword = this.resetPassword.bind(this)
   }
 
   updateMessage() {
@@ -81,6 +82,10 @@ class AccountPage extends React.Component {
     this.setState({
       updated: false
     })
+  }
+
+  resetPassword(password) {
+    
   }
 
   render() {
@@ -166,12 +171,12 @@ class AccountPage extends React.Component {
         <Card className="passwordCard">
           <CardTitle title="Reset Password" />
           <Divider />
-          <ResetPasswordForm onSubmit={values => props.resetPassword(values.newPassword)} />
-          <Snackbar
-            bodyStyle={{ backgroundColor: '#F44336' }}
-            open={props.account.resetPassword !== undefined}
-            message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.resetPasswordError.code'))}
-            autoHideDuration={4000}
+          <ResetPasswordForm onSubmit={values => this.resetPassword(values.newPassword)} />
+          //<Snackbar
+          //  bodyStyle={{ backgroundColor: '#F44336' }}
+          //  open={props.account.resetPassword !== undefined}
+          //  message={firebaseErrorCodeToFriendlyMessage(get(props, 'account.resetPasswordError.code'))}
+          //  autoHideDuration={4000}
           />
         </Card>
         <h2 className="resetHeader">Vendors</h2>
