@@ -131,7 +131,7 @@ class AccountPage extends React.Component {
                 />
               </div>
             </div>
-            <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} onTouchTap={this.updateMessage} />
+            <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} onClick={this.updateMessage} />
           </form>
         </Card>
 
