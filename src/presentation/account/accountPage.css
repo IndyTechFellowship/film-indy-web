@@ -67,7 +67,6 @@
 .profileField {
     display: block;
     margin-right: 10em;
-
 }
 
 /* Reset Password Card Styles */
@@ -116,7 +115,5 @@
     flex-direction: row;
     justify-content: flex-start;
     text-align: left;
-    /*align-content: flex-start;*/
-    /*align-items: center;*/
     width: 100%;
 }
