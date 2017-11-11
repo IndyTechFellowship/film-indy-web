@@ -2,11 +2,14 @@ import React from 'react'
 import '../../App.css'
 import './homePage.css'
 import PropTypes from 'prop-types'
-import { InstantSearch, Configure } from 'react-instantsearch/dom'
+import { InstantSearch, Index } from 'react-instantsearch/dom'
 import { connectAutoComplete } from 'react-instantsearch/connectors'
 import 'react-instantsearch-theme-algolia/style.css'
 import ImageSlider from 'react-slick'
 import { Link } from 'react-router-dom'
+import Autosuggest from 'react-autosuggest'
+import MenuItem from 'material-ui/MenuItem'
+import TextField from 'material-ui/TextField'
 
 // Image imports
 import LocationsImage from './location5.jpg'
@@ -28,36 +31,121 @@ import ScoutImage from './scout.jpg'
 
 // Material UI component imports
 import { Card, CardMedia, CardTitle } from 'material-ui/Card'
-import AutoComplete from 'material-ui/AutoComplete'
 import RaisedButton from 'material-ui/RaisedButton'
 
 // Material UI SVG Icons
 import SearchIcon from 'material-ui/svg-icons/action/search'
 
+const styles = {
+  container: {
+    flexGrow: 1,
+    position: 'relative',
+    paddingTop: 3
+  },
+  suggestionsContainerOpen: {
+    zIndex: 2,
+    position: 'absolute',
+    marginTop: 1,
+    marginBottom: 1 * 3,
+    left: 0,
+    right: 0
+  },
+  sectionTitle: {
+    backgroundColor: '#fff'
+  },
+  suggestion: {
+    display: 'block'
+  },
+  suggestionHiglighted: {
+    opacity: 1
+  },
+  suggestionsList: {
+    margin: 0,
+    padding: 0,
+    listStyleType: 'none',
+    backgroundColor: '#fff'
+  },
+  textField: {
+    width: '100%'
+  }
+}
+
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
 const AutoCompleteBar = connectAutoComplete(
-  ({ hits, onItemSelected, onUpdateInput }) => (
-    <AutoComplete
-      className="searchField"
-      fullWidth
-      hintText="Search our database..."
-      style={{ width: '40em' }}
-      onUpdateInput={onUpdateInput}
-      id="autocomplete"
-      maxSearchResults={10}
-      filter={(searchText, key) => {
-        if (searchText === '') {
-          return false
-        }
-        return AutoComplete.fuzzyFilter(searchText, key)
-      }}
-      onNewRequest={onItemSelected}
-      dataSource={hits.sort((a, b) => a.roleName.localeCompare(b.roleName)).map(hit => hit.roleName)}
-    />
-  )
-)
+  ({ hits, currentRefinement, refine, onUpdateInput, onSuggestionClicked }) => {
+    const subsetHits = hits.map(hit => ({ ...hit, hits: hit.hits.slice(0, 3) }))
+    return (
+      <Autosuggest
+        theme={styles}
+        suggestions={subsetHits}
+        multiSection
+        onSuggestionsFetchRequested={({ value }) => refine(value)}
+        onSuggestionsClearRequested={() => refine('')}
+        getSuggestionValue={hit => hit.roleName}
+        onSuggestionSelected={(event, { suggestion, sectionIndex }) => {
+          onSuggestionClicked(suggestion, sectionIndex)
+        }}
+        renderInputComponent={inputProps => (
+          <TextField {...inputProps} />
+        )}
+        renderSuggestion={(hit) => {
+          if (hit.roleName) {
+            return (
+              <MenuItem
+                style={{ whiteSpace: 'inital' }}
+              >
+                {hit.roleName}
+              </MenuItem>
+            )
+          } else if (hit.firstName) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.firstName} ${hit.lastName}`}
+              </MenuItem>
+            )
+          }
+          return (null)
+        }}
+        renderSectionTitle={(section) => {
+          if (section.hits.length > 0) {
+            if (section.index === 'roles') {
+              return (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <strong>Roles</strong>
+                </div>
+              )
+            } else if (section.index === 'names') {
+              return (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <strong>Crew</strong>
+                </div>
+              )
+            }
+          }
+          return ''
+        }}
+        renderSuggestionsContainer={({ containerProps, children }) => (
+          <Card {...containerProps}>
+            {children}
+          </Card>
+        )}
+        getSectionSuggestions={section => section.hits}
+        inputProps={{
+          placeholder: 'Search our database....',
+          style: {
+            height: 42,
+            width: '41.5em'
+          },
+          value: currentRefinement,
+          onChange: (event) => {
+            onUpdateInput(event.target.value)
+          }
+        }}
+      />
+    )
+  })
 
 const categories = [
   { key: 0, image: LocationsImage, title: 'Locations' },
@@ -107,11 +195,16 @@ const homePage = (props) => {
                 apiKey={ALGOLIA_SEARCH_KEY}
                 indexName="roles"
               >
-
-                <Configure hitsPerPage={100} />
+                <Index indexName="names" />
                 <AutoCompleteBar
                   onUpdateInput={query => this.searchQuery = query}
-                  onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}&show=all` })}
+                  onSuggestionClicked={(suggestion, index) => {
+                    if (index === 0) {
+                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all` })
+                    } else if (index === 1) {
+                      history.push({ pathname: '/profile', search: `?uid=${encodeURIComponent(suggestion.objectID)}` })
+                    }
+                  }}
                 />
               </InstantSearch>
             </div>
