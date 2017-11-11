@@ -27,11 +27,14 @@ import SearchIcon from 'material-ui/svg-icons/action/search'
 import AccountCircle from 'material-ui/svg-icons/action/account-circle'
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
 import EditIcon from 'material-ui/svg-icons/content/create'
+import ViewIcon from 'material-ui/svg-icons/image/remove-red-eye'
+import ArrowIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 // Page components
 import Home from './containers/home'
 import Account from './containers/account/account'
 import EditProfile from './containers/profile/EditProfile'
+import ViewProfile from './containers/profile/ViewProfile'
 import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
 import SignUpForm from './presentation/signup/SignUpForm'
@@ -268,7 +271,10 @@ class App extends React.Component {
             </div>
           }
           iconElementRight={uid ? (
-            <Avatar className="accountIcon avatar" src={photoURL} size={60} onClick={this.handleAvatarTouch} />
+            <div className="avatar-wrapper" onClick={this.handleAvatarTouch}>
+              <Avatar className="accountIcon avatar" src={photoURL} size={60} />
+              <ArrowIcon className="arrowIcon" />
+            </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
               <SignUpForm
@@ -299,6 +305,7 @@ class App extends React.Component {
               <div>
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
                 <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
+                <Link to={{ pathname: '/profile', search: `?query=${uid}` }}><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
               </div>
             ) : (
@@ -318,6 +325,7 @@ class App extends React.Component {
         <Route path="/search" component={Search} />
         <Route exact path="/forgotpassword" component={ForgotPassword} />
         <Route exact path="/profile/edit" component={EditProfile} />
+        <Route path="/profile" component={ViewProfile} />
       </div>
     )
   }

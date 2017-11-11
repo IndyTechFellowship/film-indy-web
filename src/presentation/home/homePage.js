@@ -186,7 +186,7 @@ const homePage = (props) => {
         <div className="header-wrapper">
           <div className="main-header">Film Indy</div>
           <div className="subheader">If it isn't on video,</div>
-          <div className="subheader">It didn't happen</div>
+          <div className="subheader">it didn't happen.</div>
           <Card className="searchCard" style={{ width: 700 }}>
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <SearchIcon className="searchIcon" />
