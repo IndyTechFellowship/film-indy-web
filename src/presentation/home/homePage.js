@@ -88,7 +88,7 @@ const AutoCompleteBar = connectAutoComplete(
           onSuggestionClicked(suggestion, sectionIndex)
         }}
         renderInputComponent={inputProps => (
-          <TextField {...inputProps} />
+          <TextField id="autocomplete-text-field" {...inputProps} />
         )}
         renderSuggestion={(hit) => {
           if (hit.roleName) {
@@ -202,7 +202,7 @@ const homePage = (props) => {
                     if (index === 0) {
                       history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all` })
                     } else if (index === 1) {
-                      history.push({ pathname: '/profile', search: `?uid=${encodeURIComponent(suggestion.objectID)}` })
+                      history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
                     }
                   }}
                 />
