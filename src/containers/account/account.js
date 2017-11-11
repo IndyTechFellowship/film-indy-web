@@ -8,6 +8,7 @@ import * as firebase from 'firebase'
 import AccountPage from '../../presentation/account/accountPage'
 import * as accountActions from '../../redux/actions/creators/accountActions'
 import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
+import Authed from '../../AuthenticatedComponent'
 
 
 const Account = props => (
@@ -48,7 +49,7 @@ Account.defaultProps = {
   account: {}
 }
 
-const wrappedAccount = firebaseConnect()(Account)
+const wrappedAccount = firebaseConnect()(Authed(Account))
 
 export default withRouter(connect(
   state => ({ account: state.account,
