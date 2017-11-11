@@ -80,7 +80,7 @@ class AccountPage extends React.Component {
         <Card className="profileCard" >
           <div className="profileContainer">
             <div className="imageWrapper">
-              <Avatar className="accountImage avatar" src={photoURL} size={150} />
+              <Avatar className="accountImage avatar" src={photoURL} size={300} />
               <CameraIcon className="cameraIcon" color="white" />
               <FlatButton className="imageText" icon={<UploadIcon />} label="Upload Picture" labelPosition="before" containerElement="label">
                 <FileUploader uid={uid} uploadFile={firebase.uploadFile} updateProfile={firebase.updateProfile} />
@@ -122,16 +122,16 @@ class AccountPage extends React.Component {
         <Card className="privacySettingsCard">
           <div className="toggleContainer">
             <div className="toggle">
-            <Toggle
-                    label="Public"
-                    toggled={isPublic}
-                    onToggle={(event, toggleValue) => {
-                        firebase.updateProfile({
-                            public: toggleValue
-                        })
-                        setPublic(toggleValue, uid)
-                    }}
-            />
+              <Toggle
+                label="Public"
+                toggled={isPublic}
+                onToggle={(event, toggleValue) => {
+                  firebase.updateProfile({
+                    public: toggleValue
+                  })
+                  setPublic(toggleValue, uid)
+                }}
+              />
             </div>
             <div>
               Allow others to search and view my profile

@@ -18,7 +18,7 @@
 
 .accountHeader {
     text-align: left;
-    width: 70%;
+    width: 50%;
     margin: 20px auto 13px auto;
 }
 
@@ -26,12 +26,11 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-around;
     flex-wrap: wrap;
 }
 
 .profileCard {
-    width: 70%;
+    width: 50%;
     height: auto;
     display: block;
     margin: auto;
@@ -39,8 +38,8 @@
 }
 
 .imageWrapper {
-    margin: 1em auto 1em auto;
-    width: 50%;
+    margin-right: 220px;
+    margin-left: 67px;
 }
 
 .accountImage {
@@ -73,7 +72,7 @@
 
 .resetHeader {
     text-align: left;
-    width: 70%;
+    width: 50%;
     margin: 30px auto 13px auto;
 }
 
@@ -83,7 +82,7 @@
 }
 
 .passwordCard {
-    width: 70%;
+    width: 50%;
     height: auto;
     display: block;
     margin: auto auto 1em auto;
@@ -99,12 +98,12 @@
 
 .privacyHeader {
     text-align: left;
-    width: 70%;
+    width: 50%;
     margin: 30px auto 13px auto;
 }
 
 .privacySettingsCard {
-    width: 70%;
+    width: 50%;
     height: auto;
     margin: auto;
     padding: 1em;
