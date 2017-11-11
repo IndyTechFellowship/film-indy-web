@@ -16,18 +16,30 @@
 
 /* Profile Card styles */
 
+.accountHeader {
+    text-align: left;
+    width: 50%;
+    margin: 20px auto 13px auto;
+}
+
+.profileContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 .profileCard {
-    width: 40%;
+    width: 50%;
     height: auto;
-    margin-top: 1em !important;
     display: block;
     margin: auto;
     padding: 1em;
 }
 
 .imageWrapper {
-    margin-top: 2em;
-    width: 100%;
+    margin-right: 220px;
+    margin-left: 67px;
 }
 
 .accountImage {
@@ -40,12 +52,9 @@
     position: relative;
     z-index: -1;
     display: block !important;
-    margin: auto;
+    margin: -6em auto 4em auto;
     width: 3em !important;
     height: 3em !important;
-
-    margin-top: -6em;
-    margin-bottom: 4em;
 }
 
 .imageText {
@@ -57,10 +66,15 @@
 .profileField {
     display: block;
     margin-right: 10em;
-
 }
 
 /* Reset Password Card Styles */
+
+.resetHeader {
+    text-align: left;
+    width: 50%;
+    margin: 30px auto 13px auto;
+}
 
 .passwordField {
     display: block;
@@ -68,11 +82,37 @@
 }
 
 .passwordCard {
-    width: 40%;
+    width: 50%;
     height: auto;
-    margin-top: 3em !important;
     display: block;
+    margin: auto auto 1em auto;
+    padding: 1em;
+}
+
+/* Profile Privacy Card Styles */
+
+.toggle {
+    width: 10%;
+    margin: 0 50px 0 0;
+}
+
+.privacyHeader {
+    text-align: left;
+    width: 50%;
+    margin: 30px auto 13px auto;
+}
+
+.privacySettingsCard {
+    width: 50%;
+    height: auto;
     margin: auto;
     padding: 1em;
-    margin-bottom: 1em;
+}
+
+.toggleContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    width: 100%;
 }

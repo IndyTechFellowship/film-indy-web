@@ -49,7 +49,7 @@ Account.defaultProps = {
   account: {}
 }
 
-const wrappedAccount = firebaseConnect()(AuthenticatedComponent(Account))
+const wrappedAccount = firebaseConnect()(Account)
 
 export default withRouter(connect(
   state => ({ account: state.account,
