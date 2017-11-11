@@ -8,7 +8,6 @@ import * as firebase from 'firebase'
 import AccountPage from '../../presentation/account/accountPage'
 import * as accountActions from '../../redux/actions/creators/accountActions'
 import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
-import AuthenticatedComponent from '../../AuthenticatedComponent'
 
 
 const Account = props => (
