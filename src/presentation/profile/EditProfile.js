@@ -1,4 +1,5 @@
 import React from 'react'
+import { Field, reduxForm } from 'redux-form'
 import { Card, CardTitle } from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar'
 import Divider from 'material-ui/Divider'
@@ -6,6 +7,8 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import Chip from 'material-ui/Chip'
+import TextField from 'material-ui/TextField'
+import Snackbar from 'material-ui/Snackbar'
 import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
@@ -33,17 +36,49 @@ const RoleChipDisplays = (roles, selected, onClick = () => {}, onDelete) => role
     <Chip id={role.roleId} key={role.roleId} onRequestDelete={deleteFunc} onClick={onClick} style={chipStyle} >{role.roleName}</Chip>
   )
 })
+
+const renderTextField = ({ input, name, label, meta: { touched, error }, ...custom }) => (
+  <TextField
+    hintText={label}
+    hintStyle={{ float: 'left' }}
+    textareaStyle={{ float: 'left' }}
+    floatingLabelText={label}
+    errorText={touched && error}
+    multiLine={input.name == "bio" ? true : false}
+    fullWidth
+    {...input}
+    {...custom}
+  />
+)
+
 class EditProfile extends React.Component {
   constructor(props) {
     super(props)
-    this.state = ({ dialogOpen: false })
+    this.state = ({ dialogOpen: false, updated: false })
     this.handleClose = this.handleClose.bind(this)
     this.handleOpen = this.handleOpen.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleProfileUpdate = this.handleProfileUpdate.bind(this)
+    this.handleUpdateClose = this.handleUpdateClose.bind(this)
+    this.updateMessage = this.updateMessage.bind(this)
   }
+
+  updateMessage() {
+    this.setState({
+      updated: true
+    })
+  }
+
+  handleUpdateClose() {
+    this.setState({
+      updated: false
+    })
+  }
+
   handleOpen() {
     this.setState({ dialogOpen: true, selectedRoles: [] })
   }
+
   handleSubmit() {
     const { auth, firebase, data, partialUpdateAlgoliaObject } = this.props
     const uid = get(auth, 'uid', '')
@@ -54,7 +89,7 @@ class EditProfile extends React.Component {
     const userProfileRolePath = `/userProfiles/${uid}`
     const allRoles = [...userRoleIds, ...selectedRoles]
     const rolesNames = allRoles.map(roleId => roles[roleId].roleName)
-    firebase.set(userProfileRolePath, { roles: allRoles })
+    firebase.update(userProfileRolePath, { roles: allRoles })
     partialUpdateAlgoliaObject('profiles', {
       objectID: uid,
       roles: rolesNames
@@ -64,8 +99,33 @@ class EditProfile extends React.Component {
   handleClose() {
     this.setState({ dialogOpen: false })
   }
+
+  handleProfileUpdate(values) {
+    const { auth, firebase, data, partialUpdateAlgoliaObject } = this.props
+    const uid = get(auth, 'uid', '')
+    const userProfile = get(this.props, `data.userProfiles.${uid}`)
+    const userProfilePath = `/userProfiles/${uid}`
+
+    // Sets only defined properties to firebase
+    for(var property in values) {
+      firebase.update(userProfilePath, { 
+        [property]: values[property] 
+      })
+    }
+
+    partialUpdateAlgoliaObject('profiles', {
+      objectID: uid,
+      headline: values.headline,
+      experience: values.experience,
+      phone: values.phone,
+      bio: values.bio,
+      website: values.website,
+      video: values.video
+    })
+  }
+
   render() {
-    const { auth, profile, firebase, data, partialUpdateAlgoliaObject } = this.props
+    const { auth, profile, firebase, data, partialUpdateAlgoliaObject, pristine, submitting, handleSubmit } = this.props
     const uid = get(auth, 'uid', '')
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
@@ -84,6 +144,7 @@ class EditProfile extends React.Component {
       })
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
+    const phone = get(profile, 'phone', '')
     const email = get(auth, 'email', '')
     const userProfileRolePath = `/userProfiles/${uid}`
     const possibleRolesToAdd = Object.keys(roles).reduce((acc, roleId) => {
@@ -103,6 +164,13 @@ class EditProfile extends React.Component {
       }
       return 0
     })
+
+    const bio = get(userProfile, 'bio');
+    const experience = get(userProfile, 'experience')
+    const headline = get(userProfile, 'headline')
+    const video = get(userProfile, 'video', '')
+    const website = get(userProfile, 'website')
+
     const dialogActions = [
       <FlatButton
         label="Cancel"
@@ -130,6 +198,64 @@ class EditProfile extends React.Component {
                 <div>{email}</div>
               </div>
             </div>
+
+            <div>
+              <form onSubmit={handleSubmit(this.handleProfileUpdate)}>
+                <div className="fields">
+                  <div>
+                    <Field
+                      name="headline"
+                      component={renderTextField}
+                      floatingLabelText="Headline"
+                      type="text"
+                    />
+                  </div>
+                  <div>
+                    <Field
+                      name="experience"
+                      component={renderTextField}
+                      floatingLabelText="Year you began working in industry"
+                      type="number"
+                    />
+                  </div>                  
+                  <div>
+                    <Field
+                      name="phone"
+                      component={renderTextField}
+                      floatingLabelText="Phone"
+                      type="number"
+                    />
+                  </div>                  
+                  <div>
+                    <Field
+                      name="bio"
+                      component={renderTextField}
+                      floatingLabelText="Bio"
+                      type="text"
+                    />
+                  </div>               
+                  <div>
+                    <Field
+                      name="website"
+                      component={renderTextField}
+                      floatingLabelText="Website"
+                      type="url"
+                    />
+                  </div>                
+                  <div>
+                    <Field
+                      name="video"
+                      component={renderTextField}
+                      floatingLabelText="Featured Video (must be in embed format)"
+                      type="url"
+                    />
+                  </div>
+                </div>
+                <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} onClick={this.updateMessage} />
+              </form>
+            </div>
+
+
           </Card>
         </div>
         <div style={{ paddingTop: 30 }}>
@@ -174,6 +300,15 @@ class EditProfile extends React.Component {
             </div>
           </Card>
         </div>
+
+        <Snackbar
+          bodyStyle={{ backgroundColor: '#00C853' }}
+          open={this.state.updated}
+          message={'Successfully Updated.'}
+          autoHideDuration={4000}
+          onRequestClose={this.handleUpdateClose}
+        />
+
       </div>
     )
   }
@@ -195,11 +330,17 @@ EditProfile.propTypes = {
   firebase: PropTypes.shape({
     set: PropTypes.func
   }).isRequired,
-  partialUpdateAlgoliaObject: PropTypes.func.isRequired
+  partialUpdateAlgoliaObject: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired
 }
 
 EditProfile.defaultProps = {
   account: {}
 }
 
-export default EditProfile
+const EditProfileFormEnriched = reduxForm({
+  form: 'UpdatePublicProfile',
+  enableReinitialize: true
+})(EditProfile)
+
+export default EditProfileFormEnriched

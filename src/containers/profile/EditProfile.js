@@ -31,7 +31,7 @@ EditProfileContainer.propTypes = {
   }).isRequired,
   firebase: PropTypes.shape({
     set: PropTypes.func
-  }).isRequired
+  }).isRequired,
 }
 
 const WrappedEditProfile = firebaseConnect((props, firebase) => {
@@ -44,7 +44,10 @@ const WrappedEditProfile = firebaseConnect((props, firebase) => {
 
 
 export default withRouter(connect(
-  state => ({ firebase: state.firebase, auth: state.firebase.auth, profile: state.firebase.profile, data: state.firebase.data }),
+  state => ({ 
+    firebase: state.firebase, auth: state.firebase.auth, profile: state.firebase.profile, data: state.firebase.data,
+    // initialValues: { headline: 'A', experience: 'A', phone: 'A', bio: 'A', website: 'A', video: 'A' }
+   }),
   { ...algoliaActions },
 )(WrappedEditProfile))
 

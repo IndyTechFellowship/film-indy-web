@@ -7,21 +7,21 @@ import PropTypes from 'prop-types'
 import '../../App.css'
 import './ViewProfile.css'
 import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
+import WebsiteIcon from 'material-ui/svg-icons/hardware/laptop-mac'
 
 
 //// Dummy filler data 
 
-const aboutText = "Bill Murray is an American actor, comedian, and writer. The fifth of nine children, he was born William James Murray in Wilmette, Illinois, to Lucille (Collins), a mailroom clerk, and Edward Joseph Murray II, who sold lumber. He is of Irish descent. Among his siblings are actors Brian Doyle-Murray, Joel Murray, and John Murray. He and most of his siblings worked as caddies, which paid his tuition to Loyola Academy, a Jesuit school. He played sports and did some acting while in that school, but in his words, mostly 'screwed off.'";
-const headline = "I'm a nut, but not just a nut."
-const experience = "44 years in industry"
-const testPhone = "1-800-GHOSTBUSTERS"
+// const bio = "Bill Murray is an American actor, comedian, and writer. The fifth of nine children, he was born William James Murray in Wilmette, Illinois, to Lucille (Collins), a mailroom clerk, and Edward Joseph Murray II, who sold lumber. He is of Irish descent. Among his siblings are actors Brian Doyle-Murray, Joel Murray, and John Murray. He and most of his siblings worked as caddies, which paid his tuition to Loyola Academy, a Jesuit school. He played sports and did some acting while in that school, but in his words, mostly 'screwed off.'";
+// const headline = "I'm a nut, but not just a nut."
+// const experience = "44 years in industry"
+// const phone = "1-800-GHOSTBUSTERS"
+// const video = 'https://www.youtube.com/embed/cUsOjj8m02o'
+// const website = "http://www.imdb.com/name/nm0000195/bio"
 const defaultImage = 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png'
-const videoEmbed = 'https://www.youtube.com/embed/cUsOjj8m02o'
-// const videoEmbed = 'https://player.vimeo.com/video/47839264'
 
-const portfolioURL = "http://www.imdb.com/name/nm0000195/bio"
-const resumeURL = "https://codepen.io/gabrielhidalgow/details/yoWyEx"
-const imdbURL = "http://www.imdb.com/name/nm0000195/bio"
+// const vimeo = 'https://player.vimeo.com/video/47839264'
+
 
 const creditsArray = [
   {
@@ -81,9 +81,18 @@ class ViewProfile extends React.Component {
         }
         return 0
       })
-    const profileImageUrl = get(userAccount, 'photoURL', '')
+    const bio = get(userProfile, 'bio');
+    const experience = get(userProfile, 'experience')
+    const currentDate = new Date();
+    const numYears = currentDate.getFullYear() - experience;
+    const headline = get(userProfile, 'headline')
+    const video = get(userProfile, 'video', '')
+    const website = get(userProfile, 'website')
+
+    const profileImageUrl = get(userAccount, 'photoURL')
+    const email = get(userAccount, 'email')
     const name = `${get(userAccount, 'firstName', '')} ${get(userAccount, 'lastName', '')}`
-    const email = get(userAccount, 'email', '')
+    const phone = get(userAccount, 'phone')
 
 
     return (
@@ -97,10 +106,10 @@ class ViewProfile extends React.Component {
                   <CardTitle title={name} titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={headline} subtitleStyle={{ minWidth: '250%', fontStyle: 'italic' }} >
                   </CardTitle>
                   <CardText className="crew-text">
-                    {experience}
+                    {numYears} years in industry
                   </CardText>
                   <CardText className="crew-text">
-                    {testPhone}
+                    {phone}
                   </CardText>                
                   <CardText className="crew-text">
                     {email}
@@ -111,18 +120,16 @@ class ViewProfile extends React.Component {
               <Card className="profile-card small-card">
                 <CardTitle title="About Me" titleStyle={{ fontWeight: 500, fontSize: '20px' }}></CardTitle>
                 <CardText>
-                  {aboutText}
+                  {bio}
                 </CardText>
                 <CardActions>
-                  <RaisedButton primary label="Portfolio" target="_blank" href={portfolioURL} />
-                  <RaisedButton primary label="Resume" target="_blank" href={resumeURL} />
-                  <RaisedButton primary label="IMDb" target="_blank" href={imdbURL} />
+                  <RaisedButton primary label="Website" target="_blank" href={website} icon={<WebsiteIcon />}/>
                 </CardActions>
               </Card>   
 
               <Card className="profile-card big-card">
                 <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }}></CardTitle>
-                <embed width="100%" height="500px" src={videoEmbed} />
+                <embed width="100%" height="500px" src={video} />
               </Card>
 
               <Card className="profile-card big-card">
