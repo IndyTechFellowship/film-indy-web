@@ -29,8 +29,7 @@
 }
 
 .small-card, .big-card {
-	padding-left: 10px;
-	padding-bottom: 10px;
+	padding: 10px;
 }
 
 .big-card {
@@ -64,6 +63,7 @@
 .rounded-header span {
 	display: block;
 	margin-top: 10px;
+	padding: 0 10px 10px 10px;
 }
 
 .credits {
