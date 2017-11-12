@@ -122,7 +122,21 @@ export const updateAuth = result => dispatch => dispatch({
   auth: result
 })
 
+export const createVendor = vendorName => (dispatch) => {
+  const uid = firebase.auth().currentUser.uid
+  const vendorRef = firebase.database().ref('/vendorProfiles')
+  return dispatch({
+    type: 'CREATE_VENDOR',
+    payload: vendorRef.push({
+      creator: uid,
+      name: vendorName
+    })
+  })
+}
+
 export const submitSignUp = () => dispatch => dispatch(submit('signUp'))
 
 export const submitSignIn = () => dispatch => dispatch(submit('signIn'))
+
+export const submitVendorCreate = () => dispatch => dispatch(submit('addVendor'))
 

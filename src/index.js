@@ -14,7 +14,7 @@ import { fade } from 'material-ui/utils/colorManipulator'
 import {
   pinkA200,
   grey100, grey300, grey400, grey500,
-  white, darkBlack, fullBlack,
+  white, darkBlack, fullBlack
 } from 'material-ui/styles/colors'
 
 import { configureStore } from './redux/store/configureReduxStore'
@@ -37,8 +37,8 @@ const muiTheme = getMuiTheme({
     disabledColor: fade(darkBlack, 0.3),
     pickerHeaderColor: '#39991e',
     clockCircleColor: fade(darkBlack, 0.07),
-    shadowColor: fullBlack,
-  },
+    shadowColor: fullBlack
+  }
 })
 
 const firebaseConfig = {
@@ -46,7 +46,7 @@ const firebaseConfig = {
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET
 }
 
 firebase.initializeApp(firebaseConfig)

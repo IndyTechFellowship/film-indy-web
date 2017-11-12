@@ -49,13 +49,23 @@ Account.defaultProps = {
   account: {}
 }
 
-const wrappedAccount = firebaseConnect()(Authed(Account))
+const wrappedAccount = firebaseConnect((props, firebaseProp) => {
+  const uid = get(firebaseProp.auth(), 'currentUser.uid', '')
+  return [
+    {
+      path: 'vendorProfiles',
+      storeAs: 'usersVendors',
+      queryParams: ['orderByChild=creator', `equalTo=${uid}`]
+    }
+  ]
+})(Authed(Account))
 
 export default withRouter(connect(
   state => ({ account: state.account,
     firebase: state.firebase,
     auth: state.firebase.auth,
     profile: state.firebase.profile,
+    usersVendors: state.firebase.data.usersVendors,
     initialValues: { firstName: state.firebase.profile.firstName, lastName: state.firebase.profile.lastName, email: get(firebase.auth(), 'currentUser.email') } }),
   { ...accountActions, ...algoliaActions },
 )(wrappedAccount))

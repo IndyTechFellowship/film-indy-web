@@ -10,59 +10,50 @@ import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import WebsiteIcon from 'material-ui/svg-icons/hardware/laptop-mac'
 
 
-//// Dummy filler data 
+// // Dummy filler data 
 
-// const bio = "Bill Murray is an American actor, comedian, and writer. The fifth of nine children, he was born William James Murray in Wilmette, Illinois, to Lucille (Collins), a mailroom clerk, and Edward Joseph Murray II, who sold lumber. He is of Irish descent. Among his siblings are actors Brian Doyle-Murray, Joel Murray, and John Murray. He and most of his siblings worked as caddies, which paid his tuition to Loyola Academy, a Jesuit school. He played sports and did some acting while in that school, but in his words, mostly 'screwed off.'";
-// const headline = "I'm a nut, but not just a nut."
-// const experience = "44 years in industry"
-// const phone = "1-800-GHOSTBUSTERS"
-// const video = 'https://www.youtube.com/embed/cUsOjj8m02o'
-// const website = "http://www.imdb.com/name/nm0000195/bio"
 const defaultImage = 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png'
 
 // const vimeo = 'https://player.vimeo.com/video/47839264'
 
-
 const creditsArray = [
   {
-    role: "Actor",
+    role: 'Actor',
     credits: [
-      { year: "1993",
-        title: "Groundhog Day"
-      },      
-      { year: "1984",
-        title: "Ghostbusters"
-      },      
-      { year: "1980",
-        title: "Caddyshack"
+      { year: '1993',
+        title: 'Groundhog Day'
       },
-      { year: "1977",
-        title: "Saturday Night Live"
+      { year: '1984',
+        title: 'Ghostbusters'
       },
-    ]
-  },  
-  {
-    role: "Writer",
-    credits: [
-      { year: "2015",
-        title: "A Very Murray Christmas"
-      },      
-      { year: "1977",
-        title: "Saturday Night Live"
-      },      
+      { year: '1980',
+        title: 'Caddyshack'
+      },
+      { year: '1977',
+        title: 'Saturday Night Live'
+      }
     ]
   },
-] /// end dummy data
+  {
+    role: 'Writer',
+    credits: [
+      { year: '2015',
+        title: 'A Very Murray Christmas'
+      },
+      { year: '1977',
+        title: 'Saturday Night Live'
+      }
+    ]
+  }
+] // / end dummy data
 
 class ViewProfile extends React.Component {
-
   render() {
-
     const { data, location } = this.props
 
     // gets uid of current public profile from URL
     const parsed = QueryString.parse(location.search)
-    const uid = parsed.query 
+    const uid = parsed.query
 
     // grabs data using uid to populate page
     const roles = get(data, 'roles', {})
@@ -81,6 +72,7 @@ class ViewProfile extends React.Component {
         }
         return 0
       })
+
     const bio = get(userProfile, 'bio');
     const experience = get(userProfile, 'experience')
     const currentDate = new Date();
@@ -155,7 +147,6 @@ class ViewProfile extends React.Component {
                 </CardActions>
               </Card>
       </div>
-    </div>
     )
   }
 }
@@ -175,7 +166,7 @@ ViewProfile.propTypes = {
   }).isRequired,
   firebase: PropTypes.shape({
     set: PropTypes.func
-  }).isRequired,
+  }).isRequired
 }
 
 ViewProfile.defaultProps = {

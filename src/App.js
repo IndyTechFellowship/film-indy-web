@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { InstantSearch } from 'react-instantsearch/dom'
+import { InstantSearch, Index } from 'react-instantsearch/dom'
 import { connectAutoComplete } from 'react-instantsearch/connectors'
+import Autosuggest from 'react-autosuggest'
 import QueryString from 'query-string'
 import 'react-instantsearch-theme-algolia/style.css'
 
@@ -17,7 +18,7 @@ import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover'
 import Snackbar from 'material-ui/Snackbar'
-import AutoComplete from 'material-ui/AutoComplete'
+import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import { Tabs, Tab } from 'material-ui/Tabs'
 
@@ -46,28 +47,111 @@ import Logo from './film-indy-logo.png'
 
 import * as accountActions from './redux/actions/creators/accountActions'
 
+const styles = {
+  container: {
+    flexGrow: 1,
+    position: 'relative',
+    paddingTop: 3
+  },
+  suggestionsContainerOpen: {
+    position: 'absolute',
+    marginTop: 1,
+    marginBottom: 1 * 3,
+    left: 0,
+    right: 0
+  },
+  sectionTitle: {
+    backgroundColor: '#fff'
+  },
+  suggestion: {
+    display: 'block'
+  },
+  suggestionHiglighted: {
+    opacity: 1
+  },
+  suggestionsList: {
+    margin: 0,
+    padding: 0,
+    listStyleType: 'none',
+    backgroundColor: '#fff'
+  },
+  textField: {
+    width: '100%'
+  }
+}
+
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
 const AutoCompleteBar = connectAutoComplete(
-  ({ hits, onItemSelected, onUpdateInput }) => (
-    <AutoComplete
-      className="searchField"
-      hintText="Search our database..."
-      onUpdateInput={onUpdateInput}
-      id="autocomplete"
-      maxSearchResults={10}
-      filter={(searchText, key) => {
-        if (searchText === '') {
-          return false
-        }
-        return AutoComplete.fuzzyFilter(searchText, key)
-      }}
-      onNewRequest={onItemSelected}
-      dataSource={hits.sort((a, b) => a.roleName.localeCompare(b.roleName)).map(hit => hit.roleName)}
-    />
-  )
-)
+  ({ hits, currentRefinement, refine, onUpdateInput, onSuggestionClicked }) => {
+    const subsetHits = hits.map(hit => ({ ...hit, hits: hit.hits.slice(0, 3) }))
+    return (
+      <Autosuggest
+        theme={styles}
+        suggestions={subsetHits}
+        multiSection
+        onSuggestionsFetchRequested={({ value }) => refine(value)}
+        onSuggestionsClearRequested={() => refine('')}
+        getSuggestionValue={hit => hit.roleName}
+        onSuggestionSelected={(event, { suggestion, sectionIndex }) => {
+          onSuggestionClicked(suggestion, sectionIndex)
+        }}
+        renderInputComponent={inputProps => (
+          <TextField id="autocomplete-text-field" {...inputProps} />
+        )}
+        renderSuggestion={(hit) => {
+          if (hit.roleName) {
+            return (
+              <MenuItem
+                style={{ whiteSpace: 'inital' }}
+              >
+                {hit.roleName}
+              </MenuItem>
+            )
+          } else if (hit.firstName) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.firstName} ${hit.lastName}`}
+              </MenuItem>
+            )
+          }
+          return (null)
+        }}
+        renderSectionTitle={(section) => {
+          if (section.hits.length > 0) {
+            if (section.index === 'roles') {
+              return (
+                <strong>Roles</strong>
+              )
+            } else if (section.index === 'names') {
+              return (
+                <strong>Crew</strong>
+              )
+            }
+          }
+          return ''
+        }}
+        renderSuggestionsContainer={({ containerProps, children }) => (
+          <Card {...containerProps}>
+            {children}
+          </Card>
+        )}
+        getSectionSuggestions={section => section.hits}
+        inputProps={{
+          placeholder: 'Search our database....',
+          style: {
+            height: 42,
+            width: 256
+          },
+          value: currentRefinement,
+          onChange: (event) => {
+            onUpdateInput(event.target.value)
+          }
+        }}
+      />
+    )
+  })
 
 class App extends React.Component {
   constructor(props) {
@@ -136,9 +220,16 @@ class App extends React.Component {
                       apiKey={ALGOLIA_SEARCH_KEY}
                       indexName="roles"
                     >
+                      <Index indexName="names" />
                       <AutoCompleteBar
                         onUpdateInput={query => this.searchQuery = query}
-                        onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}&show=all` })}
+                        onSuggestionClicked={(suggestion, index) => {
+                          if (index === 0) {
+                            history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all` })
+                          } else if (index === 1) {
+                            history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
+                          }
+                        }}
                       />
                     </InstantSearch>
                     <RaisedButton
@@ -159,6 +250,7 @@ class App extends React.Component {
               {location.pathname === '/search' ?
                 (<Tabs tabItemContainerStyle={{ width: '30%' }} style={{ marginLeft: 200 }} value={showOnly}>
                   <Tab
+                    style={{ zIndex: 0 }}
                     label="All"
                     value="all"
                     onActive={() => {
@@ -167,6 +259,7 @@ class App extends React.Component {
                     }}
                   />
                   <Tab
+                    style={{ zIndex: 0 }}
                     label="Crew"
                     value="crew"
                     onActive={() => {

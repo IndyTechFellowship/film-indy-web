@@ -37,7 +37,7 @@ class Search extends React.Component {
     if (enriched.length === 0 && totalHits.hasLoaded) {
       return (
         <div style={{ marginTop: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <h2 style={{ fontWeight: 200 }}>  Yikes! Your search didn't return any results. Try searching for a media specialist role or a name </h2>
+          <h2 style={{ fontWeight: 200 }}>  Yikes! Your search didn't return any results. Try searching for a media specialist role or a name. </h2>
         </div>
       )
     }
@@ -85,7 +85,7 @@ class Search extends React.Component {
       } else if (totalHits.hasLoaded && enriched.length === 0) {
         return (
           <div style={{ marginTop: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <h2 style={{ fontWeight: 200 }}>  Yikes! Your search didn't return any results. Try searching for a media specialist role or a name </h2>
+            <h2 style={{ fontWeight: 200 }}>  Yikes! Your search didn't return any results. Try searching for a media specialist role or a name. </h2>
           </div>
         )
       }
