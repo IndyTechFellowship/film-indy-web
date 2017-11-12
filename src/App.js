@@ -326,7 +326,6 @@ class App extends React.Component {
         <Route exact path="/forgotpassword" component={ForgotPassword} />
         <Route exact path="/profile/edit" component={EditProfile} />
         <Route path="/profile" component={ViewProfile} />
-        <Route exact path="/resetpassword" component={ResetPassword} />
       </div>
     )
   }

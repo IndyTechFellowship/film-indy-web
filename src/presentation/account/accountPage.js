@@ -163,10 +163,15 @@ class AccountPage extends React.Component {
           onRequestClose={this.handleUpdateClose}
         />
 
+        <h2>Change My Password</h2>
         <Card className="passwordCard">
-          <CardTitle title="Reset Password" />
-          <Divider />
           <ResetPasswordForm onSubmit={values => resetPassword(values.newPassword)} />
+          <Snackbar
+            bodyStyle={{ backgroundColor: '#F44336' }}
+            open={account.resetPasswordError !== undefined}
+            message={firebaseErrorCodeToFriendlyMessage(get(this,'account.resetPasswordError.code'))}
+            autoHideDuration={4000}
+          />
         </Card>
         <h2 className="resetHeader">Vendors</h2>
         <Card className="passwordCard">
