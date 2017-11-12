@@ -5,16 +5,18 @@ import { get } from 'lodash'
 
 // Material UI Imports
 import Avatar from 'material-ui/Avatar'
-import { Card, CardTitle } from 'material-ui/Card'
-import Divider from 'material-ui/Divider'
+import { Card } from 'material-ui/Card'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import Chip from 'material-ui/Chip'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import Toggle from 'material-ui/Toggle'
 
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera'
 import UploadIcon from 'material-ui/svg-icons/file/file-upload'
+
+import VendorCreateModal from './VendorCreateModal'
 
 import '../../App.css'
 import './accountPage.css'
@@ -70,69 +72,75 @@ class AccountPage extends React.Component {
   }
 
   render() {
-    const { handleSubmit, pristine, submitting, handleProfileChanges, profile, firebase, auth, setPublic } = this.props
+    const { handleSubmit, pristine, submitting, handleProfileChanges,
+      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, usersVendors } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const isPublic = get(profile, 'public', false)
-
+    const vendors = usersVendors || {}
     return (
       <div>
-        <h1>Account Settings</h1>
+        <h2 className="accountHeader">Account Information</h2>
         <Card className="profileCard" >
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <CardTitle title="Your Profile">
-              <div style={{ width: '10%' }}>
-                <Toggle
-                  label="Public"
-                  style={{ marginLeft: '2.5em', marginTop: 20 }}
-                  toggled={isPublic}
-                  onToggle={(event, toggleValue) => {
-                    firebase.updateProfile({
-                      public: toggleValue
-                    })
-                    setPublic(toggleValue, uid)
-                  }}
-                />
-              </div>
-            </CardTitle>
-          </div>
-          <Divider />
-          <div className="imageWrapper">
-            <Avatar className="accountImage avatar" src={photoURL} size={150} />
-            <CameraIcon className="cameraIcon" color="white" />
-            <FlatButton className="imageText" icon={<UploadIcon />} label="Upload Picture" labelPosition="before" containerElement="label">
-              <FileUploader uid={uid} uploadFile={firebase.uploadFile} updateProfile={firebase.updateProfile} />
-            </FlatButton>
-          </div>
-          <form onSubmit={handleSubmit(handleProfileChanges)}>
-            <div className="fields">
-              <div>
-                <Field
-                  name="firstName"
-                  component={renderTextField}
-                  floatingLabelText="First Name"
-                  type="text"
-                />
-              </div>
-              <div>
-                <Field
-                  name="lastName"
-                  component={renderTextField}
-                  floatingLabelText="Last Name"
-                  type="text"
-                />
-              </div>
-              <div>
-                <Field
-                  name="email"
-                  component={renderTextField}
-                  floatingLabelText="Email"
-                  type="email"
-                />
-              </div>
+          <div className="profileContainer">
+            <div className="imageWrapper">
+              <Avatar className="accountImage avatar" src={photoURL} size={300} />
+              <CameraIcon className="cameraIcon" color="white" />
+              <FlatButton className="imageText" icon={<UploadIcon />} label="Upload Picture" labelPosition="before" containerElement="label">
+                <FileUploader uid={uid} uploadFile={firebase.uploadFile} updateProfile={firebase.updateProfile} />
+              </FlatButton>
             </div>
-            <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} onClick={this.updateMessage} />
-          </form>
+            <form onSubmit={handleSubmit(handleProfileChanges)}>
+              <div className="fields">
+                <div>
+                  <Field
+                    name="firstName"
+                    component={renderTextField}
+                    floatingLabelText="First Name"
+                    type="text"
+                  />
+                </div>
+                <div>
+                  <Field
+                    name="lastName"
+                    component={renderTextField}
+                    floatingLabelText="Last Name"
+                    type="text"
+                  />
+                </div>
+                <div>
+                  <Field
+                    name="email"
+                    component={renderTextField}
+                    floatingLabelText="Email"
+                    type="email"
+                  />
+                </div>
+              </div>
+              <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} onClick={this.updateMessage} />
+            </form>
+          </div>
+        </Card>
+
+        <h2 className="privacyHeader"> Profile Privacy Settings </h2>
+        <Card className="privacySettingsCard">
+          <div className="toggleContainer">
+            <div className="toggle">
+              <Toggle
+                label="Public"
+                toggled={isPublic}
+                onToggle={(event, toggleValue) => {
+                  firebase.updateProfile({
+                    public: toggleValue
+                  })
+                  setPublic(toggleValue, uid)
+                }}
+              />
+            </div>
+            <div>
+              Allow others to search and view my profile
+            </div>
+          </div>
         </Card>
 
         <Snackbar
@@ -143,14 +151,36 @@ class AccountPage extends React.Component {
           onRequestClose={this.handleUpdateClose}
         />
 
+        <h2 className="resetHeader"> Change My Password </h2>
         <Card className="passwordCard">
-          <CardTitle title="Reset Password" />
-          <Divider />
           <ul className="fields">
             <li><TextField hintText="New Password" floatingLabelText="Password" type="password" /></li>
             <li><TextField hintText="Confirm Password" floatingLabelText="Confirm Password" type="password" /></li>
           </ul>
           <RaisedButton className="accountButton" primary label="Submit" />
+        </Card>
+        <h2 className="resetHeader">Vendors</h2>
+        <Card className="passwordCard">
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            {Object.keys(vendors).map((key) => {
+              const vend = vendors[key]
+              return (
+                <Chip key={vend.name} style={{ marginRight: 5 }}>
+                  {vend.name}
+                </Chip>
+              )
+            })}
+            {Object.keys(vendors).length === 0 ?
+              'Press Add to create a Vendor'
+              : null
+            }
+          </div>
+          <VendorCreateModal
+            submitVendorCreate={submitVendorCreate}
+            onSubmit={(values) => {
+              createVendor(values.name)
+            }}
+          />
         </Card>
       </div>
     )
@@ -202,7 +232,23 @@ AccountPage.propTypes = {
     uploadFile: PropTypes.func.isRequired
   }).isRequired,
   setPublic: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  handleProfileChanges: PropTypes.func.isRequired,
+  createVendor: PropTypes.func.isRequired,
+  usersVendors: PropTypes.objectOf(PropTypes.shape({
+    creator: PropTypes.string,
+    name: PropTypes.string
+  })),
+  handleSubmit: PropTypes.func.isRequired,
+  submitVendorCreate: PropTypes.func.isRequired
+}
+
+AccountPage.defaultProps = {
+  usersVendors: PropTypes.objectOf(PropTypes.shape({
+    creator: PropTypes.string,
+    name: PropTypes.string
+  }))
 }
 
 const AccountPageFormEnriched = reduxForm({

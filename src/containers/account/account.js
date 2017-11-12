@@ -8,7 +8,7 @@ import * as firebase from 'firebase'
 import AccountPage from '../../presentation/account/accountPage'
 import * as accountActions from '../../redux/actions/creators/accountActions'
 import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
-import AuthenticatedComponent from '../../AuthenticatedComponent'
+import Authed from '../../AuthenticatedComponent'
 
 
 const Account = props => (
@@ -49,13 +49,23 @@ Account.defaultProps = {
   account: {}
 }
 
-const wrappedAccount = firebaseConnect()(AuthenticatedComponent(Account))
+const wrappedAccount = firebaseConnect((props, firebaseProp) => {
+  const uid = get(firebaseProp.auth(), 'currentUser.uid', '')
+  return [
+    {
+      path: 'vendorProfiles',
+      storeAs: 'usersVendors',
+      queryParams: ['orderByChild=creator', `equalTo=${uid}`]
+    }
+  ]
+})(Authed(Account))
 
 export default withRouter(connect(
   state => ({ account: state.account,
     firebase: state.firebase,
     auth: state.firebase.auth,
     profile: state.firebase.profile,
+    usersVendors: state.firebase.data.usersVendors,
     initialValues: { firstName: state.firebase.profile.firstName, lastName: state.firebase.profile.lastName, email: get(firebase.auth(), 'currentUser.email') } }),
   { ...accountActions, ...algoliaActions },
 )(wrappedAccount))

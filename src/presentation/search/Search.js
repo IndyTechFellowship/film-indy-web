@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import QueryString from 'query-string'
 import { Card, CardMedia, CardText } from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -57,19 +58,21 @@ class Search extends React.Component {
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
               <GridList style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto' }}padding={4}>
                 {take(enriched, 4).map((enrichedResult, i) => (
-                  <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row' }} style={{ width: 400, height: 150, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
-                    <CardMedia>
-                      <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
-                    </CardMedia>
-                    <div>
-                      <CardText style={{ fontSize: 25 }}>
-                        {`${get(enrichedResult, 'firstName', '')} ${get(enrichedResult, 'lastName', '')}`}
-                      </CardText>
-                      <CardText>
+                  <Link to={{ pathname: '/profile', search: `?query=${encodeURIComponent(get(enrichedResult, 'objectID'))}` }}>
+                    <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row' }} style={{ width: 400, height: 150, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
+                      <CardMedia>
+                        <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                      </CardMedia>
+                      <div>
+                        <CardText style={{ fontSize: 25 }}>
+                          {`${get(enrichedResult, 'firstName', '')} ${get(enrichedResult, 'lastName', '')}`}
+                        </CardText>
+                        <CardText>
                     Headline
-                      </CardText>
-                    </div>
-                  </Card>
+                        </CardText>
+                      </div>
+                    </Card>
+                  </Link>
                 ))}
               </GridList>
             </div>
@@ -103,7 +106,14 @@ class Search extends React.Component {
             }}
           >
             {enriched.map(enrichedResult => (
-              <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row' }} style={{ width: 400, height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30 }}>
+              <Card
+                onClick={() => {
+                  history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(get(enrichedResult, 'objectID'))}` })
+                }}
+                key={enrichedResult.objectID}
+                containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row' }}
+                style={{ width: 400, height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
+              >
                 <CardMedia>
                   <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
                 </CardMedia>

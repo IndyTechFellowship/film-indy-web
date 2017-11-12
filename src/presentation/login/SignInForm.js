@@ -48,11 +48,12 @@ class SignInForm extends React.Component {
         <Dialog
           contentStyle={{ width: '100%', marginBottom: 150 }}
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          title="Sign In"
+          title="Login"
           actions={actions}
-          modal
+          modal={false}
           open={this.state.open}
           autoScrollBodyContent
+          onRequestClose={this.handleClose}
         >
           <form onSubmit={handleSubmit}>
             <div>

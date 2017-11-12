@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { InstantSearch } from 'react-instantsearch/dom'
+import { InstantSearch, Index } from 'react-instantsearch/dom'
 import { connectAutoComplete } from 'react-instantsearch/connectors'
+import Autosuggest from 'react-autosuggest'
 import QueryString from 'query-string'
 import 'react-instantsearch-theme-algolia/style.css'
 
@@ -17,7 +18,7 @@ import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover'
 import Snackbar from 'material-ui/Snackbar'
-import AutoComplete from 'material-ui/AutoComplete'
+import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import { Tabs, Tab } from 'material-ui/Tabs'
 
@@ -26,11 +27,14 @@ import SearchIcon from 'material-ui/svg-icons/action/search'
 import AccountCircle from 'material-ui/svg-icons/action/account-circle'
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
 import EditIcon from 'material-ui/svg-icons/content/create'
+import ViewIcon from 'material-ui/svg-icons/image/remove-red-eye'
+import ArrowIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 // Page components
 import Home from './containers/home'
 import Account from './containers/account/account'
 import EditProfile from './containers/profile/EditProfile'
+import ViewProfile from './containers/profile/ViewProfile'
 import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
 import SignUpForm from './presentation/signup/SignUpForm'
@@ -43,28 +47,111 @@ import Logo from './film-indy-logo.png'
 
 import * as accountActions from './redux/actions/creators/accountActions'
 
+const styles = {
+  container: {
+    flexGrow: 1,
+    position: 'relative',
+    paddingTop: 3
+  },
+  suggestionsContainerOpen: {
+    position: 'absolute',
+    marginTop: 1,
+    marginBottom: 1 * 3,
+    left: 0,
+    right: 0
+  },
+  sectionTitle: {
+    backgroundColor: '#fff'
+  },
+  suggestion: {
+    display: 'block'
+  },
+  suggestionHiglighted: {
+    opacity: 1
+  },
+  suggestionsList: {
+    margin: 0,
+    padding: 0,
+    listStyleType: 'none',
+    backgroundColor: '#fff'
+  },
+  textField: {
+    width: '100%'
+  }
+}
+
 const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
 const AutoCompleteBar = connectAutoComplete(
-  ({ hits, onItemSelected, onUpdateInput }) => (
-    <AutoComplete
-      className="searchField"
-      hintText="Search our database..."
-      onUpdateInput={onUpdateInput}
-      id="autocomplete"
-      maxSearchResults={10}
-      filter={(searchText, key) => {
-        if (searchText === '') {
-          return false
-        }
-        return AutoComplete.fuzzyFilter(searchText, key)
-      }}
-      onNewRequest={onItemSelected}
-      dataSource={hits.sort((a, b) => a.roleName.localeCompare(b.roleName)).map(hit => hit.roleName)}
-    />
-  )
-)
+  ({ hits, currentRefinement, refine, onUpdateInput, onSuggestionClicked }) => {
+    const subsetHits = hits.map(hit => ({ ...hit, hits: hit.hits.slice(0, 3) }))
+    return (
+      <Autosuggest
+        theme={styles}
+        suggestions={subsetHits}
+        multiSection
+        onSuggestionsFetchRequested={({ value }) => refine(value)}
+        onSuggestionsClearRequested={() => refine('')}
+        getSuggestionValue={hit => hit.roleName}
+        onSuggestionSelected={(event, { suggestion, sectionIndex }) => {
+          onSuggestionClicked(suggestion, sectionIndex)
+        }}
+        renderInputComponent={inputProps => (
+          <TextField id="autocomplete-text-field" {...inputProps} />
+        )}
+        renderSuggestion={(hit) => {
+          if (hit.roleName) {
+            return (
+              <MenuItem
+                style={{ whiteSpace: 'inital' }}
+              >
+                {hit.roleName}
+              </MenuItem>
+            )
+          } else if (hit.firstName) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.firstName} ${hit.lastName}`}
+              </MenuItem>
+            )
+          }
+          return (null)
+        }}
+        renderSectionTitle={(section) => {
+          if (section.hits.length > 0) {
+            if (section.index === 'roles') {
+              return (
+                <strong>Roles</strong>
+              )
+            } else if (section.index === 'names') {
+              return (
+                <strong>Crew</strong>
+              )
+            }
+          }
+          return ''
+        }}
+        renderSuggestionsContainer={({ containerProps, children }) => (
+          <Card {...containerProps}>
+            {children}
+          </Card>
+        )}
+        getSectionSuggestions={section => section.hits}
+        inputProps={{
+          placeholder: 'Search our database....',
+          style: {
+            height: 42,
+            width: 256
+          },
+          value: currentRefinement,
+          onChange: (event) => {
+            onUpdateInput(event.target.value)
+          }
+        }}
+      />
+    )
+  })
 
 class App extends React.Component {
   constructor(props) {
@@ -133,9 +220,16 @@ class App extends React.Component {
                       apiKey={ALGOLIA_SEARCH_KEY}
                       indexName="roles"
                     >
+                      <Index indexName="names" />
                       <AutoCompleteBar
                         onUpdateInput={query => this.searchQuery = query}
-                        onItemSelected={item => history.push({ pathname: '/search', search: `?query=${encodeURIComponent(item)}&show=all` })}
+                        onSuggestionClicked={(suggestion, index) => {
+                          if (index === 0) {
+                            history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all` })
+                          } else if (index === 1) {
+                            history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
+                          }
+                        }}
                       />
                     </InstantSearch>
                     <RaisedButton
@@ -156,6 +250,7 @@ class App extends React.Component {
               {location.pathname === '/search' ?
                 (<Tabs tabItemContainerStyle={{ width: '30%' }} style={{ marginLeft: 200 }} value={showOnly}>
                   <Tab
+                    style={{ zIndex: 0 }}
                     label="All"
                     value="all"
                     onActive={() => {
@@ -164,6 +259,7 @@ class App extends React.Component {
                     }}
                   />
                   <Tab
+                    style={{ zIndex: 0 }}
                     label="Crew"
                     value="crew"
                     onActive={() => {
@@ -175,7 +271,10 @@ class App extends React.Component {
             </div>
           }
           iconElementRight={uid ? (
-            <Avatar className="accountIcon avatar" src={photoURL} size={60} onClick={this.handleAvatarTouch} />
+            <div className="avatar-wrapper" onClick={this.handleAvatarTouch}>
+              <Avatar className="accountIcon avatar" src={photoURL} size={60} />
+              <ArrowIcon className="arrowIcon" />
+            </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
               <SignUpForm
@@ -206,6 +305,7 @@ class App extends React.Component {
               <div>
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
                 <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
+                <Link to={{ pathname: '/profile', search: `?query=${uid}` }}><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
               </div>
             ) : (
@@ -225,6 +325,7 @@ class App extends React.Component {
         <Route path="/search" component={Search} />
         <Route exact path="/forgotpassword" component={ForgotPassword} />
         <Route exact path="/profile/edit" component={EditProfile} />
+        <Route path="/profile" component={ViewProfile} />
       </div>
     )
   }

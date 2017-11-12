@@ -92,6 +92,7 @@
 	justify-content: flex-start;
 	align-content: space-around;
 	text-align: left;
+	z-index: 0
 }
 
 .category-card {

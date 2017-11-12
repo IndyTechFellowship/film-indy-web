@@ -18,7 +18,7 @@ Search.propTypes = {
   location: PropTypes.shape({
     search: PropTypes.string.isRequired
   }).isRequired,
-  enriched: PropTypes.arrayOf(PropTypes.object).isRequired
+  enriched: PropTypes.arrayOf(PropTypes.object).isRequired,
 }
 
 export default withRouter(connect(
