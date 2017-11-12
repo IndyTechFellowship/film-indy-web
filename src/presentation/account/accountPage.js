@@ -72,7 +72,8 @@ class AccountPage extends React.Component {
   }
 
   render() {
-    const { handleSubmit, pristine, submitting, handleProfileChanges, profile, firebase, auth, setPublic, submitVendorCreate, createVendor, usersVendors } = this.props
+    const { handleSubmit, pristine, submitting, handleProfileChanges,
+      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, usersVendors } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const isPublic = get(profile, 'public', false)
@@ -164,7 +165,7 @@ class AccountPage extends React.Component {
             {Object.keys(vendors).map((key) => {
               const vend = vendors[key]
               return (
-                <Chip style={{ marginRight: 5 }}>
+                <Chip key={vend.name} style={{ marginRight: 5 }}>
                   {vend.name}
                 </Chip>
               )
@@ -231,8 +232,23 @@ AccountPage.propTypes = {
     uploadFile: PropTypes.func.isRequired
   }).isRequired,
   setPublic: PropTypes.func.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  handleProfileChanges: PropTypes.func.isRequired,
+  createVendor: PropTypes.func.isRequired,
+  usersVendors: PropTypes.objectOf(PropTypes.shape({
+    creator: PropTypes.string,
+    name: PropTypes.string
+  })),
   handleSubmit: PropTypes.func.isRequired,
   submitVendorCreate: PropTypes.func.isRequired
+}
+
+AccountPage.defaultProps = {
+  usersVendors: PropTypes.objectOf(PropTypes.shape({
+    creator: PropTypes.string,
+    name: PropTypes.string
+  }))
 }
 
 const AccountPageFormEnriched = reduxForm({
