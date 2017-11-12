@@ -24,7 +24,7 @@ ViewProfileContainer.propTypes = {
     photoURL: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
-    email: PropTypes.string,
+    email: PropTypes.string
   }).isRequired,
   data: PropTypes.shape({
     roles: PropTypes.object,
@@ -35,15 +35,14 @@ ViewProfileContainer.propTypes = {
   }).isRequired,
   firebase: PropTypes.shape({
     set: PropTypes.func
-  }).isRequired,
-} 
+  }).isRequired
+}
 
 const WrappedViewProfile = firebaseConnect((props, firebase) => {
-
   // gets uid of current public profile from URL
-  const { location } = props;
+  const { location } = props
   const parsed = QueryString.parse(location.search)
-  const uid = parsed.query 
+  const uid = parsed.query
 
   return [
     `/userProfiles/${uid}`,

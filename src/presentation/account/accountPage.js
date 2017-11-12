@@ -8,12 +8,15 @@ import Avatar from 'material-ui/Avatar'
 import { Card } from 'material-ui/Card'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import Chip from 'material-ui/Chip'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import Toggle from 'material-ui/Toggle'
 
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera'
 import UploadIcon from 'material-ui/svg-icons/file/file-upload'
+
+import VendorCreateModal from './VendorCreateModal'
 
 import '../../App.css'
 import './accountPage.css'
@@ -69,11 +72,11 @@ class AccountPage extends React.Component {
   }
 
   render() {
-    const { handleSubmit, pristine, submitting, handleProfileChanges, profile, firebase, auth, setPublic } = this.props
+    const { handleSubmit, pristine, submitting, handleProfileChanges, profile, firebase, auth, setPublic, submitVendorCreate, createVendor, usersVendors } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const isPublic = get(profile, 'public', false)
-
+    const vendors = usersVendors || {}
     return (
       <div>
         <h2 className="accountHeader">Account Information</h2>
@@ -155,6 +158,29 @@ class AccountPage extends React.Component {
           </ul>
           <RaisedButton className="accountButton" primary label="Submit" />
         </Card>
+        <h2 className="resetHeader">Vendors</h2>
+        <Card className="passwordCard">
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            {Object.keys(vendors).map((key) => {
+              const vend = vendors[key]
+              return (
+                <Chip style={{ marginRight: 5 }}>
+                  {vend.name}
+                </Chip>
+              )
+            })}
+            {Object.keys(vendors).length === 0 ?
+              'Press Add to create a Vendor'
+              : null
+            }
+          </div>
+          <VendorCreateModal
+            submitVendorCreate={submitVendorCreate}
+            onSubmit={(values) => {
+              createVendor(values.name)
+            }}
+          />
+        </Card>
       </div>
     )
   }
@@ -205,7 +231,8 @@ AccountPage.propTypes = {
     uploadFile: PropTypes.func.isRequired
   }).isRequired,
   setPublic: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired
+  handleSubmit: PropTypes.func.isRequired,
+  submitVendorCreate: PropTypes.func.isRequired
 }
 
 const AccountPageFormEnriched = reduxForm({
