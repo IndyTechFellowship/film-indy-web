@@ -14,8 +14,6 @@ import Chip from 'material-ui/Chip'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import Toggle from 'material-ui/Toggle'
-import Snackbar from 'material-ui/Snackbar'
-
 
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera'
 import UploadIcon from 'material-ui/svg-icons/file/file-upload'
@@ -85,7 +83,7 @@ class AccountPage extends React.Component {
 
   render() {
     const { handleSubmit, pristine, submitting, handleProfileChanges,
-      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, usersVendors } = this.props
+      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, usersVendors, resetPassword, account } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const isPublic = get(profile, 'public', false)
@@ -200,9 +198,6 @@ class AccountPage extends React.Component {
     )
   }
 }
-=======
->>>>>>> nope
-}
 
 const FileUploader = props => (
   <input
@@ -258,7 +253,14 @@ AccountPage.propTypes = {
     name: PropTypes.string
   })),
   handleSubmit: PropTypes.func.isRequired,
-  submitVendorCreate: PropTypes.func.isRequired
+  submitVendorCreate: PropTypes.func.isRequired,
+  account: PropTypes.shape({
+    resetPasswordError: PropTypes.shape({
+      code: PropTypes.string,
+      message: PropTypes.string
+    })
+  }),
+  resetPassword: PropTypes.func.isRequired
 }
 
 AccountPage.defaultProps = {
