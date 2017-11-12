@@ -97,9 +97,10 @@ class SignUpForm extends React.Component {
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           title="Sign Up"
           actions={actions}
-          modal
+          modal={false}
           open={this.state.open}
           autoScrollBodyContent
+          onRequestClose={this.handleClose}
         >
           <form
             onSubmit={handleSubmit}
@@ -180,4 +181,3 @@ const SignUpFormFormConnected = connect(
 )(SignUpFormFormEnriched)
 
 export default SignUpFormFormConnected
-
