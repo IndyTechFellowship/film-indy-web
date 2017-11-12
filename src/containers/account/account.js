@@ -14,7 +14,7 @@ import Authed from '../../AuthenticatedComponent'
 const Account = props => (
   <div>
     <AccountPage
-      {...this.props}
+      {...props}
       handleProfileChanges={(values) => {
         const oldEmail = get(props, 'auth.email')
         const uid = get(props, 'auth.uid')
@@ -45,7 +45,6 @@ Account.propTypes = {
   updateAuth: PropTypes.func.isRequired,
   sendPasswordResetEmail: PropTypes.func.isRequired,
   resetPassword: PropTypes.func.isRequired,
-
 }
 
 Account.defaultProps = {
