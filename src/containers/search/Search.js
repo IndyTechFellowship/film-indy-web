@@ -19,6 +19,9 @@ Search.propTypes = {
     search: PropTypes.string.isRequired
   }).isRequired,
   enriched: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.shape({
+    userProfile: PropTypes.object
+  }).isRequired,
 }
 
 export default withRouter(connect(
