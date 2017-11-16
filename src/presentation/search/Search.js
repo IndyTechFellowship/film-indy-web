@@ -26,13 +26,10 @@ class Search extends React.Component {
     }
   }
   render() {
-    const { enriched, location, totalHits, searchForCrew, offset, length, history, data } = this.props
+    const { enriched, location, totalHits, searchForCrew, offset, length, history } = this.props
     const parsed = QueryString.parse(location.search)
     const query = get(parsed, 'query', ' ')
     const showOnly = get(parsed, 'show', 'all')
-    // const uid = get(enrichedResult, 'objectID')
-    // const userProfile = get(data, `userProfiles.${uid}`)
-    // const headline = get(userProfile, 'headline')
 
     if (enriched.length === 0 && totalHits.hasLoaded) {
       return (
@@ -71,8 +68,8 @@ class Search extends React.Component {
                         <CardText style={{ fontSize: 25 }}>
                           {`${get(enrichedResult, 'firstName', '')} ${get(enrichedResult, 'lastName', '')}`}
                         </CardText>
-                        <CardText> 
-                            {get(get(data, `userProfiles.${get(enrichedResult, 'objectID')}`), 'headline')}
+                        <CardText>
+                          {get(enrichedResult, 'headline', '')}
                         </CardText>
                       </div>
                     </Card>
@@ -126,7 +123,7 @@ class Search extends React.Component {
                     {`${get(enrichedResult, 'firstName', '')} ${get(enrichedResult, 'lastName', '')}`}
                   </CardText>
                   <CardText>
-                    Headline
+                    {get(enrichedResult, 'headline', '')}
                   </CardText>
                 </div>
               </Card>
