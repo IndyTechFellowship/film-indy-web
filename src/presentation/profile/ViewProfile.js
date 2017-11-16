@@ -73,10 +73,10 @@ class ViewProfile extends React.Component {
         return 0
       })
 
-    const bio = get(userProfile, 'bio');
+    const bio = get(userProfile, 'bio')
     const experience = get(userProfile, 'experience')
-    const currentDate = new Date();
-    const numYears = currentDate.getFullYear() - experience;
+    const currentDate = new Date()
+    const numYears = currentDate.getFullYear() - experience
     const headline = get(userProfile, 'headline')
     const video = get(userProfile, 'video', '')
     const website = get(userProfile, 'website')
@@ -90,62 +90,62 @@ class ViewProfile extends React.Component {
     return (
       <div className="ViewProfile">
         <div style={{ display: 'block', margin: 'auto' }}>
-              <Card className="profile-card top-card" containerStyle={{ width: '50%', paddingBottom: 0, display: 'flex', flexDirection: 'row' }}>
-                <CardMedia className="crew-image">
-                  <img src={get(profileImageUrl, profileImageUrl, defaultImage )} alt="" style={{ width: 250, height: 250, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />
-                </CardMedia>
-                <div>
-                  <CardTitle title={name} titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={headline} subtitleStyle={{ minWidth: '250%', fontStyle: 'italic' }} >
-                  </CardTitle>
-                  <CardText className="crew-text">
-                    {numYears} years in industry
-                  </CardText>
-                  <CardText className="crew-text">
-                    {phone}
-                  </CardText>                
-                  <CardText className="crew-text">
-                    {email}
-                  </CardText>
-                </div>
-              </Card>
+          <Card className="profile-card top-card" containerStyle={{ width: '50%', paddingBottom: 0, display: 'flex', flexDirection: 'row' }}>
+            <CardMedia className="crew-image">
+              <img src={get(profileImageUrl, profileImageUrl, defaultImage)} alt="" style={{ width: 250, height: 250, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />
+            </CardMedia>
+            <div>
+              <CardTitle title={name} titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={headline} subtitleStyle={{ minWidth: '250%', fontStyle: 'italic' }} />
+              <CardText className="crew-text">
+                {numYears} years in industry
+              </CardText>
+              <CardText className="crew-text">
+                {phone}
+              </CardText>
+              <CardText className="crew-text">
+                {email}
+              </CardText>
+            </div>
+          </Card>
 
-              <Card className="profile-card small-card">
-                <CardTitle title="About Me" titleStyle={{ fontWeight: 500, fontSize: '20px' }}></CardTitle>
-                <CardText>
-                  {bio}
-                </CardText>
-                <CardActions>
-                  <RaisedButton primary label="Website" target="_blank" href={website} icon={<WebsiteIcon />}/>
-                </CardActions>
-              </Card>   
+          <Card className="profile-card small-card">
+            <CardTitle title="About Me" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+            <CardText>
+              {bio}
+            </CardText>
+            <CardActions>
+              <RaisedButton primary label="Website" target="_blank" href={website} icon={<WebsiteIcon />} />
+            </CardActions>
+          </Card>
 
-              <Card className="profile-card big-card">
-                <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }}></CardTitle>
-                <embed width="100%" height="500px" src={video} />
-              </Card>
+          <Card className="profile-card big-card">
+            <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+            <embed width="100%" height="500px" src={video} />
+          </Card>
 
-              <Card className="profile-card big-card">
-                <CardTitle title="Credits" titleStyle={{ fontWeight: 500, fontSize: '20px' }}></CardTitle>
-                <div className="roles">
-                { 
-                  userRoles.map(role => (
-                    <div className="role-column" key={role.roleId}>
-                      <div className="rounded-header"><span>{role.roleName}</span></div>
-                      <div className="credits">
-                        { creditsArray[0].credits.map(credit => (
-                            <p key={credit.title}>{credit.year} : {credit.title}</p>
-                          ) 
-                        )}
-                      </div>
-                    </div> 
-                  ))
-                }
-                </div>
-                <CardActions style={{ textAlign: 'center' }}>
-                  <RaisedButton primary label="Add Role" icon={<AddIcon />} />
-                  <RaisedButton primary label="Add Credit" icon={<AddIcon />} />
-                </CardActions>
-              </Card>
+          <Card className="profile-card big-card">
+            <CardTitle title="Credits" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+            <div className="roles">
+              {
+                userRoles.map(role => (
+                  <div className="role-column" key={role.roleId}>
+                    <div className="rounded-header"><span>{role.roleName}</span></div>
+                    <div className="credits">
+                      { creditsArray[0].credits.map(credit => (
+                        <p key={credit.title}>{credit.year} : {credit.title}</p>
+                      )
+                      )}
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+            <CardActions style={{ textAlign: 'center' }}>
+              <RaisedButton primary label="Add Role" icon={<AddIcon />} />
+              <RaisedButton primary label="Add Credit" icon={<AddIcon />} />
+            </CardActions>
+          </Card>
+        </div>
       </div>
     )
   }

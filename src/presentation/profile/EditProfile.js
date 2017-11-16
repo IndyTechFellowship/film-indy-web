@@ -11,7 +11,7 @@ import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
 import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
+import { get, pickBy } from 'lodash'
 import '../../App.css'
 
 const styles = {
@@ -44,7 +44,7 @@ const renderTextField = ({ input, name, label, meta: { touched, error }, ...cust
     textareaStyle={{ float: 'left' }}
     floatingLabelText={label}
     errorText={touched && error}
-    multiLine={input.name == "bio" ? true : false}
+    multiLine={input.name === 'bio'}
     fullWidth
     {...input}
     {...custom}
@@ -101,26 +101,16 @@ class EditProfile extends React.Component {
   }
 
   handleProfileUpdate(values) {
-    const { auth, firebase, data, partialUpdateAlgoliaObject } = this.props
+    const { auth, firebase, partialUpdateAlgoliaObject } = this.props
     const uid = get(auth, 'uid', '')
-    const userProfile = get(this.props, `data.userProfiles.${uid}`)
     const userProfilePath = `/userProfiles/${uid}`
+    const onlyDefinedValues = pickBy(values, value => value !== null && value !== undefined)
 
-    // Sets only defined properties to firebase
-    for(var property in values) {
-      firebase.update(userProfilePath, { 
-        [property]: values[property] 
-      })
-    }
+    firebase.update(userProfilePath, onlyDefinedValues)
 
     partialUpdateAlgoliaObject('profiles', {
       objectID: uid,
-      headline: values.headline,
-      experience: values.experience,
-      phone: values.phone,
-      bio: values.bio,
-      website: values.website,
-      video: values.video
+      experience: values.experience
     })
   }
 
@@ -144,7 +134,6 @@ class EditProfile extends React.Component {
       })
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
-    const phone = get(profile, 'phone', '')
     const email = get(auth, 'email', '')
     const userProfileRolePath = `/userProfiles/${uid}`
     const possibleRolesToAdd = Object.keys(roles).reduce((acc, roleId) => {
@@ -164,12 +153,6 @@ class EditProfile extends React.Component {
       }
       return 0
     })
-
-    const bio = get(userProfile, 'bio');
-    const experience = get(userProfile, 'experience')
-    const headline = get(userProfile, 'headline')
-    const video = get(userProfile, 'video', '')
-    const website = get(userProfile, 'website')
 
     const dialogActions = [
       <FlatButton
@@ -217,7 +200,7 @@ class EditProfile extends React.Component {
                       floatingLabelText="Year you began working in industry"
                       type="number"
                     />
-                  </div>                  
+                  </div>
                   <div>
                     <Field
                       name="phone"
@@ -225,7 +208,7 @@ class EditProfile extends React.Component {
                       floatingLabelText="Phone"
                       type="number"
                     />
-                  </div>                  
+                  </div>
                   <div>
                     <Field
                       name="bio"
@@ -233,7 +216,7 @@ class EditProfile extends React.Component {
                       floatingLabelText="Bio"
                       type="text"
                     />
-                  </div>               
+                  </div>
                   <div>
                     <Field
                       name="website"
@@ -241,7 +224,7 @@ class EditProfile extends React.Component {
                       floatingLabelText="Website"
                       type="url"
                     />
-                  </div>                
+                  </div>
                   <div>
                     <Field
                       name="video"
@@ -277,7 +260,7 @@ class EditProfile extends React.Component {
               })}
             </div>
             <div>
-              <RaisedButton label="Add Roles" icon={<AddIcon />} primary onClick={this.handleOpen} style={{ marginTop: '20px'}}/>
+              <RaisedButton label="Add Roles" icon={<AddIcon />} primary onClick={this.handleOpen} style={{ marginTop: '20px' }} />
               <Dialog
                 title="Add Roles"
                 actions={dialogActions}
@@ -315,6 +298,8 @@ class EditProfile extends React.Component {
 }
 
 EditProfile.propTypes = {
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
   auth: PropTypes.shape({
     uid: PropTypes.string
   }).isRequired,
