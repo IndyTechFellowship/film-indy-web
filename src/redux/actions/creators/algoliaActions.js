@@ -48,7 +48,9 @@ export const searchForCrew = (query, offset = 0, length = 10) => (dispatch) => {
     const uniqueHits = searchResults.value.reduce((acc, result) => [...acc, ...result.results.hits], [])
     const enrichPromises = Promise.all(uniqueHits.map(uniqueHit => firebase.database().ref(`userAccount/${uniqueHit.objectID}`)
       .once('value')
-      .then(snapshot => ({ objectID: uniqueHit.objectID, value: snapshot.val() }))))
+      .then(snapshot => firebase.database().ref(`/userProfiles/${uniqueHit.objectID}`)
+        .once('value')
+        .then(profileSnapshot => ({ objectID: uniqueHit.objectID, value: { ...snapshot.val(), ...profileSnapshot.val() } })))))
     return dispatch({
       type: SEARCH_FOR_CREW_ENRICHED,
       payload: {

@@ -8,6 +8,18 @@ import EditProfile from '../../presentation/profile/EditProfile'
 import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
 import AuthenticatedComponent from '../../AuthenticatedComponent'
 
+const createInitialValues = (state) => {
+  const uid = state.firebase.auth.uid
+  return {
+    headline: get(state, `firebase.data.userProfiles.${uid}.headline`),
+    experience: get(state, `firebase.data.userProfiles.${uid}.experience`),
+    phone: get(state, `firebase.data.userProfiles.${uid}.phone`),
+    bio: get(state, `firebase.data.userProfiles.${uid}.bio`),
+    website: get(state, `firebase.data.userProfiles.${uid}.website`),
+    video: get(state, `firebase.data.userProfiles.${uid}.video`)
+  }
+}
+
 class EditProfileContainer extends React.Component {
   render() {
     return (
@@ -44,7 +56,14 @@ const WrappedEditProfile = firebaseConnect((props, firebase) => {
 
 
 export default withRouter(connect(
-  state => ({ firebase: state.firebase, auth: state.firebase.auth, profile: state.firebase.profile, data: state.firebase.data }),
+  state => ({
+    firebase: state.firebase,
+    auth: state.firebase.auth,
+    profile: state.firebase.profile,
+    data: state.firebase.data,
+    initialValues: createInitialValues(state)
+
+  }),
   { ...algoliaActions },
 )(WrappedEditProfile))
 

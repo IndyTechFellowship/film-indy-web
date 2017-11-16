@@ -30,6 +30,7 @@ class Search extends React.Component {
     const parsed = QueryString.parse(location.search)
     const query = get(parsed, 'query', ' ')
     const showOnly = get(parsed, 'show', 'all')
+
     if (enriched.length === 0 && totalHits.hasLoaded) {
       return (
         <div style={{ marginTop: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -68,7 +69,7 @@ class Search extends React.Component {
                           {`${get(enrichedResult, 'firstName', '')} ${get(enrichedResult, 'lastName', '')}`}
                         </CardText>
                         <CardText>
-                    Headline
+                          {get(enrichedResult, 'headline', '')}
                         </CardText>
                       </div>
                     </Card>
@@ -122,7 +123,7 @@ class Search extends React.Component {
                     {`${get(enrichedResult, 'firstName', '')} ${get(enrichedResult, 'lastName', '')}`}
                   </CardText>
                   <CardText>
-                    Headline
+                    {get(enrichedResult, 'headline', '')}
                   </CardText>
                 </div>
               </Card>
