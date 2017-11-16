@@ -2,6 +2,8 @@ import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
+import ResetPasswordForm from './resetPasswordForm'
+
 
 // Material UI Imports
 import Avatar from 'material-ui/Avatar'
@@ -48,6 +50,15 @@ const validate = (values) => {
   return errors
 }
 
+const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
+  switch (errorCode) {
+    case 'auth/weak-password': return 'Password is not Strong Enough'
+    case 'auth/requires-recent-login': return 'Password Reset requires a more recent login'
+    default: return 'There was an issue resetting your password. Please try again'
+  }
+}
+
+
 // Making component const throws an error that it is read-only
 class AccountPage extends React.Component {
   constructor(props) {
@@ -73,7 +84,7 @@ class AccountPage extends React.Component {
 
   render() {
     const { handleSubmit, pristine, submitting, handleProfileChanges,
-      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, usersVendors } = this.props
+      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, usersVendors, resetPassword, account } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const isPublic = get(profile, 'public', false)
@@ -151,13 +162,15 @@ class AccountPage extends React.Component {
           onRequestClose={this.handleUpdateClose}
         />
 
-        <h2 className="resetHeader"> Change My Password </h2>
+        <h2>Change My Password</h2>
         <Card className="passwordCard">
-          <ul className="fields">
-            <li><TextField hintText="New Password" floatingLabelText="Password" type="password" /></li>
-            <li><TextField hintText="Confirm Password" floatingLabelText="Confirm Password" type="password" /></li>
-          </ul>
-          <RaisedButton className="accountButton" primary label="Submit" />
+          <ResetPasswordForm onSubmit={values => resetPassword(values.newPassword)} />
+          <Snackbar
+            bodyStyle={{ backgroundColor: '#F44336' }}
+            open={account.resetPasswordError !== undefined}
+            message={firebaseErrorCodeToFriendlyMessage(get(account, 'resetPasswordError.code'))}
+            autoHideDuration={4000}
+          />
         </Card>
         <h2 className="resetHeader">Vendors</h2>
         <Card className="passwordCard">
@@ -241,7 +254,14 @@ AccountPage.propTypes = {
     name: PropTypes.string
   })),
   handleSubmit: PropTypes.func.isRequired,
-  submitVendorCreate: PropTypes.func.isRequired
+  submitVendorCreate: PropTypes.func.isRequired,
+  account: PropTypes.shape({
+    resetPasswordError: PropTypes.shape({
+      code: PropTypes.string,
+      message: PropTypes.string
+    })
+  }),
+  resetPassword: PropTypes.func.isRequired
 }
 
 AccountPage.defaultProps = {

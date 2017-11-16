@@ -1,4 +1,4 @@
-import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL } from '../actions/types/accountActionTypes'
+import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD } from '../actions/types/accountActionTypes'
 
 const initalState = {
 
@@ -26,6 +26,11 @@ export default (state = initalState, action) => {
         ...state,
         signOutError: action.payload,
     };
+    case `${RESET_PASSWORD}_ERROR`:
+      return {
+        ...state,
+        resetPasswordError: action.payload,
+      };
     default:
       return state
   }
