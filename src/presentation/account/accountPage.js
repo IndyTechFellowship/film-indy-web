@@ -50,6 +50,14 @@ const validate = (values) => {
   return errors
 }
 
+const firebaseErrorCodeToFriendlyMessage = (errorCode) => {
+  switch (errorCode) {
+    case 'auth/weak-password': return 'Password is not Strong Enough'
+    case 'auth/requires-recent-login': return 'Password Reset requires a more recent login'
+    default: return 'There was an issue resetting your password. Please try again'
+  }
+}
+
 
 // Making component const throws an error that it is read-only
 class AccountPage extends React.Component {
@@ -60,7 +68,6 @@ class AccountPage extends React.Component {
     }
     this.handleUpdateClose = this.handleUpdateClose.bind(this)
     this.updateMessage = this.updateMessage.bind(this)
-    this.firebaseErrorCodeToFriendlyMessage = this.firebaseErrorCodeToFriendlyMessage.bind(this)
   }
 
   updateMessage() {
@@ -73,15 +80,6 @@ class AccountPage extends React.Component {
     this.setState({
       updated: false
     })
-  }
-
-  firebaseErrorCodeToFriendlyMessage(errorCode) {
-    console.log(errorCode)
-    switch (errorCode) {
-      case 'auth/weak-password': return 'Password is not Strong Enough'
-      case 'auth/requires-recent-login': return 'Password Reset requires a more recent login'
-      default: return 'There was an issue resetting your password. Please try again'
-    }
   }
 
   render() {
@@ -170,7 +168,7 @@ class AccountPage extends React.Component {
           <Snackbar
             bodyStyle={{ backgroundColor: '#F44336' }}
             open={account.resetPasswordError !== undefined}
-            message={this.firebaseErrorCodeToFriendlyMessage(get(account, 'resetPasswordError.code'))}
+            message={firebaseErrorCodeToFriendlyMessage(get(account, 'resetPasswordError.code'))}
             autoHideDuration={4000}
           />
         </Card>
