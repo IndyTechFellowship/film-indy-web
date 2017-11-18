@@ -18,18 +18,17 @@ Search.propTypes = {
   location: PropTypes.shape({
     search: PropTypes.string.isRequired
   }).isRequired,
-  enriched: PropTypes.arrayOf(PropTypes.object).isRequired,
-  data: PropTypes.shape({
-    userProfile: PropTypes.object
-  }).isRequired,
+  enriched: PropTypes.arrayOf(PropTypes.object).isRequired
 }
 
 export default withRouter(connect(
   state => ({
     profileIndex: state.algolia.crewQueryResults,
     enriched: state.algolia.enrichedCrewResults,
+    enrichedVendors: state.algolia.enrichedVendorQueryResults,
     offset: state.algolia.offset,
     length: state.algolia.length,
+    totalVendorHits: state.algolia.totalVendorHits,
     totalHits: state.algolia.totalHits }),
   { ...algoliaActions },
 )(Search))
