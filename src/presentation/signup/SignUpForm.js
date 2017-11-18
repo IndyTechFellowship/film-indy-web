@@ -4,6 +4,9 @@ import PropTypes from 'prop-types'
 import { TextField } from 'redux-form-material-ui'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
+import RaisedButton from 'material-ui/RaisedButton'
+import { FacebookLoginButton } from 'react-social-login-buttons'
+import SocialLoginButton from 'react-social-login-buttons/lib/buttons/SocialLoginButton'
 import { connect } from 'react-redux'
 import './signUp.css'
 
@@ -26,6 +29,27 @@ const validate = (values) => {
   }
 
   return errors
+}
+
+const GoogleLoginButton = (props) => {
+  const customProps = {
+    style: {
+      background: 'white',
+      color: '#808080'
+    },
+    activeStyle: {
+      background: '#eeeeee'
+    }
+  }
+
+  return (<SocialLoginButton {...{ ...customProps, ...props }}>
+    <img
+      alt=""
+      style={{ verticalAlign: 'middle', height: 26, paddingRight: 10 }}
+      src="https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-128.png"
+    />
+    <span style={{ verticalAlign: 'middle' }}>Sign up with Google</span>
+  </SocialLoginButton>)
 }
 
 const adaptFileEventToValue = delegate =>
@@ -60,7 +84,7 @@ const FileInput = ({
 class SignUpForm extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { open: false }
+    this.state = { open: false, continueWithEmail: false }
     this.handleClose = this.handleClose.bind(this)
     this.handleOpen = this.handleOpen.bind(this)
   }
@@ -68,19 +92,18 @@ class SignUpForm extends React.Component {
     this.setState({ open: true })
   }
   handleClose() {
-    this.setState({ open: false })
+    this.setState({ open: false, continueWithEmail: false })
   }
   render() {
-    const { handleSubmit, error, submitting, pristine, sendSubmit } = this.props
+    const { handleSubmit, error, submitting, pristine, sendSubmit, signUpWithGoogle, signUpWithFacebook } = this.props
+    const { continueWithEmail } = this.state
     const actions = [
       <FlatButton
-        contentStyle={{ width: '50%', marginBottom: 50 }}
         label="Cancel"
         primary
         onClick={this.handleClose}
       />,
       <FlatButton
-        contentStyle={{ width: '50%', marginBottom: 50 }}
         label="Submit"
         primary
         disabled={error || pristine || submitting}
@@ -96,62 +119,82 @@ class SignUpForm extends React.Component {
           contentStyle={{ width: '100%', marginBottom: 150 }}
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           title="Sign Up"
-          actions={actions}
+          actions={continueWithEmail ? actions : []}
           modal={false}
           open={this.state.open}
           autoScrollBodyContent
           onRequestClose={this.handleClose}
         >
-          <form
-            onSubmit={handleSubmit}
-          >
-            <div>
-              <Field
-                name="firstName"
-                component={TextField}
-                floatingLabelText="First Name"
-              />
+          {continueWithEmail ? (
+            <form
+              onSubmit={handleSubmit}
+            >
+              <div>
+                <Field
+                  name="firstName"
+                  component={TextField}
+                  floatingLabelText="First Name"
+                />
+              </div>
+              <div>
+                <Field
+                  name="lastName"
+                  component={TextField}
+                  floatingLabelText="Last Name"
+                />
+              </div>
+              <br />
+              <div>
+                <Field
+                  name="photoFile"
+                  component={FileInput}
+                  type="file"
+                />
+              </div>
+              <div>
+                <Field
+                  name="email"
+                  component={TextField}
+                  floatingLabelText="Email"
+                  type="email"
+                />
+              </div>
+              <div>
+                <Field
+                  name="password"
+                  component={TextField}
+                  floatingLabelText="Password"
+                  type="password"
+                />
+              </div>
+              <div id="confirmPasswordInput">
+                <Field
+                  name="confirmPassword"
+                  component={TextField}
+                  floatingLabelText="Confirm Password"
+                  type="password"
+                />
+              </div>
+            </form>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', paddingTop: 40 }}>
+                <FacebookLoginButton onClick={() => signUpWithFacebook()} text="Sign up with Facebook" style={{ marginBottom: 20 }} />
+                <GoogleLoginButton onClick={() => signUpWithGoogle()} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ marginLeft: 75, marginTop: 10, border: '1px solid #979797', height: 60, width: 0 }} />
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: 75, width: 48, height: 48, borderRadius: '50%', border: '1px solid grey' }}> OR </div>
+                <div style={{ marginLeft: 75, border: '1px solid #979797', height: 60, width: 0 }} />
+              </div>
+              <div style={{ paddingTop: 80 }}>
+                <RaisedButton style={{ width: 238, marginLeft: 55 }} onClick={() => this.setState({ continueWithEmail: true })}>
+                  Sign Up with Email
+                </RaisedButton>
+              </div>
             </div>
-            <div>
-              <Field
-                name="lastName"
-                component={TextField}
-                floatingLabelText="Last Name"
-              />
-            </div>
-            <br />
-            <div>
-              <Field
-                name="photoFile"
-                component={FileInput}
-                type="file"
-              />
-            </div>
-            <div>
-              <Field
-                name="email"
-                component={TextField}
-                floatingLabelText="Email"
-                type="email"
-              />
-            </div>
-            <div>
-              <Field
-                name="password"
-                component={TextField}
-                floatingLabelText="Password"
-                type="password"
-              />
-            </div>
-            <div id="confirmPasswordInput">
-              <Field
-                name="confirmPassword"
-                component={TextField}
-                floatingLabelText="Confirm Password"
-                type="password"
-              />
-            </div>
-          </form>
+          )}
+
         </Dialog>
       </div>
     )
@@ -159,6 +202,8 @@ class SignUpForm extends React.Component {
 }
 
 SignUpForm.propTypes = {
+  signUpWithGoogle: PropTypes.func.isRequired,
+  signUpWithFacebook: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   sendSubmit: PropTypes.func.isRequired
 }

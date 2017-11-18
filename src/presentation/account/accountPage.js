@@ -90,6 +90,7 @@ class AccountPage extends React.Component {
     const uid = get(auth, 'uid')
     const isPublic = get(profile, 'public', false)
     const vendors = usersVendors || {}
+    const authProviderId = get(auth, 'providerData[0].providerId', '')
     return (
       <div>
         <h2 className="accountHeader">Account Information</h2>
@@ -163,16 +164,20 @@ class AccountPage extends React.Component {
           onRequestClose={this.handleUpdateClose}
         />
 
-        <h2>Change My Password</h2>
-        <Card className="passwordCard">
-          <ResetPasswordForm onSubmit={values => resetPassword(values.newPassword)} />
-          <Snackbar
-            bodyStyle={{ backgroundColor: '#F44336' }}
-            open={account.resetPasswordError !== undefined}
-            message={firebaseErrorCodeToFriendlyMessage(get(account, 'resetPasswordError.code'))}
-            autoHideDuration={4000}
-          />
-        </Card>
+        {authProviderId === 'password' ? (
+          <div>
+            <h2>Change My Password</h2>
+            <Card className="passwordCard">
+              <ResetPasswordForm onSubmit={values => resetPassword(values.newPassword)} />
+              <Snackbar
+                bodyStyle={{ backgroundColor: '#F44336' }}
+                open={account.resetPasswordError !== undefined}
+                message={firebaseErrorCodeToFriendlyMessage(get(account, 'resetPasswordError.code'))}
+                autoHideDuration={4000}
+              />
+            </Card>
+          </div>
+        ) : null}
         <h2 className="resetHeader">Vendors</h2>
         <Card className="passwordCard">
           <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -180,9 +185,7 @@ class AccountPage extends React.Component {
               const vend = vendors[key]
               return (
                 <Chip
-                  onRequestDelete={() => {
-                    deleteVendor(key)
-                  }}
+                  onRequestDelete={() => deleteVendor(key)}
                   key={vend.name}
                   style={{ marginRight: 5 }}
                 >
