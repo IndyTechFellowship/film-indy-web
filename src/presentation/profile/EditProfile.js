@@ -10,8 +10,12 @@ import Chip from 'material-ui/Chip'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
 import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
 import PropTypes from 'prop-types'
 import { get, pickBy } from 'lodash'
+import AddLinkForm from './AddLinkForm'
+import EditLinkForm from './EditLinkForm'
 import '../../App.css'
 
 const styles = {
@@ -54,13 +58,33 @@ const renderTextField = ({ input, name, label, meta: { touched, error }, ...cust
 class EditProfile extends React.Component {
   constructor(props) {
     super(props)
-    this.state = ({ dialogOpen: false, updated: false })
+    this.state = ({ dialogOpen: false, updated: false, addLinkDialogOpen: false, editLinkDialogOpen: false })
     this.handleClose = this.handleClose.bind(this)
     this.handleOpen = this.handleOpen.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleProfileUpdate = this.handleProfileUpdate.bind(this)
     this.handleUpdateClose = this.handleUpdateClose.bind(this)
     this.updateMessage = this.updateMessage.bind(this)
+    this.handleAddLinkClose = this.handleAddLinkClose.bind(this)
+    this.handleAddLinkOpen = this.handleAddLinkOpen.bind(this)
+    this.handleEditLinkClose = this.handleEditLinkClose.bind(this)
+    this.handleEditLinkOpen = this.handleEditLinkOpen.bind(this)
+  }
+
+  handleEditLinkClose() {
+    this.setState({ editLinkDialogOpen: false })
+  }
+
+  handleEditLinkOpen() {
+    this.setState({ editLinkDialogOpen: true })
+  }
+
+  handleAddLinkClose() {
+    this.setState({ addLinkDialogOpen: false })
+  }
+
+  handleAddLinkOpen() {
+    this.setState({ addLinkDialogOpen: true })
   }
 
   updateMessage() {
@@ -115,7 +139,7 @@ class EditProfile extends React.Component {
   }
 
   render() {
-    const { auth, profile, firebase, data, partialUpdateAlgoliaObject, pristine, submitting, handleSubmit } = this.props
+    const { auth, profile, firebase, data, partialUpdateAlgoliaObject, pristine, submitting, handleSubmit, remoteSubmitForm, addLinkToProfile, editProfileLink, removeProfileLink, initForm } = this.props
     const uid = get(auth, 'uid', '')
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
@@ -132,6 +156,7 @@ class EditProfile extends React.Component {
         }
         return 0
       })
+    const userLinks = get(userProfile, 'links', [])
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
     const email = get(auth, 'email', '')
@@ -166,6 +191,22 @@ class EditProfile extends React.Component {
         keyboardFocused
         disabled={selectedRoles.length === 0}
         onClick={this.handleSubmit}
+      />
+    ]
+
+    const addLinkActions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onClick={this.handleAddLinkClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary
+        onClick={() => {
+          remoteSubmitForm('AddLinkForm')
+          this.handleAddLinkClose()
+        }}
       />
     ]
     return (
@@ -219,14 +260,6 @@ class EditProfile extends React.Component {
                   </div>
                   <div>
                     <Field
-                      name="website"
-                      component={renderTextField}
-                      floatingLabelText="Website"
-                      type="url"
-                    />
-                  </div>
-                  <div>
-                    <Field
                       name="video"
                       component={renderTextField}
                       floatingLabelText="Featured Video (must be in embed format)"
@@ -239,6 +272,70 @@ class EditProfile extends React.Component {
             </div>
 
 
+          </Card>
+        </div>
+        <div style={{ paddingTop: 30 }}>
+          <Card style={styles.card}>
+            <CardTitle title="About Me" />
+            <Divider />
+            <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', paddingTop: 5 }}>
+              {userLinks.map((link, i) => (
+                <Chip
+                  onRequestDelete={() => {
+                    removeProfileLink(userLinks, i, uid)
+                  }}
+                  key={link.title}
+                  onClick={() => {
+                    initForm('EditLinkForm', { title: link.title, url: link.url })
+                    this.handleEditLinkOpen()
+                  }}
+                >
+                  {link.title}
+                  <Dialog
+                    title="Edit a Link"
+                    actions={
+                      [
+                        <FlatButton
+                          label="Cancel"
+                          primary
+                          onClick={this.handleEditLinkClose}
+                        />,
+                        <FlatButton
+                          label="Submit"
+                          primary
+                          onClick={() => {
+                            remoteSubmitForm('EditLinkForm')
+                            this.handleEditLinkClose()
+                          }}
+                        />
+                      ]
+                    }
+                    modal
+                    open={this.state.editLinkDialogOpen}
+                  >
+                    <EditLinkForm
+                      onSubmit={(values) => {
+                        editProfileLink(userLinks, i, values.title, values.url, uid)
+                      }}
+                      initialValues={{ title: link.title, url: link.url }}
+                    />
+                  </Dialog>
+                </Chip>
+              ))}
+            </div>
+            <div>
+              <FloatingActionButton onClick={this.handleAddLinkOpen} mini>
+                <ContentAdd />
+                <Dialog
+                  title="Add a Link"
+                  actions={addLinkActions}
+                  modal
+                  open={this.state.addLinkDialogOpen}
+                >
+                  <AddLinkForm userLinks={userLinks} onSubmit={values => addLinkToProfile(userLinks, values.title, values.url, uid)} />
+                </Dialog>
+              </FloatingActionButton>
+            </div>
           </Card>
         </div>
         <div style={{ paddingTop: 30 }}>
@@ -316,6 +413,11 @@ EditProfile.propTypes = {
     set: PropTypes.func
   }).isRequired,
   partialUpdateAlgoliaObject: PropTypes.func.isRequired,
+  addLinkToProfile: PropTypes.func.isRequired,
+  removeProfileLink: PropTypes.func.isRequired,
+  editProfileLink: PropTypes.func.isRequired,
+  remoteSubmitForm: PropTypes.func.isRequired,
+  initForm: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired
 }
 
