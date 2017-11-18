@@ -73,15 +73,15 @@ class ViewProfile extends React.Component {
         return 0
       })
 
+    const userLinks = get(userProfile, 'links', [])
     const bio = get(userProfile, 'bio')
     const experience = get(userProfile, 'experience')
     const currentDate = new Date()
     const numYears = currentDate.getFullYear() - experience
     const headline = get(userProfile, 'headline')
     const video = get(userProfile, 'video', '')
-    const website = get(userProfile, 'website')
 
-    const profileImageUrl = get(userAccount, 'photoURL')
+    const profileImageUrl = get(userAccount, 'photoURL', defaultImage)
     const email = get(userAccount, 'email')
     const name = `${get(userAccount, 'firstName', '')} ${get(userAccount, 'lastName', '')}`
     const phone = get(userAccount, 'phone')
@@ -92,7 +92,7 @@ class ViewProfile extends React.Component {
         <div style={{ display: 'block', margin: 'auto' }}>
           <Card className="profile-card top-card" containerStyle={{ width: '50%', paddingBottom: 0, display: 'flex', flexDirection: 'row' }}>
             <CardMedia className="crew-image">
-              <img src={get(profileImageUrl, profileImageUrl, defaultImage)} alt="" style={{ width: 250, height: 250, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />
+              <img src={profileImageUrl} alt="" style={{ width: 250, height: 250, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />
             </CardMedia>
             <div>
               <CardTitle title={name} titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={headline} subtitleStyle={{ minWidth: '250%', fontStyle: 'italic' }} />
@@ -114,7 +114,9 @@ class ViewProfile extends React.Component {
               {bio}
             </CardText>
             <CardActions>
-              <RaisedButton primary label="Website" target="_blank" href={website} icon={<WebsiteIcon />} />
+              {userLinks.map(link => (
+                <RaisedButton primary label={link.title} target="_blank" href={link.url} icon={<WebsiteIcon />} />
+              ))}
             </CardActions>
           </Card>
 

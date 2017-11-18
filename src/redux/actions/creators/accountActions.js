@@ -223,6 +223,8 @@ export const submitSignIn = () => dispatch => dispatch(submit('signIn'))
 
 export const submitVendorCreate = () => dispatch => dispatch(submit('addVendor'))
 
+export const remoteSubmitForm = formName => dispatch => dispatch(submit(formName))
+
 export const resetPassword = newPassword => dispatch => dispatch({
   type: RESET_PASSWORD,
   payload: firebase.auth().currentUser.updatePassword(newPassword)
