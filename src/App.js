@@ -97,9 +97,16 @@ const AutoCompleteBar = connectAutoComplete(
         onSuggestionSelected={(event, { suggestion, sectionIndex }) => {
           onSuggestionClicked(suggestion, sectionIndex)
         }}
-        renderInputComponent={inputProps => (
-          <TextField id="autocomplete-text-field" {...inputProps} />
-        )}
+        renderInputComponent={(inputProps) => {
+          const onBlur = (event) => {
+            inputProps.onBlur()
+            refine(currentRefinement)
+          }
+          const moreInputProps = { ...inputProps, onBlur }
+          return (
+            <TextField id="autocomplete-text-field" {...moreInputProps} />
+          )
+        }}
         renderSuggestion={(hit) => {
           if (hit.roleName) {
             return (
@@ -115,6 +122,12 @@ const AutoCompleteBar = connectAutoComplete(
                 {`${hit.firstName} ${hit.lastName}`}
               </MenuItem>
             )
+          } else if (hit.vendorName) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.vendorName}`}
+              </MenuItem>
+            )
           }
           return (null)
         }}
@@ -128,6 +141,8 @@ const AutoCompleteBar = connectAutoComplete(
               return (
                 <strong>Crew</strong>
               )
+            } else if (section.index === 'vendors') {
+              return (<strong>Vendors</strong>)
             }
           }
           return ''
@@ -221,6 +236,7 @@ class App extends React.Component {
                       indexName="roles"
                     >
                       <Index indexName="names" />
+                      <Index indexName="vendors" />
                       <AutoCompleteBar
                         onUpdateInput={query => this.searchQuery = query}
                         onSuggestionClicked={(suggestion, index) => {
@@ -248,7 +264,7 @@ class App extends React.Component {
                 }
               </div>
               {location.pathname === '/search' ?
-                (<Tabs tabItemContainerStyle={{ width: '30%' }} style={{ marginLeft: 200 }} value={showOnly}>
+                (<Tabs tabItemContainerStyle={{ width: '55%' }} style={{ marginLeft: 200 }} value={showOnly}>
                   <Tab
                     style={{ zIndex: 0 }}
                     label="All"
@@ -265,6 +281,15 @@ class App extends React.Component {
                     onActive={() => {
                       const query = get(parsed, 'query', ' ')
                       history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=crew` })
+                    }}
+                  />
+                  <Tab
+                    style={{ zIndex: 0 }}
+                    label="Vendors"
+                    value="vendors"
+                    onActive={() => {
+                      const query = get(parsed, 'query', ' ')
+                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=vendors` })
                     }}
                   />
                 </Tabs>) : null}

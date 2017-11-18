@@ -2,7 +2,7 @@ import * as firebase from 'firebase'
 import { push } from 'react-router-redux'
 import { omitBy, get } from 'lodash'
 import { submit } from 'redux-form'
-import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD } from '../types/accountActionTypes'
+import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD, CREATE_VENDOR, DELETE_VENDOR } from '../types/accountActionTypes'
 import * as algoliaActions from './algoliaActions'
 
 /* this an example of how to chain actions together.
@@ -125,14 +125,21 @@ export const createVendor = vendorName => (dispatch) => {
   const uid = firebase.auth().currentUser.uid
   const vendorRef = firebase.database().ref('/vendorProfiles')
   return dispatch({
-    type: 'CREATE_VENDOR',
+    type: CREATE_VENDOR,
     payload: vendorRef.push({
       creator: uid,
       name: vendorName
+    }).then((ref) => {
+      dispatch(algoliaActions.createVendorProfileRecord(ref.key, { vendorName }))
     })
   })
 }
 
+export const deleteVendor = vendorId => dispatch => ({
+  type: DELETE_VENDOR,
+  payload: firebase.database().ref(`vendorProfiles/${vendorId}`).remove()
+    .then(() => dispatch(algoliaActions.deleteVendorProfileRecord(vendorId)))
+})
 export const signUpWithGoogle = () => (dispatch) => {
   const provider = new firebase.auth.GoogleAuthProvider()
   provider.addScope('https://www.googleapis.com/auth/userinfo.email')

@@ -87,9 +87,16 @@ const AutoCompleteBar = connectAutoComplete(
         onSuggestionSelected={(event, { suggestion, sectionIndex }) => {
           onSuggestionClicked(suggestion, sectionIndex)
         }}
-        renderInputComponent={inputProps => (
-          <TextField id="autocomplete-text-field" {...inputProps} />
-        )}
+        renderInputComponent={(inputProps) => {
+          const onBlur = (event) => {
+            inputProps.onBlur()
+            refine(currentRefinement)
+          }
+          const moreInputProps = { ...inputProps, onBlur }
+          return (
+            <TextField id="autocomplete-text-field" {...moreInputProps} />
+          )
+        }}
         renderSuggestion={(hit) => {
           if (hit.roleName) {
             return (
@@ -103,6 +110,12 @@ const AutoCompleteBar = connectAutoComplete(
             return (
               <MenuItem style={{ whiteSpace: 'inital' }}>
                 {`${hit.firstName} ${hit.lastName}`}
+              </MenuItem>
+            )
+          } else if (hit.vendorName) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.vendorName}`}
               </MenuItem>
             )
           }
@@ -120,6 +133,12 @@ const AutoCompleteBar = connectAutoComplete(
               return (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <strong>Crew</strong>
+                </div>
+              )
+            } else if (section.index === 'vendors') {
+              return (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <strong>Vendors</strong>
                 </div>
               )
             }
@@ -196,6 +215,7 @@ const homePage = (props) => {
                 indexName="roles"
               >
                 <Index indexName="names" />
+                <Index indexName="vendors" />
                 <AutoCompleteBar
                   onUpdateInput={query => this.searchQuery = query}
                   onSuggestionClicked={(suggestion, index) => {

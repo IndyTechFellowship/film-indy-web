@@ -84,13 +84,13 @@ class AccountPage extends React.Component {
 
   render() {
     const { handleSubmit, pristine, submitting, handleProfileChanges,
-      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, usersVendors, resetPassword, account } = this.props
+      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, deleteVendor,
+      usersVendors, resetPassword, account } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const isPublic = get(profile, 'public', false)
     const vendors = usersVendors || {}
     const authProviderId = get(auth, 'providerData[0].providerId', '')
-    console.log(authProviderId)
     return (
       <div>
         <h2 className="accountHeader">Account Information</h2>
@@ -176,32 +176,35 @@ class AccountPage extends React.Component {
                 autoHideDuration={4000}
               />
             </Card>
-            <h2 className="resetHeader">Vendors</h2>
-            <Card className="passwordCard">
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                {Object.keys(vendors).map((key) => {
-                  const vend = vendors[key]
-                  return (
-                    <Chip key={vend.name} style={{ marginRight: 5 }}>
-                      {vend.name}
-                    </Chip>
-                  )
-                })}
-                {Object.keys(vendors).length === 0 ?
-                  'Press Add to create a Vendor'
-                  : null
-                }
-              </div>
-              <VendorCreateModal
-                submitVendorCreate={submitVendorCreate}
-                onSubmit={(values) => {
-                  createVendor(values.name)
-                }}
-              />
-            </Card>
           </div>
         ) : null}
-
+        <h2 className="resetHeader">Vendors</h2>
+        <Card className="passwordCard">
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            {Object.keys(vendors).map((key) => {
+              const vend = vendors[key]
+              return (
+                <Chip
+                  onRequestDelete={() => deleteVendor(key)}
+                  key={vend.name}
+                  style={{ marginRight: 5 }}
+                >
+                  {vend.name}
+                </Chip>
+              )
+            })}
+            {Object.keys(vendors).length === 0 ?
+              'Press Add to create a Vendor'
+              : null
+            }
+          </div>
+          <VendorCreateModal
+            submitVendorCreate={submitVendorCreate}
+            onSubmit={(values) => {
+              createVendor(values.name)
+            }}
+          />
+        </Card>
       </div>
     )
   }
@@ -256,6 +259,7 @@ AccountPage.propTypes = {
   submitting: PropTypes.bool.isRequired,
   handleProfileChanges: PropTypes.func.isRequired,
   createVendor: PropTypes.func.isRequired,
+  deleteVendor: PropTypes.func.isRequired,
   usersVendors: PropTypes.objectOf(PropTypes.shape({
     creator: PropTypes.string,
     name: PropTypes.string
@@ -267,7 +271,7 @@ AccountPage.propTypes = {
       code: PropTypes.string,
       message: PropTypes.string
     })
-  }),
+  }).isRequired,
   resetPassword: PropTypes.func.isRequired
 }
 

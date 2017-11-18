@@ -44,7 +44,7 @@ Account.propTypes = {
   partialUpdateAlgoliaObject: PropTypes.func.isRequired,
   updateAuth: PropTypes.func.isRequired,
   sendPasswordResetEmail: PropTypes.func.isRequired,
-  resetPassword: PropTypes.func.isRequired,
+  resetPassword: PropTypes.func.isRequired
 }
 
 Account.defaultProps = {
