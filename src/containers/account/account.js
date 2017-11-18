@@ -60,7 +60,7 @@ const wrappedAccount = firebaseConnect((props, firebaseProp) => {
       queryParams: ['orderByChild=creator', `equalTo=${uid}`]
     }
   ]
-})(Account)
+})(Authed(Account))
 
 export default withRouter(connect(
   state => ({ account: state.account,
