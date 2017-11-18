@@ -89,6 +89,8 @@ class AccountPage extends React.Component {
     const uid = get(auth, 'uid')
     const isPublic = get(profile, 'public', false)
     const vendors = usersVendors || {}
+    const authProviderId = get(auth, 'providerData[0].providerId', '')
+    console.log(authProviderId)
     return (
       <div>
         <h2 className="accountHeader">Account Information</h2>
@@ -162,39 +164,44 @@ class AccountPage extends React.Component {
           onRequestClose={this.handleUpdateClose}
         />
 
-        <h2>Change My Password</h2>
-        <Card className="passwordCard">
-          <ResetPasswordForm onSubmit={values => resetPassword(values.newPassword)} />
-          <Snackbar
-            bodyStyle={{ backgroundColor: '#F44336' }}
-            open={account.resetPasswordError !== undefined}
-            message={firebaseErrorCodeToFriendlyMessage(get(account, 'resetPasswordError.code'))}
-            autoHideDuration={4000}
-          />
-        </Card>
-        <h2 className="resetHeader">Vendors</h2>
-        <Card className="passwordCard">
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            {Object.keys(vendors).map((key) => {
-              const vend = vendors[key]
-              return (
-                <Chip key={vend.name} style={{ marginRight: 5 }}>
-                  {vend.name}
-                </Chip>
-              )
-            })}
-            {Object.keys(vendors).length === 0 ?
-              'Press Add to create a Vendor'
-              : null
-            }
+        {authProviderId === 'password' ? (
+          <div>
+            <h2>Change My Password</h2>
+            <Card className="passwordCard">
+              <ResetPasswordForm onSubmit={values => resetPassword(values.newPassword)} />
+              <Snackbar
+                bodyStyle={{ backgroundColor: '#F44336' }}
+                open={account.resetPasswordError !== undefined}
+                message={firebaseErrorCodeToFriendlyMessage(get(account, 'resetPasswordError.code'))}
+                autoHideDuration={4000}
+              />
+            </Card>
+            <h2 className="resetHeader">Vendors</h2>
+            <Card className="passwordCard">
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                {Object.keys(vendors).map((key) => {
+                  const vend = vendors[key]
+                  return (
+                    <Chip key={vend.name} style={{ marginRight: 5 }}>
+                      {vend.name}
+                    </Chip>
+                  )
+                })}
+                {Object.keys(vendors).length === 0 ?
+                  'Press Add to create a Vendor'
+                  : null
+                }
+              </div>
+              <VendorCreateModal
+                submitVendorCreate={submitVendorCreate}
+                onSubmit={(values) => {
+                  createVendor(values.name)
+                }}
+              />
+            </Card>
           </div>
-          <VendorCreateModal
-            submitVendorCreate={submitVendorCreate}
-            onSubmit={(values) => {
-              createVendor(values.name)
-            }}
-          />
-        </Card>
+        ) : null}
+
       </div>
     )
   }

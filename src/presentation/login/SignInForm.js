@@ -4,8 +4,31 @@ import PropTypes from 'prop-types'
 import { TextField } from 'redux-form-material-ui'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
+import { FacebookLoginButton } from 'react-social-login-buttons'
+import SocialLoginButton from 'react-social-login-buttons/lib/buttons/SocialLoginButton'
 import './signInForm.css'
 import { Link } from 'react-router-dom'
+
+const GoogleLoginButton = (props) => {
+  const customProps = {
+    style: {
+      background: 'white',
+      color: '#808080'
+    },
+    activeStyle: {
+      background: '#eeeeee'
+    }
+  }
+
+  return (<SocialLoginButton {...{ ...customProps, ...props }}>
+    <img
+      alt=""
+      style={{ verticalAlign: 'middle', height: 26, paddingRight: 10 }}
+      src="https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-128.png"
+    />
+    <span style={{ verticalAlign: 'middle' }}>Log in with Google</span>
+  </SocialLoginButton>)
+}
 
 class SignInForm extends React.Component {
   constructor(props) {
@@ -21,7 +44,7 @@ class SignInForm extends React.Component {
     this.setState({ open: false })
   }
   render() {
-    const { handleSubmit, error, pristine, submitting, sendSubmit } = this.props
+    const { handleSubmit, error, pristine, submitting, sendSubmit, signInWithFacebook, signInWithGoogle } = this.props
     const actions = [
       <div id="actionContainer">
         <FlatButton
@@ -55,33 +78,46 @@ class SignInForm extends React.Component {
           autoScrollBodyContent
           onRequestClose={this.handleClose}
         >
-          <form onSubmit={handleSubmit}>
-            <div>
-              <Field
-                name="email"
-                component={TextField}
-                hintText="Email"
-                floatingLabelText="Email"
-                type="email"
-              />
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', paddingTop: 40 }}>
+              <FacebookLoginButton onClick={() => signInWithFacebook()} text="Log in with Facebook" style={{ marginBottom: 20 }} />
+              <GoogleLoginButton onClick={() => signInWithGoogle()} />
             </div>
-            <div>
-              <Field
-                name="password"
-                component={TextField}
-                hintText="Password"
-                floatingLabelText="Password"
-                type="password"
-              />
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <div style={{ marginLeft: 75, marginTop: 10, border: '1px solid #979797', height: 60, width: 0 }} />
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: 75, width: 48, height: 48, borderRadius: '50%', border: '1px solid grey' }}> OR </div>
+              <div style={{ marginLeft: 75, border: '1px solid #979797', height: 60, width: 0 }} />
             </div>
-          </form>
-          <div id="forgotPasswordContainer">
-            <Link to="/forgotpassword">
-              <FlatButton
-                label="Forgot Password?"
-                onClick={this.handleClose}
-              />
-            </Link>
+            <div style={{ paddingTop: 13, marginLeft: 60 }}>
+              <form onSubmit={handleSubmit}>
+                <div>
+                  <Field
+                    name="email"
+                    component={TextField}
+                    hintText="Email"
+                    floatingLabelText="Email"
+                    type="email"
+                  />
+                </div>
+                <div>
+                  <Field
+                    name="password"
+                    component={TextField}
+                    hintText="Password"
+                    floatingLabelText="Password"
+                    type="password"
+                  />
+                </div>
+              </form>
+              <div id="forgotPasswordContainer">
+                <Link to="/forgotpassword">
+                  <FlatButton
+                    label="Forgot Password?"
+                    onClick={this.handleClose}
+                  />
+                </Link>
+              </div>
+            </div>
           </div>
         </Dialog>
       </div>
@@ -90,6 +126,8 @@ class SignInForm extends React.Component {
 }
 
 SignInForm.propTypes = {
+  signInWithGoogle: PropTypes.func.isRequired,
+  signInWithFacebook: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   sendSubmit: PropTypes.func.isRequired
 }

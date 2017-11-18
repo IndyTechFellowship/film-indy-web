@@ -197,7 +197,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, firebase, history, signUp, submitSignUp, signIn, submitSignIn, location } = this.props
+    const { profile, auth, firebase, history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn, signInWithFacebook, signInWithGoogle, submitSignIn, location } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const parsed = QueryString.parse(location.search)
@@ -281,12 +281,16 @@ class App extends React.Component {
                 onSubmit={(values) => {
                   signUp(values.firstName, values.lastName, values.photoFile, values.email, values.password)
                 }}
+                signUpWithGoogle={signUpWithGoogle}
+                signUpWithFacebook={signUpWithFacebook}
                 sendSubmit={submitSignUp}
               />
               <SignInForm
                 onSubmit={(values) => {
                   signIn(values.email, values.password)
                 }}
+                signInWithFacebook={signInWithFacebook}
+                signInWithGoogle={signInWithGoogle}
                 sendSubmit={submitSignIn}
               />
             </div>
@@ -339,8 +343,12 @@ App.propTypes = {
     uid: PropTypes.string
   }).isRequired,
   signUp: PropTypes.func.isRequired,
+  signUpWithGoogle: PropTypes.func.isRequired,
+  signUpWithFacebook: PropTypes.func.isRequired,
   submitSignUp: PropTypes.func.isRequired,
   signIn: PropTypes.func.isRequired,
+  signInWithFacebook: PropTypes.func.isRequired,
+  signInWithGoogle: PropTypes.func.isRequired,
   submitSignIn: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func

@@ -1,6 +1,6 @@
 import * as firebase from 'firebase'
 import { push } from 'react-router-redux'
-import { omitBy } from 'lodash'
+import { omitBy, get } from 'lodash'
 import { submit } from 'redux-form'
 import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD } from '../types/accountActionTypes'
 import * as algoliaActions from './algoliaActions'
@@ -130,6 +130,83 @@ export const createVendor = vendorName => (dispatch) => {
       creator: uid,
       name: vendorName
     })
+  })
+}
+
+export const signUpWithGoogle = () => (dispatch) => {
+  const provider = new firebase.auth.GoogleAuthProvider()
+  provider.addScope('https://www.googleapis.com/auth/userinfo.email')
+  provider.addScope('https://www.googleapis.com/auth/userinfo.profile')
+  provider.setCustomParameters({
+    display: 'popup'
+  })
+  const fbPromise = firebase.auth().signInWithPopup(provider)
+  return dispatch({
+    type: 'SIGN_UP_GOOGLE',
+    payload: fbPromise
+  }).then(({ value }) => {
+    const user = value.user
+    const displayName = get(user, 'displayName', '')
+    const email = get(user, 'email', '')
+    const photoURL = get(user, 'photoURL', '')
+    const accountDataToSave = {
+      firstName: displayName,
+      lastName: '',
+      email,
+      photoURL
+    }
+    migrate(accountDataToSave, value, dispatch)
+  })
+}
+
+export const signInWithGoogle = () => {
+  const provider = new firebase.auth.GoogleAuthProvider()
+  provider.addScope('https://www.googleapis.com/auth/userinfo.email')
+  provider.addScope('https://www.googleapis.com/auth/userinfo.profile')
+  provider.setCustomParameters({
+    display: 'popup'
+  })
+  const fbPromise = firebase.auth().signInWithPopup(provider)
+  return {
+    type: 'SIGN_IN_GOOGLE',
+    payload: fbPromise
+  }
+}
+
+export const signInWithFacebook = () => {
+  const provider = new firebase.auth.FacebookAuthProvider()
+  provider.addScope('email')
+  provider.addScope('public_profile')
+  const fbPromise = firebase.auth().signInWithPopup(provider)
+  return {
+    type: 'SIGN_UP_FACEBOOK',
+    payload: fbPromise
+  }
+}
+
+export const signUpWithFacebook = () => (dispatch) => {
+  const provider = new firebase.auth.FacebookAuthProvider()
+  provider.addScope('email')
+  provider.addScope('public_profile')
+  const fbPromise = firebase.auth().signInWithPopup(provider)
+  return dispatch({
+    type: 'SIGN_UP_FACEBOOK',
+    payload: fbPromise
+  }).then(({ value }) => {
+    const displayName = get(value, 'user.displayName', '')
+    const email = get(value, 'user.email')
+    const defaultEmail = email || `${displayName}@facebook.com`
+    const extraUserInfo = get(value, 'additionalUserInfo.profile')
+    const firstName = get(extraUserInfo, 'first_name', '')
+    const lastName = get(extraUserInfo, 'last_name', '')
+    const photoURL = get(extraUserInfo, 'picture.data.url')
+    const accountDataToSave = {
+      firstName,
+      lastName,
+      email: defaultEmail,
+      photoURL
+    }
+    migrate(accountDataToSave, value, dispatch)
   })
 }
 
