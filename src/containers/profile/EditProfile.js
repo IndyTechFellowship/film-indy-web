@@ -6,6 +6,8 @@ import { withRouter } from 'react-router-dom'
 import { firebaseConnect } from 'react-redux-firebase'
 import EditProfile from '../../presentation/profile/EditProfile'
 import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
+import * as accountActions from '../../redux/actions/creators/accountActions'
+import * as profileActions from '../../redux/actions/creators/profileActions'
 import AuthenticatedComponent from '../../AuthenticatedComponent'
 
 const createInitialValues = (state) => {
@@ -52,8 +54,7 @@ const WrappedEditProfile = firebaseConnect((props, firebase) => {
     `/userProfiles/${uid}`,
     'roles'
   ]
-})(AuthenticatedComponent(EditProfileContainer))
-
+})(EditProfileContainer)
 
 export default withRouter(connect(
   state => ({
@@ -64,6 +65,6 @@ export default withRouter(connect(
     initialValues: createInitialValues(state)
 
   }),
-  { ...algoliaActions },
+  { ...algoliaActions, ...profileActions, ...accountActions },
 )(WrappedEditProfile))
 

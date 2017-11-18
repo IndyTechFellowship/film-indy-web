@@ -16,6 +16,7 @@ import PropTypes from 'prop-types'
 import { get, pickBy } from 'lodash'
 import AddLinkForm from './AddLinkForm'
 import EditLinkForm from './EditLinkForm'
+import AddCreditForm from './AddCreditForm'
 import '../../App.css'
 
 const styles = {
@@ -58,7 +59,7 @@ const renderTextField = ({ input, name, label, meta: { touched, error }, ...cust
 class EditProfile extends React.Component {
   constructor(props) {
     super(props)
-    this.state = ({ dialogOpen: false, updated: false, addLinkDialogOpen: false, editLinkDialogOpen: false })
+    this.state = ({ dialogOpen: false, updated: false, addLinkDialogOpen: false, editLinkDialogOpen: false, addCreditDialogOpen: false })
     this.handleClose = this.handleClose.bind(this)
     this.handleOpen = this.handleOpen.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -69,6 +70,16 @@ class EditProfile extends React.Component {
     this.handleAddLinkOpen = this.handleAddLinkOpen.bind(this)
     this.handleEditLinkClose = this.handleEditLinkClose.bind(this)
     this.handleEditLinkOpen = this.handleEditLinkOpen.bind(this)
+    this.handleAddCreditClose = this.handleAddCreditClose.bind(this)
+    this.handleAddCreditOpen = this.handleAddCreditOpen.bind(this)
+  }
+
+  handleAddCreditClose() {
+    this.setState({ addCreditDialogOpen: false })
+  }
+
+  handleAddCreditOpen() {
+    this.setState({ addCreditDialogOpen: true })
   }
 
   handleEditLinkClose() {
@@ -206,6 +217,22 @@ class EditProfile extends React.Component {
         onClick={() => {
           remoteSubmitForm('AddLinkForm')
           this.handleAddLinkClose()
+        }}
+      />
+    ]
+
+    const addCreditActions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onClick={this.handleAddCreditClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary
+        onClick={() => {
+          remoteSubmitForm('AddCreditForm')
+          this.handleAddCreditClose()
         }}
       />
     ]
@@ -358,6 +385,15 @@ class EditProfile extends React.Component {
             </div>
             <div>
               <RaisedButton label="Add Roles" icon={<AddIcon />} primary onClick={this.handleOpen} style={{ marginTop: '20px' }} />
+              <RaisedButton label="Add Credits" icon={<AddIcon />} primary onClick={this.handleAddCreditOpen} style={{ marginTop: '20px', marginLeft: 10 }} />
+              <Dialog
+                title="Add Credit"
+                actions={addCreditActions}
+                modal
+                open={this.state.addCreditDialogOpen}
+              >
+                <AddCreditForm userRoles={userRoles} onSubmit={values => console.log(values)} />
+              </Dialog>
               <Dialog
                 title="Add Roles"
                 actions={dialogActions}
