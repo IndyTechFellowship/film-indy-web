@@ -1,4 +1,4 @@
-import { SEARCH_INDEX, ENRICH_SEARCH_RESULT, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS } from '../actions/types/algoliaActionsTypes'
+import { SEARCH_INDEX, ENRICH_SEARCH_RESULT, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED } from '../actions/types/algoliaActionsTypes'
 import { uniqBy } from 'lodash'
 
 const initalState = {
@@ -8,7 +8,10 @@ const initalState = {
   queryResults: [],
   enrichedResults: [],
   crewQueryResults: [],
-  enrichedCrewResults: []
+  enrichedCrewResults: [],
+  vendorQueryResults: [],
+  enrichedVendorQueryResults: [],
+  totalVendorHits: { hasLoaded: false }
 }
 
 export default (state = initalState, action) => {
@@ -20,7 +23,9 @@ export default (state = initalState, action) => {
         length: action.payload.length,
         totalHits: { hasLoaded: false },
         enrichedCrewResults: [],
-        crewQueryResults: []
+        crewQueryResults: [],
+        vendorQueryResults: [],
+        enrichedVendorQueryResults: []
       }
     case `${SEARCH_INDEX}_SUCCESS`:
       return {
@@ -81,6 +86,55 @@ export default (state = initalState, action) => {
         ...state,
         totalHits: {
           ...state.totalHits,
+          hasLoaded: true
+        }
+      }
+
+    case `${SEARCH_FOR_VENDORS}_STARTING`:
+      return {
+        ...state,
+        ...action.payload,
+        totalVendorHits: {
+          ...state.totalVendorHits,
+          hasLoaded: false
+        }
+      }
+    case `${SEARCH_FOR_VENDORS}_SUCCESS`:
+      return {
+        ...state,
+        vendorQueryResults: [...state.vendorQueryResults, ...action.payload.reduce((acc, r) => [...acc, ...r.results.hits], [])]
+      }
+    case `${SEARCH_FOR_VENDORS_ENRICHED}_STARTING`:
+      return {
+        ...state,
+        totalVendorHits: {
+          ...state.totalVendorHits,
+          ...action.payload.totalHits
+        }
+      }
+    case `${SEARCH_FOR_VENDORS_ENRICHED}_SUCCESS`:
+      if (action.payload.length > 0) {
+        const newResults = [...state.enrichedVendorQueryResults, ...state.vendorQueryResults.map((result) => {
+          const objectID = result.objectID
+          const enrichmentData = action.payload.find(enriched => enriched.objectID === objectID)
+          if (enrichmentData) {
+            return { ...result, ...enrichmentData.value }
+          }
+          return { ...result }
+        })]
+        return {
+          ...state,
+          totalVendorHits: {
+            ...state.totalVendorHits,
+            hasLoaded: true
+          },
+          enrichedVendorQueryResults: uniqBy(newResults, 'objectID')
+        }
+      }
+      return {
+        ...state,
+        totalVendorHits: {
+          ...state.totalVendorHits,
           hasLoaded: true
         }
       }

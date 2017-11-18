@@ -84,7 +84,8 @@ class AccountPage extends React.Component {
 
   render() {
     const { handleSubmit, pristine, submitting, handleProfileChanges,
-      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, usersVendors, resetPassword, account } = this.props
+      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, deleteVendor,
+      usersVendors, resetPassword, account } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const isPublic = get(profile, 'public', false)
@@ -178,7 +179,13 @@ class AccountPage extends React.Component {
             {Object.keys(vendors).map((key) => {
               const vend = vendors[key]
               return (
-                <Chip key={vend.name} style={{ marginRight: 5 }}>
+                <Chip
+                  onRequestDelete={() => {
+                    deleteVendor(key)
+                  }}
+                  key={vend.name}
+                  style={{ marginRight: 5 }}
+                >
                   {vend.name}
                 </Chip>
               )
@@ -249,6 +256,7 @@ AccountPage.propTypes = {
   submitting: PropTypes.bool.isRequired,
   handleProfileChanges: PropTypes.func.isRequired,
   createVendor: PropTypes.func.isRequired,
+  deleteVendor: PropTypes.func.isRequired,
   usersVendors: PropTypes.objectOf(PropTypes.shape({
     creator: PropTypes.string,
     name: PropTypes.string
@@ -260,7 +268,7 @@ AccountPage.propTypes = {
       code: PropTypes.string,
       message: PropTypes.string
     })
-  }),
+  }).isRequired,
   resetPassword: PropTypes.func.isRequired
 }
 

@@ -44,7 +44,7 @@ Account.propTypes = {
   partialUpdateAlgoliaObject: PropTypes.func.isRequired,
   updateAuth: PropTypes.func.isRequired,
   sendPasswordResetEmail: PropTypes.func.isRequired,
-  resetPassword: PropTypes.func.isRequired,
+  resetPassword: PropTypes.func.isRequired
 }
 
 Account.defaultProps = {
@@ -60,7 +60,7 @@ const wrappedAccount = firebaseConnect((props, firebaseProp) => {
       queryParams: ['orderByChild=creator', `equalTo=${uid}`]
     }
   ]
-})(Authed(Account))
+})(Account)
 
 export default withRouter(connect(
   state => ({ account: state.account,
