@@ -36,20 +36,6 @@ const renderSelectField = ({
   />
 )
 
-const validate = (values) => {
-  const errors = {}
-  if (!values.role) {
-    errors.role = 'A role is required'
-  }
-  if (!values.year) {
-    errors.year = 'A year is required'
-  }
-  if (!values.title) {
-    errors.title = 'A title is required'
-  }
-  return errors
-}
-
 const AddCreditForm = ({ handleSubmit, userRoles }) => (
   <form onSubmit={handleSubmit}>
     <div>
@@ -87,6 +73,5 @@ AddCreditForm.propTypes = {
 }
 
 export default reduxForm({
-  form: 'AddCreditForm',
-  validate
+  form: 'AddCreditForm'
 })(AddCreditForm)
