@@ -18,6 +18,7 @@ import AddLinkForm from './AddLinkForm'
 import EditLinkForm from './EditLinkForm'
 import AddCreditForm from './AddCreditForm'
 import '../../App.css'
+import '../../presentation/profile/ViewProfile.css'
 
 const styles = {
   card: {
@@ -150,7 +151,9 @@ class EditProfile extends React.Component {
   }
 
   render() {
-    const { auth, profile, firebase, data, partialUpdateAlgoliaObject, pristine, submitting, handleSubmit, remoteSubmitForm, addLinkToProfile, editProfileLink, removeProfileLink, initForm } = this.props
+    const { auth, profile, firebase, data, partialUpdateAlgoliaObject, pristine, submitting,
+      handleSubmit, remoteSubmitForm, addLinkToProfile, editProfileLink, removeProfileLink, initForm,
+      addCredit } = this.props
     const uid = get(auth, 'uid', '')
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
@@ -168,6 +171,7 @@ class EditProfile extends React.Component {
         return 0
       })
     const userLinks = get(userProfile, 'links', [])
+    const userCredits = get(userProfile, 'credits', [])
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
     const email = get(auth, 'email', '')
@@ -366,22 +370,26 @@ class EditProfile extends React.Component {
           </Card>
         </div>
         <div style={{ paddingTop: 30 }}>
-          <Card style={styles.card}>
+          <Card className="profile-card big-card" style={styles.card}>
             <CardTitle title="Roles" />
             <Divider />
-            <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-              {RoleChipDisplays(userRoles, [], () => {}, (roleId) => {
-                const filteredRoles = userRoles.filter(role => role.roleId !== roleId).map(role => role.roleId)
-                const filteredRoleNames = userRoles.filter(role => role.roleId !== roleId).map(role => role.roleName)
-                firebase.set(userProfileRolePath, {
-                  roles: filteredRoles
+            <div className="roles" style={{ paddingTop: 10 }}>
+              {
+                userRoles.map((role) => {
+                  const associatedCredits = userCredits.filter(c => c.roleId === role.roleId)
+                  return (
+                    <div className="role-column" key={role.roleId}>
+                      <div className="rounded-header"><span>{role.roleName}</span></div>
+                      <div className="credits">
+                        { associatedCredits.map(credit => (
+                          <p style={{ textAlign: 'left' }} key={credit.title}>{credit.year} : {credit.title}</p>
+                        )
+                        )}
+                      </div>
+                    </div>
+                  )
                 })
-                const algoliaUpdateObject = {
-                  objectID: uid,
-                  roles: filteredRoleNames
-                }
-                partialUpdateAlgoliaObject('profiles', algoliaUpdateObject)
-              })}
+              }
             </div>
             <div>
               <RaisedButton label="Add Roles" icon={<AddIcon />} primary onClick={this.handleOpen} style={{ marginTop: '20px' }} />
@@ -392,7 +400,17 @@ class EditProfile extends React.Component {
                 modal
                 open={this.state.addCreditDialogOpen}
               >
-                <AddCreditForm userRoles={userRoles} onSubmit={values => console.log(values)} />
+                <AddCreditForm
+                  userRoles={userRoles}
+                  onSubmit={(values) => {
+                    const role = userRoles[values.role]
+                    const year = values.year
+                    const title = values.title
+                    const credit = { roleId: role.roleId, title, year }
+                    addCredit(userCredits, credit, uid)
+                    this.handleAddCreditClose()
+                  }}
+                />
               </Dialog>
               <Dialog
                 title="Add Roles"
@@ -451,6 +469,7 @@ EditProfile.propTypes = {
   partialUpdateAlgoliaObject: PropTypes.func.isRequired,
   addLinkToProfile: PropTypes.func.isRequired,
   removeProfileLink: PropTypes.func.isRequired,
+  addCredit: PropTypes.func.isRequired,
   editProfileLink: PropTypes.func.isRequired,
   remoteSubmitForm: PropTypes.func.isRequired,
   initForm: PropTypes.func.isRequired,

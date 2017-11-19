@@ -54,7 +54,7 @@ const WrappedEditProfile = firebaseConnect((props, firebase) => {
     `/userProfiles/${uid}`,
     'roles'
   ]
-})(EditProfileContainer)
+})(AuthenticatedComponent(EditProfileContainer))
 
 export default withRouter(connect(
   state => ({

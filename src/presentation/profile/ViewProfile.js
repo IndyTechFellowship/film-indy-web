@@ -74,6 +74,7 @@ class ViewProfile extends React.Component {
       })
 
     const userLinks = get(userProfile, 'links', [])
+    const userCredits = get(userProfile, 'credits', [])
     const bio = get(userProfile, 'bio')
     const experience = get(userProfile, 'experience')
     const currentDate = new Date()
@@ -129,23 +130,22 @@ class ViewProfile extends React.Component {
             <CardTitle title="Credits" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
             <div className="roles">
               {
-                userRoles.map(role => (
-                  <div className="role-column" key={role.roleId}>
-                    <div className="rounded-header"><span>{role.roleName}</span></div>
-                    <div className="credits">
-                      { creditsArray[0].credits.map(credit => (
-                        <p key={credit.title}>{credit.year} : {credit.title}</p>
-                      )
-                      )}
+                userRoles.map((role) => {
+                  const associatedCredits = userCredits.filter(c => c.roleId === role.roleId)
+                  return (
+                    <div className="role-column" key={role.roleId}>
+                      <div className="rounded-header"><span>{role.roleName}</span></div>
+                      <div className="credits">
+                        { associatedCredits.map(credit => (
+                          <p key={credit.title}>{credit.year} : {credit.title}</p>
+                        )
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))
+                  )
+                })
               }
             </div>
-            <CardActions style={{ textAlign: 'center' }}>
-              <RaisedButton primary label="Add Role" icon={<AddIcon />} />
-              <RaisedButton primary label="Add Credit" icon={<AddIcon />} />
-            </CardActions>
           </Card>
         </div>
       </div>
