@@ -151,7 +151,7 @@ class EditProfile extends React.Component {
   }
 
   render() {
-    const { auth, profile, firebase, data, partialUpdateAlgoliaObject, pristine, submitting,
+    const { auth, profile, data, pristine, submitting,
       handleSubmit, remoteSubmitForm, addLinkToProfile, editProfileLink, removeProfileLink, initForm,
       addCredit } = this.props
     const uid = get(auth, 'uid', '')
@@ -175,7 +175,6 @@ class EditProfile extends React.Component {
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
     const email = get(auth, 'email', '')
-    const userProfileRolePath = `/userProfiles/${uid}`
     const possibleRolesToAdd = Object.keys(roles).reduce((acc, roleId) => {
       const roleName = get(roles, `${roleId}.roleName`, '')
       const r = userRoles.map(role => role.roleName)

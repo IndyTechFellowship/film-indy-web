@@ -6,7 +6,6 @@ import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import '../../App.css'
 import './ViewProfile.css'
-import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import WebsiteIcon from 'material-ui/svg-icons/hardware/laptop-mac'
 
 
@@ -15,37 +14,6 @@ import WebsiteIcon from 'material-ui/svg-icons/hardware/laptop-mac'
 const defaultImage = 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png'
 
 // const vimeo = 'https://player.vimeo.com/video/47839264'
-
-const creditsArray = [
-  {
-    role: 'Actor',
-    credits: [
-      { year: '1993',
-        title: 'Groundhog Day'
-      },
-      { year: '1984',
-        title: 'Ghostbusters'
-      },
-      { year: '1980',
-        title: 'Caddyshack'
-      },
-      { year: '1977',
-        title: 'Saturday Night Live'
-      }
-    ]
-  },
-  {
-    role: 'Writer',
-    credits: [
-      { year: '2015',
-        title: 'A Very Murray Christmas'
-      },
-      { year: '1977',
-        title: 'Saturday Night Live'
-      }
-    ]
-  }
-] // / end dummy data
 
 class ViewProfile extends React.Component {
   render() {
