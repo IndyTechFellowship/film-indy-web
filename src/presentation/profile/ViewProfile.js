@@ -8,12 +8,13 @@ import '../../App.css'
 import './ViewProfile.css'
 import WebsiteIcon from 'material-ui/svg-icons/hardware/laptop-mac'
 
-
-// // Dummy filler data 
-
 const defaultImage = 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png'
 
-// const vimeo = 'https://player.vimeo.com/video/47839264'
+function formatPhoneNumber(s) {
+  var s2 = (""+s).replace(/\D/g, '');
+  var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
+  return (!m) ? null : "(" + m[1] + ") " + m[2] + "-" + m[3];
+}
 
 class ViewProfile extends React.Component {
   render() {
@@ -53,8 +54,7 @@ class ViewProfile extends React.Component {
     const profileImageUrl = get(userAccount, 'photoURL', defaultImage)
     const email = get(userAccount, 'email')
     const name = `${get(userAccount, 'firstName', '')} ${get(userAccount, 'lastName', '')}`
-    const phone = get(userAccount, 'phone')
-
+    const phone = formatPhoneNumber( get(userAccount, 'phone') )
 
     return (
       <div className="ViewProfile">
@@ -65,41 +65,67 @@ class ViewProfile extends React.Component {
             </CardMedia>
             <div>
               <CardTitle title={name} titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={headline} subtitleStyle={{ minWidth: '250%', fontStyle: 'italic' }} />
-              <CardText className="crew-text">
-                {numYears} years in industry
-              </CardText>
-              <CardText className="crew-text">
-                {phone}
-              </CardText>
+              { isNaN(numYears) ? 
+                console.log("Experience not set") 
+                : (
+                <CardText className="crew-text">
+                  {numYears} years in industry
+                </CardText>
+                )
+              }
+              { phone ? (
+                <CardText className="crew-text">
+                  {phone}
+                </CardText>
+                ) : console.log("Phone not set")
+              }
               <CardText className="crew-text">
                 {email}
               </CardText>
             </div>
           </Card>
 
-          <Card className="profile-card small-card">
-            <CardTitle title="About Me" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-            <CardText>
-              {bio}
-            </CardText>
-            <CardActions>
-              {userLinks.map(link => (
-                <RaisedButton primary label={link.title} target="_blank" href={link.url} icon={<WebsiteIcon />} />
-              ))}
-            </CardActions>
-          </Card>
+          { bio || userLinks.length !== 0 ? (
+            <Card className="profile-card small-card">
+              <CardTitle title="About Me" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+              <CardText>
+                {bio}
+              </CardText>
+              <CardActions>
+                {userLinks.map(link => (
+                  <RaisedButton primary label={link.title} target="_blank" href={link.url} icon={<WebsiteIcon />} />
+                ))}
+              </CardActions>
+            </Card>
+          ) : console.log("About Me section empty")
+        }
 
+        { video ? (
           <Card className="profile-card big-card">
             <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
             <embed width="100%" height="500px" src={video} />
           </Card>
+        ) : console.log("Featured Video not set")}
 
           <Card className="profile-card big-card">
             <CardTitle title="Credits" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
             <div className="roles">
               {
                 userRoles.map((role) => {
-                  const associatedCredits = userCredits.filter(c => c.roleId === role.roleId)
+                  let associatedCredits = userCredits.filter(c => c.roleId === role.roleId)
+                  let associatedCredits2 = [ {title: "Movie 1", year: "2013"}, {title: "Movie 3", year: "2010"}, {title: "Movie 2", year: "2012"}]
+
+                  associatedCredits.sort(function(a,b) {
+                    if (a.year < b.year)
+                      return -1;
+                    if (a.year > b.year)
+                      return 1;
+                    return 0;
+                  })
+
+                  console.log("Credits: ", associatedCredits)
+                  console.log("Credits Hardcoded: ", associatedCredits2)
+
                   return (
                     <div className="role-column" key={role.roleId}>
                       <div className="rounded-header"><span>{role.roleName}</span></div>
