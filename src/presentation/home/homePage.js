@@ -30,7 +30,7 @@ import ScoutImage from './scout.jpg'
 
 
 // Material UI component imports
-import { Card, CardMedia, CardTitle } from 'material-ui/Card'
+import { Card, CardMedia, CardTitle, CardText } from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
 
 // Material UI SVG Icons
@@ -191,11 +191,11 @@ const homePage = (props) => {
   const { history } = props
   const sliderSettings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
     swipeToSlide: true,
-    slidesToShow: 5,
-    slidesToScroll: 3,
+    slidesToShow: 6,
+    slidesToScroll: 2,
     nextArrow: <Arrow direction="nextArrow" />,
     prevArrow: <Arrow direction="prevArrow" />
   }
@@ -268,7 +268,7 @@ const homePage = (props) => {
                   <CardMedia>
                     <img src={item.image} alt="Explore Roles" />
                   </CardMedia>
-                  <CardTitle title={item.title} />
+                  <CardText className="popular-roles-text">{item.title}</CardText>
                 </Link>
               </Card>))
           }
