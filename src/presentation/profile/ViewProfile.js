@@ -6,7 +6,6 @@ import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import '../../App.css'
 import './ViewProfile.css'
-import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import WebsiteIcon from 'material-ui/svg-icons/hardware/laptop-mac'
 
 
@@ -15,37 +14,6 @@ import WebsiteIcon from 'material-ui/svg-icons/hardware/laptop-mac'
 const defaultImage = 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png'
 
 // const vimeo = 'https://player.vimeo.com/video/47839264'
-
-const creditsArray = [
-  {
-    role: 'Actor',
-    credits: [
-      { year: '1993',
-        title: 'Groundhog Day'
-      },
-      { year: '1984',
-        title: 'Ghostbusters'
-      },
-      { year: '1980',
-        title: 'Caddyshack'
-      },
-      { year: '1977',
-        title: 'Saturday Night Live'
-      }
-    ]
-  },
-  {
-    role: 'Writer',
-    credits: [
-      { year: '2015',
-        title: 'A Very Murray Christmas'
-      },
-      { year: '1977',
-        title: 'Saturday Night Live'
-      }
-    ]
-  }
-] // / end dummy data
 
 class ViewProfile extends React.Component {
   render() {
@@ -74,6 +42,7 @@ class ViewProfile extends React.Component {
       })
 
     const userLinks = get(userProfile, 'links', [])
+    const userCredits = get(userProfile, 'credits', [])
     const bio = get(userProfile, 'bio')
     const experience = get(userProfile, 'experience')
     const currentDate = new Date()
@@ -129,23 +98,22 @@ class ViewProfile extends React.Component {
             <CardTitle title="Credits" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
             <div className="roles">
               {
-                userRoles.map(role => (
-                  <div className="role-column" key={role.roleId}>
-                    <div className="rounded-header"><span>{role.roleName}</span></div>
-                    <div className="credits">
-                      { creditsArray[0].credits.map(credit => (
-                        <p key={credit.title}>{credit.year} : {credit.title}</p>
-                      )
-                      )}
+                userRoles.map((role) => {
+                  const associatedCredits = userCredits.filter(c => c.roleId === role.roleId)
+                  return (
+                    <div className="role-column" key={role.roleId}>
+                      <div className="rounded-header"><span>{role.roleName}</span></div>
+                      <div className="credits">
+                        { associatedCredits.map(credit => (
+                          <p key={credit.title}>{credit.year} : {credit.title}</p>
+                        )
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))
+                  )
+                })
               }
             </div>
-            <CardActions style={{ textAlign: 'center' }}>
-              <RaisedButton primary label="Add Role" icon={<AddIcon />} />
-              <RaisedButton primary label="Add Credit" icon={<AddIcon />} />
-            </CardActions>
           </Card>
         </div>
       </div>

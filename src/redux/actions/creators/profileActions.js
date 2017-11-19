@@ -1,6 +1,6 @@
 import * as firebase from 'firebase'
 import { initialize } from 'redux-form'
-import { ADD_PROFILE_LINK, EDIT_PROFILE_LINK, REMOVE_PROFILE_LINK } from '../types/profileActionTypes'
+import { ADD_PROFILE_LINK, EDIT_PROFILE_LINK, REMOVE_PROFILE_LINK, ADD_CREDIT } from '../types/profileActionTypes'
 
 export const addLinkToProfile = (userLinks, title, url, uid) => {
   const profileRef = firebase.database().ref(`/userProfiles/${uid}`)
@@ -27,6 +27,15 @@ export const editProfileLink = (userLinks, indexToRemove, newTitle, newUrl, uid)
   return {
     type: EDIT_PROFILE_LINK,
     payload: profileRef.update({ links: newLinks })
+  }
+}
+
+export const addCredit = (userCredits, credit, uid) => {
+  const credits = [...userCredits, credit]
+  const profileRef = firebase.database().ref(`/userProfiles/${uid}`)
+  return {
+    type: ADD_CREDIT,
+    payload: profileRef.update({ credits })
   }
 }
 
