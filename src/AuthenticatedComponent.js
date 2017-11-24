@@ -1,11 +1,22 @@
+import React from 'react'
+import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import { replace } from 'react-router-redux'
-import { connectedReduxRedirect } from 'redux-auth-wrapper/history3/redirect'
 
-export default connectedReduxRedirect({
-  redirectPath: '/',
-  allowRedirectBack: true,
-  authenticatedSelector: ({ firebase: { auth } }) =>
-    auth && auth.isLoaded && !auth.isEmpty,
+const LoadingScreen = () => (
+  <div> Loading </div>
+)
+
+export default connectedRouterRedirect({
   wrapperDisplayName: 'UserIsAuthenticated',
-  redirectAction: replace
+  AuthenticatingComponent: LoadingScreen,
+  allowRedirectBack: false,
+  redirectPath: '/',
+  authenticatingSelector: ({ firebase: { auth, isInitializing } }) =>
+    !auth.isLoaded || isInitializing === true,
+  authenticatedSelector: ({ firebase: { auth } }) =>
+    auth.isLoaded && !auth.isEmpty,
+  redirectAction: newLoc => (dispatch) => {
+    dispatch(replace(newLoc))
+    dispatch({ type: 'UNAUTHED_REDIRECT' })
+  }
 })

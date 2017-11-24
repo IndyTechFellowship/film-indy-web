@@ -51,8 +51,9 @@ Account.defaultProps = {
   account: {}
 }
 
-const wrappedAccount = firebaseConnect((props, firebaseProp) => {
-  const uid = get(firebaseProp.auth(), 'currentUser.uid', '')
+const wrappedAccount = firebaseConnect((props, store) => {
+  const firebaseProp = store.getState()
+  const uid = get(firebaseProp, 'auth.uid', '')
   return [
     {
       path: 'vendorProfiles',
