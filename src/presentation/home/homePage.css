@@ -116,6 +116,16 @@
 	margin-right: 50px;
 }
 
+.imageSlider {
+	margin-bottom: 100px;
+}
+
+.popular-roles-text {
+	font-weight: 600;
+	text-transform: uppercase;
+	height: 30px;
+}
+
 
 .nextArrow {
 	display: block;
