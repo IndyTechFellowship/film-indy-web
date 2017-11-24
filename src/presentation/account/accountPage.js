@@ -220,7 +220,7 @@ const FileUploader = props => (
       const file = event.target.files[0]
       const fbFilePath = `/images/users/account/${uid}/account_image`
       uploadFile(fbFilePath, file).then((response) => {
-        const downloadUrl = response.downloadURL
+        const downloadUrl = response.uploadTaskSnaphot.downloadURL
         updateProfile({
           photoURL: downloadUrl
         })

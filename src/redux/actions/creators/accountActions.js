@@ -32,7 +32,7 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
         accountRef.child(uid).set({
           ...val,
           ...accountData,
-          photoURL: response.downloadURL,
+          photoURL: response.uploadTaskSnaphot.downloadURL,
           public: true
         })
       })
@@ -52,7 +52,7 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
       firebase.uploadFile(`/images/users/account/${uid}/account_image`, accountData.photoFile).then((response) => {
         accountRef.child(uid).set({
           ...accountData,
-          photoURL: response.downloadURL,
+          photoURL: response.uploadTaskSnaphot.downloadURL,
           public: false
         })
       })
