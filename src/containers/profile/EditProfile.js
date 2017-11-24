@@ -48,8 +48,9 @@ EditProfileContainer.propTypes = {
   }).isRequired
 }
 
-const WrappedEditProfile = firebaseConnect((props, firebase) => {
-  const uid = get(firebase.auth(), 'currentUser.uid', '')
+const WrappedEditProfile = firebaseConnect((props, store) => {
+  const firebaseProp = store.getState()
+  const uid = get(firebaseProp, 'auth.uid', '')
   return [
     `/userProfiles/${uid}`,
     'roles'
