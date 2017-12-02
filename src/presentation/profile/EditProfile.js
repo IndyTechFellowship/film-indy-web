@@ -290,9 +290,25 @@ class EditProfile extends React.Component {
                   </div>
                   <div>
                     <Field
+                      name="youtubeVideo"
+                      component={renderTextField}
+                      floatingLabelText="Youtube Video Link"
+                      type="url"
+                    />
+                  </div>                  
+                  <div>
+                    <Field
+                      name="vimeoVideo"
+                      component={renderTextField}
+                      floatingLabelText="Vimeo Video Link"
+                      type="url"
+                    />
+                  </div>                  
+                  <div>
+                    <Field
                       name="video"
                       component={renderTextField}
-                      floatingLabelText="Featured Video (must be in embed format)"
+                      floatingLabelText="Additional Video Link"
                       type="url"
                     />
                   </div>
