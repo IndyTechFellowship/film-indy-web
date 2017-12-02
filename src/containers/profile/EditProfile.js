@@ -53,7 +53,8 @@ const WrappedEditProfile = firebaseConnect((props, store) => {
   const uid = get(firebaseProp, 'auth.uid', '')
   return [
     `/userProfiles/${uid}`,
-    'roles'
+    'roles',
+    'genres'
   ]
 })(AuthenticatedComponent(EditProfileContainer))
 

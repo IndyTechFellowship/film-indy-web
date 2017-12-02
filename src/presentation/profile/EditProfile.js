@@ -157,6 +157,7 @@ class EditProfile extends React.Component {
     const uid = get(auth, 'uid', '')
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
+    const genres = get(data, 'genres', [])
     const userProfile = get(data, `userProfiles.${auth.uid}`)
     const userRoles = get(userProfile, 'roles', [])
       .map(roleId => ({ roleName: get(roles, `${roleId}.roleName`, ''), roleId }))
@@ -381,7 +382,7 @@ class EditProfile extends React.Component {
                       <div className="rounded-header"><span>{role.roleName}</span></div>
                       <div className="credits">
                         { associatedCredits.map(credit => (
-                          <p style={{ textAlign: 'left' }} key={credit.title}>{credit.year} : {credit.title}</p>
+                          <p style={{ textAlign: 'left' }} key={credit.title}>{credit.year}{credit.genre ? ` (${credit.genre})` : ''} : {credit.title}</p>
                         )
                         )}
                       </div>
@@ -400,12 +401,14 @@ class EditProfile extends React.Component {
                 open={this.state.addCreditDialogOpen}
               >
                 <AddCreditForm
+                  genres={genres}
                   userRoles={userRoles}
                   onSubmit={(values) => {
                     const role = userRoles[values.role]
+                    const genre = genres[values.genre]
                     const year = values.year
                     const title = values.title
-                    const credit = { roleId: role.roleId, title, year }
+                    const credit = { roleId: role.roleId, genre, title, year }
                     addCredit(userCredits, credit, uid)
                     this.handleAddCreditClose()
                   }}
@@ -460,7 +463,8 @@ EditProfile.propTypes = {
   }).isRequired,
   data: PropTypes.shape({
     roles: PropTypes.object,
-    userProfile: PropTypes.object
+    userProfile: PropTypes.object,
+    genres: PropTypes.arrayOf(PropTypes.string)
   }).isRequired,
   firebase: PropTypes.shape({
     set: PropTypes.func
