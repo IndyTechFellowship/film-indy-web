@@ -213,7 +213,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { profile, auth, firebase, history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn, signInWithFacebook, signInWithGoogle, submitSignIn, location } = this.props
+    const { cancelSignInUpForm, account, profile, auth, firebase, history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn, signInWithFacebook, signInWithGoogle, submitSignIn, location } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const parsed = QueryString.parse(location.search)
@@ -307,6 +307,8 @@ class App extends React.Component {
                 onSubmit={(values) => {
                   signUp(values.firstName, values.lastName, values.photoFile, values.email, values.password)
                 }}
+                account={account}
+                cancelSignInUpForm={cancelSignInUpForm}
                 signUpWithGoogle={signUpWithGoogle}
                 signUpWithFacebook={signUpWithFacebook}
                 sendSubmit={submitSignUp}
@@ -315,6 +317,8 @@ class App extends React.Component {
                 onSubmit={(values) => {
                   signIn(values.email, values.password)
                 }}
+                account={account}
+                cancelSignInUpForm={cancelSignInUpForm}
                 signInWithFacebook={signInWithFacebook}
                 signInWithGoogle={signInWithGoogle}
                 sendSubmit={submitSignIn}
@@ -369,6 +373,7 @@ App.propTypes = {
   auth: PropTypes.shape({
     uid: PropTypes.string
   }).isRequired,
+  cancelSignInUpForm: PropTypes.func.isRequired,
   signUp: PropTypes.func.isRequired,
   signUpWithGoogle: PropTypes.func.isRequired,
   signUpWithFacebook: PropTypes.func.isRequired,
@@ -388,6 +393,6 @@ App.propTypes = {
 const wrappedApp = firebaseConnect()(App)
 
 export default withRouter(connect(
-  state => ({ firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth }),
+  state => ({ account: state.account, firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth }),
   { ...accountActions },
 )(wrappedApp))
