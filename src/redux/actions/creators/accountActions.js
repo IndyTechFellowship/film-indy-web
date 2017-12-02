@@ -29,7 +29,7 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
     accountRef.child(emailKey).remove()
     if (accountData.photoFile) {
       firebase.uploadFile(`/images/users/account/${uid}/account_image`, accountData.photoFile).then((response) => {
-        accountRef.child(uid).set({
+        accountRef.child(uid).update({
           ...val,
           ...accountData,
           photoURL: response.uploadTaskSnaphot.downloadURL,
@@ -37,7 +37,7 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
         })
       })
     } else {
-      accountRef.child(uid).set({
+      accountRef.child(uid).update({
         ...val,
         ...accountData,
         public: true
@@ -50,14 +50,14 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
     dispatch(algoliaActions.addToNameIndex(uid, { ...nameUpdates, public: false }))
     if (accountData.photoFile) {
       firebase.uploadFile(`/images/users/account/${uid}/account_image`, accountData.photoFile).then((response) => {
-        accountRef.child(uid).set({
+        accountRef.child(uid).update({
           ...accountData,
           photoURL: response.uploadTaskSnaphot.downloadURL,
           public: false
         })
       })
     } else {
-      accountRef.child(uid).set({
+      accountRef.child(uid).update({
         ...accountData,
         public: false
       })
@@ -77,10 +77,10 @@ const migrate = (accountDataToSave, signUpResult, dispatch) => {
     const val = snapshot.val()
     if (val) {
       profilesRef.child(emailKey).remove()
-      profilesRef.child(uid).set(val)
+      profilesRef.child(uid).update(val)
       dispatch(algoliaActions.migrateProfile(uid, emailKey))
     } else {
-      profilesRef.child(uid).set({
+      profilesRef.child(uid).update({
         public: false
       }).then(() => dispatch(algoliaActions.createProfileRecord(uid, { public: false, roles: [] })))
     }
@@ -166,7 +166,7 @@ export const signUpWithGoogle = () => (dispatch) => {
   })
 }
 
-export const signInWithGoogle = () => {
+export const signInWithGoogle = () => (dispatch) => {
   const provider = new firebase.auth.GoogleAuthProvider()
   provider.addScope('https://www.googleapis.com/auth/userinfo.email')
   provider.addScope('https://www.googleapis.com/auth/userinfo.profile')
@@ -174,21 +174,36 @@ export const signInWithGoogle = () => {
     display: 'popup'
   })
   const fbPromise = firebase.auth().signInWithPopup(provider)
-  return {
+  return dispatch({
     type: 'SIGN_IN_GOOGLE',
     payload: fbPromise
-  }
+  }).then(({ value }) => {
+    const user = value.user
+    const email = get(user, 'email', '')
+    const accountDataToSave = {
+      email
+    }
+    migrate(accountDataToSave, value, dispatch)
+  })
 }
 
-export const signInWithFacebook = () => {
+export const signInWithFacebook = () => (dispatch) => {
   const provider = new firebase.auth.FacebookAuthProvider()
   provider.addScope('email')
   provider.addScope('public_profile')
   const fbPromise = firebase.auth().signInWithPopup(provider)
-  return {
-    type: 'SIGN_UP_FACEBOOK',
+  return dispatch({
+    type: 'SIGN_IN_FACEBOOK',
     payload: fbPromise
-  }
+  }).then(({ value }) => {
+    const displayName = get(value, 'user.displayName', '')
+    const email = get(value, 'user.email')
+    const defaultEmail = email || `${displayName}@facebook.com`
+    const accountDataToSave = {
+      email: defaultEmail
+    }
+    migrate(accountDataToSave, value, dispatch)
+  })
 }
 
 export const signUpWithFacebook = () => (dispatch) => {
