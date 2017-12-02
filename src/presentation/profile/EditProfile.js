@@ -271,6 +271,8 @@ class EditProfile extends React.Component {
                       component={renderTextField}
                       floatingLabelText="Year you began working in industry"
                       type="number"
+                      min="0"
+                      max="100"
                     />
                   </div>
                   <div>
@@ -278,7 +280,7 @@ class EditProfile extends React.Component {
                       name="phone"
                       component={renderTextField}
                       floatingLabelText="Phone"
-                      type="number"
+                      type="text"
                     />
                   </div>
                   <div>
