@@ -282,14 +282,6 @@ class EditProfile extends React.Component {
                   </div>
                   <div>
                     <Field
-                      name="bio"
-                      component={renderTextField}
-                      floatingLabelText="Bio"
-                      type="text"
-                    />
-                  </div>
-                  <div>
-                    <Field
                       name="video"
                       component={renderTextField}
                       floatingLabelText="Featured Video (must be in embed format)"
@@ -307,6 +299,23 @@ class EditProfile extends React.Component {
         <div style={{ paddingTop: 30 }}>
           <Card style={styles.card}>
             <CardTitle title="About Me" />
+
+            <form onSubmit={handleSubmit(this.handleProfileUpdate)}>
+              <div className="fields">
+                <div>
+                  <Field
+                    name="bio"
+                    component={renderTextField}
+                    floatingLabelText="Bio"
+                    type="text"
+                    multiLine={true}
+                    rows={3}
+                  />
+                </div>
+              </div>
+              <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} style={{ marginBottom: "10px"}} onClick={this.updateMessage} />
+            </form>
+
             <Divider />
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', paddingTop: 5 }}>
               {userLinks.map((link, i) => (
@@ -354,8 +363,7 @@ class EditProfile extends React.Component {
               ))}
             </div>
             <div>
-              <FloatingActionButton onClick={this.handleAddLinkOpen} mini>
-                <ContentAdd />
+              <RaisedButton primary label="Add Link" style={{ marginTop: '10px'}} icon={<ContentAdd />} onClick={this.handleAddLinkOpen} >
                 <Dialog
                   title="Add a Link"
                   actions={addLinkActions}
@@ -364,7 +372,7 @@ class EditProfile extends React.Component {
                 >
                   <AddLinkForm userLinks={userLinks} onSubmit={values => addLinkToProfile(userLinks, values.title, values.url, uid)} />
                 </Dialog>
-              </FloatingActionButton>
+              </RaisedButton>
             </div>
           </Card>
         </div>
