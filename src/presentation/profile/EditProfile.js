@@ -10,7 +10,6 @@ import Chip from 'material-ui/Chip'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
 import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import PropTypes from 'prop-types'
 import { get, pickBy } from 'lodash'
@@ -308,12 +307,12 @@ class EditProfile extends React.Component {
                     component={renderTextField}
                     floatingLabelText="Bio"
                     type="text"
-                    multiLine={true}
+                    multiLine
                     rows={3}
                   />
                 </div>
               </div>
-              <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} style={{ marginBottom: "10px"}} onClick={this.updateMessage} />
+              <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} style={{ marginBottom: '10px' }} onClick={this.updateMessage} />
             </form>
 
             <Divider />
@@ -363,7 +362,7 @@ class EditProfile extends React.Component {
               ))}
             </div>
             <div>
-              <RaisedButton primary label="Add Link" style={{ marginTop: '10px'}} icon={<ContentAdd />} onClick={this.handleAddLinkOpen} >
+              <RaisedButton primary label="Add Link" style={{ marginTop: '10px' }} icon={<ContentAdd />} onClick={this.handleAddLinkOpen} >
                 <Dialog
                   title="Add a Link"
                   actions={addLinkActions}
