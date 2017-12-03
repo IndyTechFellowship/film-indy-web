@@ -124,7 +124,7 @@ class ViewProfile extends React.Component {
                       <div className="rounded-header"><span>{role.roleName}</span></div>
                       <div className="credits">
                         { associatedCredits.map(credit => (
-                          <p key={credit.title}>{credit.year} : {credit.title}</p>
+                          <p style={{ textAlign: 'left' }} key={credit.title}>{credit.year}{credit.genre ? ` (${credit.genre})` : ''} : {credit.title}</p>
                         )
                         )}
                       </div>
