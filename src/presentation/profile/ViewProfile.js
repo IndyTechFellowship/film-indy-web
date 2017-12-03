@@ -17,41 +17,32 @@ function formatPhoneNumber(s) {
 }
 
 function linkToEmbed(link, type) {
+  if (link) {
+    switch (type) {
+      case 'youtube':
+        const youtubeRegExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
+        const youtubeMatch = link.match(youtubeRegExp)
+        const youtubeVideoID = youtubeMatch[7]
 
-  if(link) {
-        switch(type) {
-        case "youtube":
-          const youtubeRegExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
-          const youtubeMatch = link.match(youtubeRegExp)
-          console.log("Youtube Match: ", youtubeMatch)
+        return `https://www.youtube.com/embed/${youtubeVideoID}`
 
-          const youtubeVideoID = youtubeMatch[7]
+      case 'vimeo':
+        // Source: http://jsbin.com/asuqic/184/edit?html,js,output
+        const vimeoRegExp = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/
+        const vimeoMatch = link.match(vimeoRegExp)
+        const vimeoVideoID = vimeoMatch[3]
 
-          // const youtubeVideoID = "Q0CbN8sfihY" // hard coded test ID, delete this line for real data
-          return "https://www.youtube.com/embed/" + youtubeVideoID;
+        return `https://player.vimeo.com/video/${vimeoVideoID}?color=ffffff&portrait=0`
 
-        case "vimeo":
-          // Source: http://jsbin.com/asuqic/184/edit?html,js,output
-          const vimeoRegExp = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/
-          const vimeoMatch = link.match(vimeoRegExp)
-          console.log("Vimeo Match: ", vimeoMatch)
-          const vimeoVideoID = vimeoMatch[3]
-
-          // const vimeoVideoID = "209263699" // hard coded test ID, delete this line for real data
-          return "https://player.vimeo.com/video/" + vimeoVideoID + "?color=ffffff&portrait=0"
-
-        default: 
-          // return link
-          console.log("LINK NOT PROCESSED")
-          break
-        }
-    } else {
-      return ''
+      default:
+        return ''
     }
+  } else {
+    return ''
+  }
 }
 
 class ViewProfile extends React.Component {
-
   render() {
     const { data, location } = this.props
 
@@ -92,12 +83,6 @@ class ViewProfile extends React.Component {
     const email = get(userAccount, 'email')
     const name = `${get(userAccount, 'firstName', '')} ${get(userAccount, 'lastName', '')}`
     const phone = formatPhoneNumber(get(userAccount, 'phone'))
-
-    console.log("Vimeo: ", vimeoVideo)
-    console.log("Yout: ", youtubeVideo)
-    // console.log("Vimeo Embed return: ", linkToEmbed(vimeoVideo, "vimeo"))
-    // console.log("Youtube Embed return: ", linkToEmbed(youtubeVideo, "youtube"))
-
     return (
       <div className="ViewProfile">
         <div style={{ display: 'block', margin: 'auto' }}>
@@ -145,14 +130,14 @@ class ViewProfile extends React.Component {
           { youtubeVideo ? (
             <Card className="profile-card big-card">
               <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-              <embed width="100%" height="500px" src={linkToEmbed(youtubeVideo, "youtube")} />
+              <embed width="100%" height="500px" src={linkToEmbed(youtubeVideo, 'youtube')} />
             </Card>
-          ) : null}          
+          ) : null}
 
           { vimeoVideo ? (
             <Card className="profile-card big-card">
               <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-              <embed width="100%" height="500px" src={linkToEmbed(vimeoVideo, "vimeo")} />
+              <embed width="100%" height="500px" src={linkToEmbed(vimeoVideo, 'vimeo')} />
             </Card>
           ) : null}
 
@@ -161,7 +146,7 @@ class ViewProfile extends React.Component {
               <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
               <embed width="100%" height="500px" src={video} />
             </Card>
-          ) : null}      
+          ) : null}
 
           <Card className="profile-card big-card">
             <CardTitle title="Credits" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
