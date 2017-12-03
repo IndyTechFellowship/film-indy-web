@@ -16,6 +16,32 @@ function formatPhoneNumber(s) {
   return (!m) ? null : `(${m[1]}) ${m[2]}-${m[3]}`
 }
 
+function linkToEmbed(link, type) {
+  if (link) {
+    switch (type) {
+      case 'youtube':
+        const youtubeRegExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
+        const youtubeMatch = link.match(youtubeRegExp)
+        const youtubeVideoID = youtubeMatch[7]
+
+        return `https://www.youtube.com/embed/${youtubeVideoID}`
+
+      case 'vimeo':
+        // Source: http://jsbin.com/asuqic/184/edit?html,js,output
+        const vimeoRegExp = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/
+        const vimeoMatch = link.match(vimeoRegExp)
+        const vimeoVideoID = vimeoMatch[3]
+
+        return `https://player.vimeo.com/video/${vimeoVideoID}?color=ffffff&portrait=0`
+
+      default:
+        return ''
+    }
+  } else {
+    return ''
+  }
+}
+
 class ViewProfile extends React.Component {
   render() {
     const { data, location } = this.props
@@ -50,12 +76,13 @@ class ViewProfile extends React.Component {
     const numYears = currentDate.getFullYear() - experience
     const headline = get(userProfile, 'headline')
     const video = get(userProfile, 'video', '')
+    const youtubeVideo = get(userProfile, 'youtubeVideo', '')
+    const vimeoVideo = get(userProfile, 'vimeoVideo', '')
 
     const profileImageUrl = get(userAccount, 'photoURL', defaultImage)
     const email = get(userAccount, 'email')
     const name = `${get(userAccount, 'firstName', '')} ${get(userAccount, 'lastName', '')}`
     const phone = formatPhoneNumber(get(userAccount, 'phone'))
-
     return (
       <div className="ViewProfile">
         <div style={{ display: 'block', margin: 'auto' }}>
@@ -99,6 +126,20 @@ class ViewProfile extends React.Component {
             </Card>
           ) : null
           }
+
+          { youtubeVideo ? (
+            <Card className="profile-card big-card">
+              <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+              <embed width="100%" height="500px" src={linkToEmbed(youtubeVideo, 'youtube')} />
+            </Card>
+          ) : null}
+
+          { vimeoVideo ? (
+            <Card className="profile-card big-card">
+              <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+              <embed width="100%" height="500px" src={linkToEmbed(vimeoVideo, 'vimeo')} />
+            </Card>
+          ) : null}
 
           { video ? (
             <Card className="profile-card big-card">
