@@ -85,7 +85,7 @@ const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
 const AutoCompleteBar = connectAutoComplete(
-  ({ hits, currentRefinement, refine, onUpdateInput, onSuggestionClicked }) => {
+  ({ hits, currentRefinement, refine, onUpdateInput, onSuggestionClicked, onEnterHit }) => {
     const subsetHits = hits.map(hit => ({ ...hit, hits: hit.hits.slice(0, 3) }))
     return (
       <Autosuggest
@@ -105,7 +105,15 @@ const AutoCompleteBar = connectAutoComplete(
           }
           const moreInputProps = { ...inputProps, onBlur }
           return (
-            <TextField id="autocomplete-text-field" {...moreInputProps} />
+            <TextField
+              id="autocomplete-text-field"
+              onKeyPress={(ev) => {
+                if (ev.key === 'Enter') {
+                  onEnterHit()
+                }
+              }}
+              {...moreInputProps}
+            />
           )
         }}
         renderSuggestion={(hit) => {
@@ -117,10 +125,10 @@ const AutoCompleteBar = connectAutoComplete(
                 {hit.roleName}
               </MenuItem>
             )
-          } else if (hit.firstName) {
+          } else if (hit.firstName || hit.lastName) {
             return (
               <MenuItem style={{ whiteSpace: 'inital' }}>
-                {`${hit.firstName} ${hit.lastName}`}
+                {`${get(hit, 'firstName', '')} ${get(hit, 'lastName', '')}`}
               </MenuItem>
             )
           } else if (hit.vendorName) {
@@ -240,6 +248,11 @@ class App extends React.Component {
                       <Index indexName="vendors" />
                       <AutoCompleteBar
                         onUpdateInput={query => this.searchQuery = query}
+                        onEnterHit={() => {
+                          if (this.searchQuery) {
+                            history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
+                          }
+                        }}
                         onSuggestionClicked={(suggestion, index) => {
                           if (index === 0) {
                             history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all` })

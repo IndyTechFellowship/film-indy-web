@@ -113,6 +113,11 @@ class SignInForm extends React.Component {
                     hintText="Email"
                     floatingLabelText="Email"
                     type="email"
+                    onKeyPress={(ev) => {
+                      if (ev.key === 'Enter') {
+                        sendSubmit()
+                      }
+                    }}
                   />
                 </div>
                 <div>
@@ -122,6 +127,11 @@ class SignInForm extends React.Component {
                     hintText="Password"
                     floatingLabelText="Password"
                     type="password"
+                    onKeyPress={(ev) => {
+                      if (ev.key === 'Enter') {
+                        sendSubmit()
+                      }
+                    }}
                   />
                 </div>
               </form>
