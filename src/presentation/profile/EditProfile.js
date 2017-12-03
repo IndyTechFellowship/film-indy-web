@@ -13,6 +13,7 @@ import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import PropTypes from 'prop-types'
 import { get, pickBy } from 'lodash'
+import moment from 'moment'
 import AddLinkForm from './AddLinkForm'
 import EditLinkForm from './EditLinkForm'
 import AddCreditForm from './AddCreditForm'
@@ -239,6 +240,7 @@ class EditProfile extends React.Component {
         }}
       />
     ]
+    const currentYear = moment().year()
     return (
       <div style={{ paddingTop: 10, display: 'flex', flexDirection: 'column' }}>
         <div>
@@ -270,8 +272,8 @@ class EditProfile extends React.Component {
                       component={renderTextField}
                       floatingLabelText="Year you began working in industry"
                       type="number"
-                      min="0"
-                      max="100"
+                      max={`${currentYear}`}
+                      min={`${currentYear - 100}`}
                     />
                   </div>
                   <div>
@@ -494,6 +496,16 @@ EditProfile.defaultProps = {
 
 const EditProfileFormEnriched = reduxForm({
   form: 'UpdatePublicProfile',
+  validate: (values) => {
+    const errors = {}
+    const currentYear = moment().year()
+    if (values.experience) {
+      if (values.experience > currentYear || values.experience < currentYear - 100) {
+        errors.experience = `Please choose a year between ${currentYear - 100} and ${currentYear}`
+      }
+    }
+    return errors
+  },
   enableReinitialize: true
 })(EditProfile)
 
