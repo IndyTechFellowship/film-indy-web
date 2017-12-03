@@ -148,6 +148,11 @@ class SignUpForm extends React.Component {
                   name="firstName"
                   component={TextField}
                   floatingLabelText="First Name"
+                  onKeyPress={(ev) => {
+                    if (ev.key === 'Enter') {
+                      sendSubmit()
+                    }
+                  }}
                 />
               </div>
               <div>
@@ -155,6 +160,11 @@ class SignUpForm extends React.Component {
                   name="lastName"
                   component={TextField}
                   floatingLabelText="Last Name"
+                  onKeyPress={(ev) => {
+                    if (ev.key === 'Enter') {
+                      sendSubmit()
+                    }
+                  }}
                 />
               </div>
               <br />
@@ -171,6 +181,11 @@ class SignUpForm extends React.Component {
                   component={TextField}
                   floatingLabelText="Email"
                   type="email"
+                  onKeyPress={(ev) => {
+                    if (ev.key === 'Enter') {
+                      sendSubmit()
+                    }
+                  }}
                 />
               </div>
               <div>
@@ -179,6 +194,11 @@ class SignUpForm extends React.Component {
                   component={TextField}
                   floatingLabelText="Password"
                   type="password"
+                  onKeyPress={(ev) => {
+                    if (ev.key === 'Enter') {
+                      sendSubmit()
+                    }
+                  }}
                 />
               </div>
               <div id="confirmPasswordInput">
@@ -187,6 +207,11 @@ class SignUpForm extends React.Component {
                   component={TextField}
                   floatingLabelText="Confirm Password"
                   type="password"
+                  onKeyPress={(ev) => {
+                    if (ev.key === 'Enter') {
+                      sendSubmit()
+                    }
+                  }}
                 />
               </div>
             </form>
