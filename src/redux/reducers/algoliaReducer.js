@@ -1,4 +1,4 @@
-import { SEARCH_INDEX, ENRICH_SEARCH_RESULT, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED } from '../actions/types/algoliaActionsTypes'
+import { SEARCH_INDEX, ENRICH_SEARCH_RESULT, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_ROLES } from '../actions/types/algoliaActionsTypes'
 import { uniqBy } from 'lodash'
 
 const initalState = {
@@ -11,6 +11,7 @@ const initalState = {
   enrichedCrewResults: [],
   vendorQueryResults: [],
   enrichedVendorQueryResults: [],
+  roleSearchResults: [],
   totalVendorHits: { hasLoaded: false }
 }
 
@@ -137,6 +138,12 @@ export default (state = initalState, action) => {
           ...state.totalVendorHits,
           hasLoaded: true
         }
+      }
+
+    case `${SEARCH_FOR_ROLES}_SUCCESS`:
+      return {
+        ...state,
+        roleSearchResults: action.payload.hits
       }
 
 
