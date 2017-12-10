@@ -2,9 +2,12 @@ import React from 'react'
 import QueryString from 'query-string'
 import { Card, CardMedia, CardText, CardTitle, CardActions } from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
+import FlatButton from 'material-ui/FlatButton'
 import WebsiteIcon from 'material-ui/svg-icons/hardware/laptop-mac'
+import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 import '../../App.css'
 import './ViewProfile.css'
 
@@ -44,11 +47,16 @@ function linkToEmbed(link, type) {
 
 class ViewProfile extends React.Component {
   render() {
-    const { data, location } = this.props
+    const { data, location, auth } = this.props
 
     // gets uid of current public profile from URL
     const parsed = QueryString.parse(location.search)
     const uid = parsed.query
+    console.log( 'displaying user id is ' + uid)
+
+    //get uid of currently authenticated user
+    const authorizedUid = get(auth,'uid')
+    console.log('current user id is ' + authorizedUid)
 
     // grabs data using uid to populate page
     const roles = get(data, 'roles', {})
@@ -85,6 +93,18 @@ class ViewProfile extends React.Component {
     const phone = formatPhoneNumber(get(userAccount, 'phone'))
     return (
       <div className="ViewProfile">
+        { authorizedUid === uid ? (
+          <div className="editButton" style={{ textAlign: 'right'}}>
+            <Link to="/profile/edit">
+              <FlatButton
+                label="Edit Profile"
+                primary
+                icon ={<ModeEditIcon />}
+              />
+            </Link>
+          </div>
+        ) : null
+        }
         <div style={{ display: 'block', margin: 'auto' }}>
           <Card className="profile-card top-card" containerStyle={{ width: '50%', paddingBottom: 0, display: 'flex', flexDirection: 'row' }}>
             <CardMedia className="crew-image">
@@ -188,6 +208,9 @@ ViewProfile.propTypes = {
   data: PropTypes.shape({
     roles: PropTypes.object,
     userProfile: PropTypes.object
+  }).isRequired,
+  auth: PropTypes.shape({
+    uid: PropTypes.string
   }).isRequired
 }
 
