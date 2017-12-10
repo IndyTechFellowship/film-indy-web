@@ -209,7 +209,7 @@ const homePage = (props) => {
     prevArrow: <Arrow direction="prevArrow" />
   }
   return (
-    <div className="container">
+    <div className="home-container">
       <div className="bg-image">
         <div className="header-wrapper">
           <div className="main-header">Film Indy</div>
@@ -234,7 +234,7 @@ const homePage = (props) => {
                   onUpdateInput={query => this.searchQuery = query}
                   onSuggestionClicked={(suggestion, index) => {
                     if (index === 0) {
-                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all` })
+                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all&role=${encodeURIComponent(suggestion.roleName)}` })
                     } else if (index === 1) {
                       history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
                     }

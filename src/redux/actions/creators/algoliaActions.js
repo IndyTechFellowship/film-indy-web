@@ -3,13 +3,24 @@ import algoliasearch from 'algoliasearch'
 import { RESET_SEARCH_RESULTS, SEARCH_INDEX, SEARCH_FOR_CREW,
   SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE,
   MIGRATE_NAME, ADD_TO_NAME_INDEX, CREATE_PROFILE_RECORD, SET_PUBLIC, CREATE_VENDOR_PROFILE_RECORD,
-  DELETE_VENDOR_PROFILE_RECORD, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED
+  DELETE_VENDOR_PROFILE_RECORD, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_ROLES,
+  ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER
 } from '../types/algoliaActionsTypes'
 
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 const ALGOLA_ADMIN_KEY = process.env.REACT_APP_ALGOLIA_ADMIN_KEY
 
 const algoliaClient = algoliasearch(ALGOLIA_APP_ID, ALGOLA_ADMIN_KEY, { protocol: 'https:' })
+
+export const addRoleSearchFilter = role => ({
+  type: ADD_ROLE_SEARCH_FILTER,
+  payload: role
+})
+
+export const removeRoleSearchFilter = role => ({
+  type: REMOVE_ROLE_SEARCH_FILTER,
+  payload: role
+})
 
 export const searchIndex = (indexName, query, tableToEnrichFrom) => (dispatch) => {
   const index = algoliaClient.initIndex(indexName)
@@ -32,11 +43,29 @@ export const searchIndex = (indexName, query, tableToEnrichFrom) => (dispatch) =
   })
 }
 
-export const searchForCrew = (query, offset = 0, length = 10) => (dispatch) => {
+const createFilters = (filters) => {
+  const roleFilters = filters.filter(filter => filter.type === 'role')
+  const roles = roleFilters.reduce((acc, roleFilter) => {
+    const role = roleFilter.role
+    return acc === '' ? `roles:"${role}"` : `${acc} OR roles:"${role}"`
+  }, '')
+  return roles ? `(${roles}) AND public:true` : 'public:true'
+}
+
+export const searchForCrew = (query, filters, offset = 0, length = 10) => (dispatch) => {
+  const filtersString = createFilters(filters)
+  const searchObject = { offset, length }
   const indexNames = ['profiles', 'names']
   const searchPromises = indexNames.map((indexName) => {
     const index = algoliaClient.initIndex(indexName)
-    return index.search({ query, facetFilters: [['public:true']], offset, length }).then(results => ({ indexName, results }))
+    if (indexName === 'profiles') {
+      const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: filtersString } : { ...searchObject, query: '', filters: filtersString }
+      return index.search(enhancedSearchObject).then(results => ({ indexName, results }))
+    } else if (indexName === 'names') {
+      const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: 'public:true' } : { ...searchObject, query, filters: 'public:true' }
+      return index.search(enhancedSearchObject).then(results => ({ indexName, results }))
+    }
+    return Promise.resolve()
   })
   return dispatch({
     type: SEARCH_FOR_CREW,
@@ -96,14 +125,14 @@ export const searchForVendors = (query, offset = 0, length = 10) => (dispatch) =
   })
 }
 
-export const resetAndSearch = (query, offset = 0, length = 10) => dispatch => dispatch({
+export const resetAndSearch = (query, filters = [], offset = 0, length = 10) => dispatch => dispatch({
   type: RESET_SEARCH_RESULTS,
   payload: {
-    data: { offset, length },
+    data: { offset, length, filters },
     promise: Promise.resolve()
   }
 })
-  .then(() => dispatch(searchForCrew(query, offset, length)))
+  .then(() => dispatch(searchForCrew(query, filters, offset, length)))
   .then(() => dispatch(searchForVendors(query, offset, length)))
 
 export const migrateProfile = (uid, email) => (dispatch) => {
@@ -185,5 +214,13 @@ export const deleteVendorProfileRecord = (vendorId) => {
   return {
     type: DELETE_VENDOR_PROFILE_RECORD,
     payload: vendorIndex.deleteObject(vendorId)
+  }
+}
+
+export const searchForRoles = (query) => {
+  const roleIndex = algoliaClient.initIndex('roles')
+  return {
+    type: SEARCH_FOR_ROLES,
+    payload: roleIndex.search({ query, hitsPerPage: '100', facets: ['roleName'] })
   }
 }

@@ -17,6 +17,7 @@ import moment from 'moment'
 import AddLinkForm from './AddLinkForm'
 import EditLinkForm from './EditLinkForm'
 import AddCreditForm from './AddCreditForm'
+import SearchAndSelectRoles from '../common/SearchAndSelectRoles'
 import '../../App.css'
 import '../../presentation/profile/ViewProfile.css'
 
@@ -33,15 +34,6 @@ const styles = {
     margin: 6
   }
 }
-
-const RoleChipDisplays = (roles, selected, onClick = () => {}, onDelete) => roles.map((role) => {
-  const isSelected = selected.includes(role.roleId)
-  const chipStyle = isSelected ? { ...styles.chipStyle, backgroundColor: '#707070' } : styles.chipStyle
-  const deleteFunc = onDelete !== undefined ? onDelete.bind(this, role.roleId) : onDelete
-  return (
-    <Chip id={role.roleId} key={role.roleId} onRequestDelete={deleteFunc} onClick={onClick} style={chipStyle} >{role.roleName}</Chip>
-  )
-})
 
 const renderTextField = ({ input, name, label, meta: { touched, error }, ...custom }) => (
   <TextField
@@ -60,7 +52,7 @@ const renderTextField = ({ input, name, label, meta: { touched, error }, ...cust
 class EditProfile extends React.Component {
   constructor(props) {
     super(props)
-    this.state = ({ dialogOpen: false, updated: false, addLinkDialogOpen: false, editLinkDialogOpen: false, addCreditDialogOpen: false })
+    this.state = ({ selectedRoles: [], dialogOpen: false, updated: false, addLinkDialogOpen: false, editLinkDialogOpen: false, addCreditDialogOpen: false })
     this.handleClose = this.handleClose.bind(this)
     this.handleOpen = this.handleOpen.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -73,6 +65,16 @@ class EditProfile extends React.Component {
     this.handleEditLinkOpen = this.handleEditLinkOpen.bind(this)
     this.handleAddCreditClose = this.handleAddCreditClose.bind(this)
     this.handleAddCreditOpen = this.handleAddCreditOpen.bind(this)
+  }
+
+  componentWillReceiveProps(props) {
+    const { data, auth } = props
+    const uid = get(auth, 'uid', '')
+    const userProfile = get(data, `userProfiles.${uid}`)
+    const userRoleIds = get(userProfile, 'roles', [])
+    const roles = get(data, 'roles', {})
+    const roleNames = userRoleIds.map(roleId => roles[roleId]).filter(i => i !== undefined).map(r => r.roleName)
+    this.setState({ selectedRoles: roleNames })
   }
 
   handleAddCreditClose() {
@@ -119,11 +121,14 @@ class EditProfile extends React.Component {
     const { auth, firebase, data, partialUpdateAlgoliaObject } = this.props
     const uid = get(auth, 'uid', '')
     const roles = get(data, 'roles', {})
+    const findRoleId = roleName => Object.keys(roles).find((roleId) => {
+      const role = roles[roleId]
+      return role.roleName === roleName
+    })
     const { selectedRoles } = this.state
-    const userProfile = get(this.props, `data.userProfiles.${uid}`)
-    const userRoleIds = get(userProfile, 'roles', [])
     const userProfileRolePath = `/userProfiles/${uid}`
-    const allRoles = [...userRoleIds, ...selectedRoles]
+    const selectedRoleIds = selectedRoles.map(findRoleId)
+    const allRoles = [...selectedRoleIds]
     const rolesNames = allRoles.map(roleId => roles[roleId].roleName)
     firebase.update(userProfileRolePath, { roles: allRoles })
     partialUpdateAlgoliaObject('profiles', {
@@ -153,7 +158,7 @@ class EditProfile extends React.Component {
   render() {
     const { auth, profile, data, pristine, submitting,
       handleSubmit, remoteSubmitForm, addLinkToProfile, editProfileLink, removeProfileLink, initForm,
-      addCredit } = this.props
+      addCredit, searchForRoles, roleSearchResults } = this.props
     const uid = get(auth, 'uid', '')
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
@@ -176,23 +181,6 @@ class EditProfile extends React.Component {
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
     const email = get(auth, 'email', '')
-    const possibleRolesToAdd = Object.keys(roles).reduce((acc, roleId) => {
-      const roleName = get(roles, `${roleId}.roleName`, '')
-      const r = userRoles.map(role => role.roleName)
-      if (r.includes(roleName)) {
-        return acc
-      }
-      return [...acc, { roleName, roleId }]
-    }, []).sort((a, b) => {
-      const aCaps = a.roleName.toUpperCase()
-      const bcaps = b.roleName.toUpperCase()
-      if (aCaps < bcaps) {
-        return -1
-      } else if (aCaps > bcaps) {
-        return 1
-      }
-      return 0
-    })
 
     const dialogActions = [
       <FlatButton
@@ -203,8 +191,6 @@ class EditProfile extends React.Component {
       <FlatButton
         label="Submit"
         primary
-        keyboardFocused
-        disabled={selectedRoles.length === 0}
         onClick={this.handleSubmit}
       />
     ]
@@ -452,15 +438,18 @@ class EditProfile extends React.Component {
                 onRequestClose={this.handleClose}
               >
                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                  {RoleChipDisplays(possibleRolesToAdd, selectedRoles, (event) => {
-                    const roleId = event.currentTarget.id
-                    if (selectedRoles.includes(roleId)) {
-                      const newRoles = selectedRoles.filter(id => id !== roleId)
-                      this.setState({ selectedRoles: newRoles })
-                    } else {
-                      this.setState({ selectedRoles: [...selectedRoles, roleId] })
-                    }
-                  })}
+                  <SearchAndSelectRoles
+                    searchForRoles={searchForRoles}
+                    onItemSelected={(selectedItems, itemSelected, type) => {
+                      if (type === 'add') {
+                        this.setState({ selectedRoles: [...selectedRoles, itemSelected.roleName] })
+                      } else if (type === 'remove') {
+                        this.setState({ selectedRoles: selectedRoles.filter(role => role !== itemSelected.roleName) })
+                      }
+                    }}
+                    roleSearchResults={roleSearchResults}
+                    roleFilters={selectedRoles}
+                  />
                 </div>
               </Dialog>
             </div>
@@ -505,6 +494,8 @@ EditProfile.propTypes = {
   addCredit: PropTypes.func.isRequired,
   editProfileLink: PropTypes.func.isRequired,
   remoteSubmitForm: PropTypes.func.isRequired,
+  searchForRoles: PropTypes.func.isRequired,
+  roleSearchResults: PropTypes.arrayOf(PropTypes.object),
   initForm: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired
 }
