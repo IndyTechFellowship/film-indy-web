@@ -8,29 +8,33 @@ import '../../App.css'
 
 class Search extends React.Component {
   componentWillMount() {
-    const { resetAndSearch, location } = this.props
+    const { resetAndSearch, location, addRoleSearchFilter } = this.props
     const parsed = QueryString.parse(location.search)
     const query = parsed.query
-    const searchType = get(parsed, 'type', 'plain')
     const rolesToFilter = get(parsed, 'role', [])
     const roleFilters = typeof (rolesToFilter) === 'string' ? [{ type: 'role', role: rolesToFilter }] : rolesToFilter.map(role => ({
       type: 'role',
       role
     }))
     resetAndSearch(query, roleFilters)
+    addRoleSearchFilter(roleFilters.map(filter => filter.role))
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
-      const { resetAndSearch } = this.props
+      const { resetAndSearch, addRoleSearchFilter } = this.props
       const parsed = QueryString.parse(nextProps.location.search)
       const query = get(parsed, 'query', ' ')
-      resetAndSearch(query)
+      const rolesToFilter = get(parsed, 'role', [])
+      const roleFilters = typeof (rolesToFilter) === 'string' ? [{ type: 'role', role: rolesToFilter }] : rolesToFilter.map(role => ({
+        type: 'role',
+        role
+      }))
+      addRoleSearchFilter(roleFilters.map(filter => filter.role))
+      resetAndSearch(query, roleFilters)
     }
   }
   render() {
-    console.log(this.props)
     const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters } = this.props
-    console.log(roleFilters)
     return (
       <div>
         <FilterBar history={history} addRoleSearchFilter={addRoleSearchFilter} removeRoleSearchFilter={removeRoleSearchFilter} roleFilters={roleFilters} />
@@ -38,6 +42,19 @@ class Search extends React.Component {
       </div>
     )
   }
+}
+
+Search.propTypes = {
+  location: PropTypes.shape({
+    search: PropTypes.string.isRequired
+  }).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }).isRequired,
+  removeRoleSearchFilter: PropTypes.func.isRequired,
+  addRoleSearchFilter: PropTypes.func.isRequired,
+  resetAndSearch: PropTypes.func.isRequired,
+  roleFilters: PropTypes.arrayOf(PropTypes.string).isRequired
 }
 
 export default Search

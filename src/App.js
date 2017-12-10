@@ -284,8 +284,8 @@ class App extends React.Component {
                     label="All"
                     value="all"
                     onActive={() => {
-                      const query = get(parsed, 'query', ' ')
-                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=all` })
+                      const newQs = QueryString.stringify({ ...parsed, show: 'all' })
+                      history.push({ pathname: '/search', search: newQs })
                     }}
                   />
                   <Tab
@@ -293,8 +293,8 @@ class App extends React.Component {
                     label="Crew"
                     value="crew"
                     onActive={() => {
-                      const query = get(parsed, 'query', ' ')
-                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=crew` })
+                      const newQs = QueryString.stringify({ ...parsed, show: 'crew' })
+                      history.push({ pathname: '/search', search: newQs })
                     }}
                   />
                   <Tab
@@ -302,8 +302,8 @@ class App extends React.Component {
                     label="Vendors"
                     value="vendors"
                     onActive={() => {
-                      const query = get(parsed, 'query', ' ')
-                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=vendors` })
+                      const newQs = QueryString.stringify({ ...parsed, show: 'vendors' })
+                      history.push({ pathname: '/search', search: newQs })
                     }}
                   />
                 </Tabs>) : null}

@@ -66,6 +66,7 @@ export default withRouter(connect(
     auth: state.firebase.auth,
     profile: state.firebase.profile,
     data: state.firebase.data,
+    roleSearchResults: state.algolia.roleSearchResults,
     initialValues: createInitialValues(state)
 
   }),

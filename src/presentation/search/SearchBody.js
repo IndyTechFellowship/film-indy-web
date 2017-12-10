@@ -12,6 +12,11 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
   const parsed = QueryString.parse(location.search)
   const query = get(parsed, 'query', ' ')
   const showOnly = get(parsed, 'show', 'all')
+  const rolesToFilter = get(parsed, 'role', [])
+  const roleFilters = typeof (rolesToFilter) === 'string' ? [{ type: 'role', role: rolesToFilter }] : rolesToFilter.map(role => ({
+    type: 'role',
+    role
+  }))
 
   if (enriched.length === 0 && totalHits.hasLoaded && enrichedVendors.length === 0 && totalVendorHits.hasLoaded) {
     return (
@@ -34,7 +39,8 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
                     labelColor="white"
                     backgroundColor={'#38b5e6'}
                     onClick={() => {
-                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=crew` })
+                      const newQs = QueryString.stringify({ ...parsed, show: 'crew' })
+                      history.push({ pathname: '/search', search: newQs })
                     }}
                     style={{ marginRight: 225, backgroundColor: '#38b5e6' }}
                   />
@@ -73,7 +79,8 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
                     labelColor="white"
                     backgroundColor={'#38b5e6'}
                     onClick={() => {
-                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(query)}&show=vendors` })
+                      const newQs = QueryString.stringify({ ...parsed, show: 'vendors' })
+                      history.push({ pathname: '/search', search: newQs })
                     }}
                     style={{ marginRight: 225, backgroundColor: '#38b5e6' }}
                   />
@@ -108,7 +115,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
       )
     }
   } else if (showOnly === 'crew') {
-    const hasMore = totalHits.hasLoaded && totalHits.profiles !== 0 && totalHits.names !== 0
+    const hasMore = totalHits.hasLoaded && (totalHits.profiles !== 0 || totalHits.names !== 0)
     return (
       <div style={{ marginTop: 15 }}>
         <MasonryInfiniteScroller
@@ -123,7 +130,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
           pageStart={1}
           loadMore={() => {
             if (hasMore) {
-              searchForCrew(query, offset + length)
+              searchForCrew(query, roleFilters, offset + length)
             }
           }}
         >

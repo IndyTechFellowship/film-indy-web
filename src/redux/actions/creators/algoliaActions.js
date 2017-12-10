@@ -62,9 +62,10 @@ export const searchForCrew = (query, filters, offset = 0, length = 10) => (dispa
       const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: filtersString } : { ...searchObject, query: '', filters: filtersString }
       return index.search(enhancedSearchObject).then(results => ({ indexName, results }))
     } else if (indexName === 'names') {
-      const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: filtersString } : { ...searchObject, query, filters: filtersString }
+      const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: 'public:true' } : { ...searchObject, query, filters: 'public:true' }
       return index.search(enhancedSearchObject).then(results => ({ indexName, results }))
     }
+    return Promise.resolve()
   })
   return dispatch({
     type: SEARCH_FOR_CREW,
@@ -127,7 +128,7 @@ export const searchForVendors = (query, offset = 0, length = 10) => (dispatch) =
 export const resetAndSearch = (query, filters = [], offset = 0, length = 10) => dispatch => dispatch({
   type: RESET_SEARCH_RESULTS,
   payload: {
-    data: { offset, length },
+    data: { offset, length, filters },
     promise: Promise.resolve()
   }
 })

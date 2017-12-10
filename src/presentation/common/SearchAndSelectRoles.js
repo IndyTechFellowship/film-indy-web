@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import { get, chunk } from 'lodash'
+import { chunk } from 'lodash'
 import { Grid, Row, Col } from 'react-flexbox-grid'
+import PropTypes from 'prop-types'
 import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
 
 
@@ -32,7 +33,6 @@ class SearchAndSelectRoles extends React.Component {
     const { roleSearchResults, searchForRoles, onItemSelected, roleFilters } = this.props
     const roles = roleSearchResults.sort((a, b) => a.roleName.localeCompare(b.roleName))
     const chunkedRoles = chunk(roles, 2)
-    const { selectedItems } = this.state
     return (
       <div style={{ width: 700, height: 300 }}>
         <div>
@@ -44,8 +44,8 @@ class SearchAndSelectRoles extends React.Component {
             {chunkedRoles.map((chunked, i) => {
               const role1 = chunked[0]
               const role2 = chunked[1]
-              const role1Selected = role1 ? roleFilters.find(item => role1.roleName === item.roleName) : false
-              const role2Selected = role2 ? roleFilters.find(item => role2.roleName === item.roleName) : false
+              const role1Selected = !!(role1 && roleFilters.find(item => role1.roleName === item))
+              const role2Selected = !!(role2 && roleFilters.find(item => role2.roleName === item))
               return (
                 <Row key={i}>
                   {role1 ?
@@ -56,7 +56,7 @@ class SearchAndSelectRoles extends React.Component {
                           onItemSelected(this.state.selectedItems, role1, role1Selected ? 'remove' : 'add')
                         }}
                         style={{ width: 325, marginTop: 10 }}
-                        primary={!!role1Selected}
+                        primary={role1Selected}
                         label={role1.roleName}
                       />
                     </Col>
@@ -70,7 +70,7 @@ class SearchAndSelectRoles extends React.Component {
                           onItemSelected(this.state.selectedItems, role2, role2Selected ? 'remove' : 'add')
                         }}
                         style={{ width: 325, marginTop: 10 }}
-                        primary={!!role2Selected}
+                        primary={role2Selected}
                         label={role2.roleName}
                       />
                     </Col>
@@ -84,6 +84,14 @@ class SearchAndSelectRoles extends React.Component {
       </div>
     )
   }
+}
+
+SearchAndSelectRoles.propTypes = {
+  searchForRoles: PropTypes.func.isRequired,
+  onItemSelected: PropTypes.func.isRequired,
+  roleSearchResults: PropTypes.arrayOf(PropTypes.object).isRequired,
+  roleFilters: PropTypes.arrayOf(PropTypes.string).isRequired
+
 }
 
 export default connect(

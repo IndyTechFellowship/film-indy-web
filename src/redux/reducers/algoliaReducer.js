@@ -19,6 +19,7 @@ const initalState = {
 export default (state = initalState, action) => {
   switch (action.type) {
     case `${RESET_SEARCH_RESULTS}_STARTING`:
+      const roleFilters = action.payload.filters.filter(filter => filter.type === 'role').map(filter => filter.role)
       return {
         ...state,
         offset: action.payload.offset,
@@ -27,7 +28,8 @@ export default (state = initalState, action) => {
         enrichedCrewResults: [],
         crewQueryResults: [],
         vendorQueryResults: [],
-        enrichedVendorQueryResults: []
+        enrichedVendorQueryResults: [],
+        roleFilters
       }
     case `${SEARCH_INDEX}_SUCCESS`:
       return {
@@ -150,7 +152,7 @@ export default (state = initalState, action) => {
     case ADD_ROLE_SEARCH_FILTER:
       return {
         ...state,
-        roleFilters: [...state.roleFilters, action.payload]
+        roleFilters: [...state.roleFilters, ...action.payload]
       }
 
     case REMOVE_ROLE_SEARCH_FILTER:

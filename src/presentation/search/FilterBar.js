@@ -1,14 +1,10 @@
 import React from 'react'
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more'
-import IconButton from 'material-ui/IconButton'
-import IconMenu from 'material-ui/IconMenu'
-import Menu from 'material-ui/Menu'
-import MenuItem from 'material-ui/MenuItem'
-import DropDownMenu from 'material-ui/DropDownMenu'
 import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar'
 import Paper from 'material-ui/Paper'
 import Popover from 'react-simple-popover'
 import QueryString from 'query-string'
+import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import SearchAndSelectRoles from '../common/SearchAndSelectRoles'
 
@@ -21,7 +17,6 @@ class FilterBar extends React.Component {
   }
   openMenu(event) {
     event.preventDefault()
-    console.log(event.currentTarget)
     this.setState({ menuOpen: true, anchorEl: event.currentTarget })
   }
   closeMenu() {
@@ -33,7 +28,7 @@ class FilterBar extends React.Component {
     return (
       <Toolbar style={{ backgroundColor: '#004b8d' }}>
         <ToolbarGroup>
-          <div style={{ color: 'white' }} onClick={this.openMenu} >
+          <div role="button" style={{ color: 'white' }} onClick={this.openMenu} >
             Roles
             <NavigationExpandMoreIcon style={{ color: 'white' }} />
             <Popover
@@ -51,7 +46,7 @@ class FilterBar extends React.Component {
                     const rolesFromQs = get(parsedQs, 'role', [])
                     const roles = typeof (rolesFromQs) === 'string' ? [rolesFromQs] : rolesFromQs
                     if (type === 'add') {
-                      addRoleSearchFilter(itemSelected.roleName)
+                      addRoleSearchFilter([itemSelected.roleName])
                       const newRoles = [...roles, itemSelected.roleName]
                       const newQs = QueryString.stringify({ ...parsedQs, role: newRoles })
                       history.push({ pathname: '/search', search: newQs })
@@ -70,6 +65,15 @@ class FilterBar extends React.Component {
       </Toolbar>
     )
   }
+}
+
+FilterBar.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }).isRequired,
+  removeRoleSearchFilter: PropTypes.func.isRequired,
+  addRoleSearchFilter: PropTypes.func.isRequired,
+  roleFilters: PropTypes.arrayOf(PropTypes.string).isRequired
 }
 
 export default FilterBar
