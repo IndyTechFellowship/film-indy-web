@@ -1,6 +1,6 @@
 import React from 'react'
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more'
-import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar'
+import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar'
 import Paper from 'material-ui/Paper'
 import Popover from 'react-simple-popover'
 import QueryString from 'query-string'
@@ -29,7 +29,7 @@ class FilterBar extends React.Component {
       <Toolbar style={{ backgroundColor: '#004b8d' }}>
         <ToolbarGroup>
           <div role="button" style={{ color: 'white' }} onClick={this.openMenu} >
-            Roles
+            <ToolbarTitle text="Roles" />
             <NavigationExpandMoreIcon style={{ color: 'white' }} />
             <Popover
               placement="bottom"
