@@ -8,6 +8,8 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar'
 import Paper from 'material-ui/Paper'
 import Popover from 'react-simple-popover'
+import QueryString from 'query-string'
+import { get } from 'lodash'
 import SearchAndSelectRoles from '../common/SearchAndSelectRoles'
 
 class FilterBar extends React.Component {
@@ -27,6 +29,7 @@ class FilterBar extends React.Component {
   }
   render() {
     const { menuOpen } = this.state
+    const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters } = this.props
     return (
       <Toolbar style={{ backgroundColor: '#004b8d' }}>
         <ToolbarGroup>
@@ -41,7 +44,25 @@ class FilterBar extends React.Component {
               onHide={this.closeMenu}
             >
               <Paper style={{ marginTop: 75, position: 'fixed', zIndex: 2100, overflowY: 'auto' }}>
-                <SearchAndSelectRoles />
+                <SearchAndSelectRoles
+                  roleFilters={roleFilters}
+                  onItemSelected={(selectedItem, itemSelected, type) => {
+                    const parsedQs = QueryString.parse(window.location.search)
+                    const rolesFromQs = get(parsedQs, 'role', [])
+                    const roles = typeof (rolesFromQs) === 'string' ? [rolesFromQs] : rolesFromQs
+                    if (type === 'add') {
+                      addRoleSearchFilter(itemSelected.roleName)
+                      const newRoles = [...roles, itemSelected.roleName]
+                      const newQs = QueryString.stringify({ ...parsedQs, role: newRoles })
+                      history.push({ pathname: '/search', search: newQs })
+                    } else if (type === 'remove') {
+                      removeRoleSearchFilter(itemSelected.roleName)
+                      const newRoles = roles.filter(role => role !== itemSelected.roleName)
+                      const newQs = QueryString.stringify({ ...parsedQs, role: newRoles })
+                      history.push({ pathname: '/search', search: newQs })
+                    }
+                  }}
+                />
               </Paper>
             </Popover>
           </div>

@@ -1,4 +1,4 @@
-import { SEARCH_INDEX, ENRICH_SEARCH_RESULT, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_ROLES } from '../actions/types/algoliaActionsTypes'
+import { REMOVE_ROLE_SEARCH_FILTER, ADD_ROLE_SEARCH_FILTER, SEARCH_INDEX, ENRICH_SEARCH_RESULT, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_ROLES } from '../actions/types/algoliaActionsTypes'
 import { uniqBy } from 'lodash'
 
 const initalState = {
@@ -12,6 +12,7 @@ const initalState = {
   vendorQueryResults: [],
   enrichedVendorQueryResults: [],
   roleSearchResults: [],
+  roleFilters: [],
   totalVendorHits: { hasLoaded: false }
 }
 
@@ -144,6 +145,18 @@ export default (state = initalState, action) => {
       return {
         ...state,
         roleSearchResults: action.payload.hits
+      }
+
+    case ADD_ROLE_SEARCH_FILTER:
+      return {
+        ...state,
+        roleFilters: [...state.roleFilters, action.payload]
+      }
+
+    case REMOVE_ROLE_SEARCH_FILTER:
+      return {
+        ...state,
+        roleFilters: state.roleFilters.filter(role => role !== action.payload)
       }
 
 

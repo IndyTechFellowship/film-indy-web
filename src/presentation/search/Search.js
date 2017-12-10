@@ -11,7 +11,13 @@ class Search extends React.Component {
     const { resetAndSearch, location } = this.props
     const parsed = QueryString.parse(location.search)
     const query = parsed.query
-    resetAndSearch(query)
+    const searchType = get(parsed, 'type', 'plain')
+    const rolesToFilter = get(parsed, 'role', [])
+    const roleFilters = typeof (rolesToFilter) === 'string' ? [{ type: 'role', role: rolesToFilter }] : rolesToFilter.map(role => ({
+      type: 'role',
+      role
+    }))
+    resetAndSearch(query, roleFilters)
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
@@ -22,9 +28,12 @@ class Search extends React.Component {
     }
   }
   render() {
+    console.log(this.props)
+    const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters } = this.props
+    console.log(roleFilters)
     return (
       <div>
-        <FilterBar />
+        <FilterBar history={history} addRoleSearchFilter={addRoleSearchFilter} removeRoleSearchFilter={removeRoleSearchFilter} roleFilters={roleFilters} />
         <SearchBody {...this.props} />
       </div>
     )

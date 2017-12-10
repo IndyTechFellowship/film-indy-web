@@ -29,7 +29,7 @@ class SearchAndSelectRoles extends React.Component {
     }
   }
   render() {
-    const { roleSearchResults, searchForRoles } = this.props
+    const { roleSearchResults, searchForRoles, onItemSelected, roleFilters } = this.props
     const roles = roleSearchResults.sort((a, b) => a.roleName.localeCompare(b.roleName))
     const chunkedRoles = chunk(roles, 2)
     const { selectedItems } = this.state
@@ -44,14 +44,17 @@ class SearchAndSelectRoles extends React.Component {
             {chunkedRoles.map((chunked, i) => {
               const role1 = chunked[0]
               const role2 = chunked[1]
-              const role1Selected = role1 ? selectedItems.find(item => role1.roleName === item.roleName) : false
-              const role2Selected = role2 ? selectedItems.find(item => role2.roleName === item.roleName) : false
+              const role1Selected = role1 ? roleFilters.find(item => role1.roleName === item.roleName) : false
+              const role2Selected = role2 ? roleFilters.find(item => role2.roleName === item.roleName) : false
               return (
                 <Row key={i}>
                   {role1 ?
                     <Col xs={6}>
                       <RaisedButton
-                        onClick={() => this.onItemClick(role1, item => item.roleName === role1.roleName)}
+                        onClick={() => {
+                          this.onItemClick(role1, item => item.roleName === role1.roleName)
+                          onItemSelected(this.state.selectedItems, role1, role1Selected ? 'remove' : 'add')
+                        }}
                         style={{ width: 325, marginTop: 10 }}
                         primary={!!role1Selected}
                         label={role1.roleName}
@@ -62,7 +65,10 @@ class SearchAndSelectRoles extends React.Component {
                   {role2 ?
                     <Col xs={6}>
                       <RaisedButton
-                        onClick={() => this.onItemClick(role2, item => item.roleName === role2.roleName)}
+                        onClick={() => {
+                          this.onItemClick(role2, item => item.roleName === role2.roleName)
+                          onItemSelected(this.state.selectedItems, role2, role2Selected ? 'remove' : 'add')
+                        }}
                         style={{ width: 325, marginTop: 10 }}
                         primary={!!role2Selected}
                         label={role2.roleName}

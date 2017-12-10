@@ -29,6 +29,7 @@ export default withRouter(connect(
     offset: state.algolia.offset,
     length: state.algolia.length,
     totalVendorHits: state.algolia.totalVendorHits,
+    roleFilters: [],
     totalHits: state.algolia.totalHits }),
   { ...algoliaActions },
 )(Search))

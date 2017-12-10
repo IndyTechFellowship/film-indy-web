@@ -209,7 +209,7 @@ const homePage = (props) => {
     prevArrow: <Arrow direction="prevArrow" />
   }
   return (
-    <div className="container">
+    <div className="home-container">
       <div className="bg-image">
         <div className="header-wrapper">
           <div className="main-header">Film Indy</div>
