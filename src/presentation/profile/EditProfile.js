@@ -373,8 +373,9 @@ class EditProfile extends React.Component {
                 <Dialog
                   title="Add a Link"
                   actions={addLinkActions}
-                  modal
+                  modal={false}
                   open={this.state.addLinkDialogOpen}
+                  onRequestClose={this.handleAddLinkClose}
                 >
                   <AddLinkForm userLinks={userLinks} onSubmit={values => addLinkToProfile(userLinks, values.title, values.url, uid)} />
                 </Dialog>
@@ -410,8 +411,9 @@ class EditProfile extends React.Component {
               <Dialog
                 title="Add Credit"
                 actions={addCreditActions}
-                modal
+                modal={false}
                 open={this.state.addCreditDialogOpen}
+                onRequestClose={this.handleAddCreditClose}
               >
                 <AddCreditForm
                   genres={genres}
@@ -430,9 +432,10 @@ class EditProfile extends React.Component {
               <Dialog
                 title="Add Roles"
                 actions={dialogActions}
-                modal
+                modal={false}
                 autoScrollBodyContent
                 open={this.state.dialogOpen}
+                onRequestClose={this.handleClose}
               >
                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                   <SearchAndSelectRoles
