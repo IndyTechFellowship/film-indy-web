@@ -52,7 +52,6 @@ Account.defaultProps = {
 }
 
 const wrappedAccount = firebaseConnect((props, store) => {
-  const firebaseProp = store.getState()
   const uid = get(props, 'firebase.auth.uid', '')
   return [
     {
