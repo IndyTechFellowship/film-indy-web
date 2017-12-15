@@ -52,13 +52,7 @@ class ViewProfile extends React.Component {
     // gets uid of current public profile from URL
     const parsed = QueryString.parse(location.search)
     const uid = parsed.query
-    console.log( 'displaying user id is ' + uid)
-
-    //get uid of currently authenticated user
-    const authorizedUid = get(auth,'uid')
-    console.log('current user id is ' + authorizedUid)
-
-    // grabs data using uid to populate page
+    const authorizedUid = get(auth, 'uid')
     const roles = get(data, 'roles', {})
     const userProfile = get(data, `userProfiles.${uid}`)
     const userAccount = get(data, `userAccount.${uid}`)
@@ -94,12 +88,12 @@ class ViewProfile extends React.Component {
     return (
       <div className="ViewProfile">
         { authorizedUid === uid ? (
-          <div className="editButton" style={{ textAlign: 'right'}}>
+          <div className="editButton" style={{ textAlign: 'right' }}>
             <Link to="/profile/edit">
               <FlatButton
                 label="Edit Profile"
                 primary
-                icon ={<ModeEditIcon />}
+                icon={<ModeEditIcon />}
               />
             </Link>
           </div>
