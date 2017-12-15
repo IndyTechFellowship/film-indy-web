@@ -260,10 +260,13 @@ AccountPage.propTypes = {
   handleProfileChanges: PropTypes.func.isRequired,
   createVendor: PropTypes.func.isRequired,
   deleteVendor: PropTypes.func.isRequired,
-  usersVendors: PropTypes.objectOf(PropTypes.shape({
-    creator: PropTypes.string,
-    name: PropTypes.string
-  })),
+  usersVendors: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.objectOf(PropTypes.shape({
+      creator: PropTypes.string,
+      name: PropTypes.string
+    }))
+  ]),
   handleSubmit: PropTypes.func.isRequired,
   submitVendorCreate: PropTypes.func.isRequired,
   account: PropTypes.shape({

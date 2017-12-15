@@ -22,7 +22,7 @@ const validate = (values) => {
   return errors
 }
 
-const afterSubmit = (result, dispatch) => {dispatch(reset('resetPassword'))}
+const afterSubmit = (result, dispatch) => { dispatch(reset('resetPassword')) }
 
 const ResetPasswordForm = (props) => {
   const { handleSubmit, pristine, submitting } = props
@@ -46,22 +46,19 @@ const ResetPasswordForm = (props) => {
           type="password"
         />
       </div>
-      <RaisedButton type="submit" label="submit" primary disabled ={pristine || submitting}></RaisedButton>
+      <RaisedButton type="submit" label="submit" primary disabled={pristine || submitting} />
     </form>
   )
-};
+}
 ResetPasswordForm.propTypes = {
-  auth: PropTypes.shape({
-    uid: PropTypes.string,
-  }).isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-};
+  handleSubmit: PropTypes.func.isRequired
+}
 
 
 const ResetPasswordFormEnriched = reduxForm({
   form: 'resetPassword',
   validate,
-  onSubmitSuccess: afterSubmit,
-})(ResetPasswordForm);
+  onSubmitSuccess: afterSubmit
+})(ResetPasswordForm)
 
 export default ResetPasswordFormEnriched

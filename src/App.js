@@ -221,7 +221,10 @@ class App extends React.Component {
   }
 
   render() {
-    const { cancelSignInUpForm, account, profile, auth, firebase, history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn, signInWithFacebook, signInWithGoogle, submitSignIn, location } = this.props
+    const { cancelSignInUpForm, account, profile, auth, firebase,
+      history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn,
+      signInWithFacebook, signInWithGoogle, submitSignIn, location,
+      getDefaultAccountImages } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const parsed = QueryString.parse(location.search)
@@ -318,8 +321,11 @@ class App extends React.Component {
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
               <SignUpForm
                 onSubmit={(values) => {
-                  signUp(values.firstName, values.lastName, values.photoFile, values.email, values.password)
+                  const photoFile = values.photoFile || values.avatar
+                  signUp(values.firstName, values.lastName, photoFile, values.email, values.password)
                 }}
+                getDefaultAccountImages={getDefaultAccountImages}
+                defaultAccountImages={account.defaultAccountImages}
                 account={account}
                 cancelSignInUpForm={cancelSignInUpForm}
                 signUpWithGoogle={signUpWithGoogle}
@@ -395,6 +401,7 @@ App.propTypes = {
   signInWithFacebook: PropTypes.func.isRequired,
   signInWithGoogle: PropTypes.func.isRequired,
   submitSignIn: PropTypes.func.isRequired,
+  getDefaultAccountImages: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func
   }).isRequired,
