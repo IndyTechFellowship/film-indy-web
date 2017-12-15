@@ -15,7 +15,6 @@ firebase.initializeApp(firebaseConfig)
 
 const database = firebase.database()
 const rolesRef = firebase.database().ref('/roles')
-const userMigrationRef = firebase.database().ref('/userMigration')
 const userAccountRef = firebase.database().ref('/userAccount')
 const userProfileRef = firebase.database().ref('/userProfiles')
 

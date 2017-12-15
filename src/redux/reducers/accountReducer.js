@@ -1,9 +1,9 @@
 import {
-  SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD
+  SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD, GET_DEFAULT_ACCOUNT_IMAGES
 } from '../actions/types/accountActionTypes'
 
 const initalState = {
-
+  defaultAccountImages: []
 }
 
 export default (state = initalState, action) => {
@@ -55,6 +55,12 @@ export default (state = initalState, action) => {
       }
     case 'Cancel_Sign_In_Up_Form':
       return initalState
+
+    case `${GET_DEFAULT_ACCOUNT_IMAGES}_SUCCESS`:
+      return {
+        ...state,
+        defaultAccountImages: action.payload
+      }
     default:
       return state
   }

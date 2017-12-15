@@ -2,7 +2,7 @@ import * as firebase from 'firebase'
 import { push } from 'react-router-redux'
 import { omitBy, get } from 'lodash'
 import { submit } from 'redux-form'
-import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD, CREATE_VENDOR, DELETE_VENDOR } from '../types/accountActionTypes'
+import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD, CREATE_VENDOR, DELETE_VENDOR, GET_DEFAULT_ACCOUNT_IMAGES } from '../types/accountActionTypes'
 import * as algoliaActions from './algoliaActions'
 
 /* this an example of how to chain actions together.
@@ -48,7 +48,7 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
     const accountData = omitBy(accountDataToSave, i => !i)
     const nameUpdates = omitBy({ firstName: accountDataToSave.firstName, lastName: accountDataToSave.lastName }, i => !i)
     dispatch(algoliaActions.addToNameIndex(uid, { ...nameUpdates, public: false }))
-    if (accountData.photoFile) {
+    if (typeof (accountData.photoFile) !== 'string') {
       firebase.uploadFile(`/images/users/account/${uid}/account_image`, accountData.photoFile).then((response) => {
         accountRef.child(uid).update({
           ...accountData,
@@ -59,6 +59,7 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
     } else {
       accountRef.child(uid).update({
         ...accountData,
+        photoURL: accountData.photoFile,
         public: false
       })
     }
@@ -248,3 +249,14 @@ export const resetPassword = newPassword => dispatch => dispatch({
   type: RESET_PASSWORD,
   payload: firebase.auth().currentUser.updatePassword(newPassword)
 })
+
+export const getDefaultAccountImages = () => {
+  const storage = firebase.storage()
+  const indexes = Array.from(Array(14).keys())
+  const imagePaths = indexes.map(index => `images/defaults/profile_images/${index + 1}.jpg`)
+  const imageUrlsPromise = Promise.all(imagePaths.map(imagePath => storage.ref(imagePath).getDownloadURL()))
+  return {
+    type: GET_DEFAULT_ACCOUNT_IMAGES,
+    payload: imageUrlsPromise
+  }
+}

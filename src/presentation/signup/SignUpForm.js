@@ -9,11 +9,11 @@ import { FacebookLoginButton } from 'react-social-login-buttons'
 import SocialLoginButton from 'react-social-login-buttons/lib/buttons/SocialLoginButton'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
+import AvatarPicker from './AvatarPicker'
 import './signUp.css'
 
 const validate = (values) => {
   const errors = {}
-
   if (!values.email || !values.password || !values.confirmPassword) {
     if (!values.email) {
       errors.email = 'You forgot to enter an email!'
@@ -24,6 +24,9 @@ const validate = (values) => {
     if (!values.confirmPassword) {
       errors.confirmPassword = 'You forgot to confirm your password!'
     }
+  }
+  if (!values.avatar && !values.photoFile) {
+    errors.photoFile = 'Please choose an photo from the list or upload one'
   }
   if (values.password && values.confirmPassword && !(values.password === values.confirmPassword)) {
     errors.confirmPassword = 'Passwords must match'
@@ -79,6 +82,13 @@ const FileInput = ({
         {...props}
       />
     </div>
+    {
+      omitMeta.error && omitMeta.touched ? (
+        <div>
+          <div style={{ color: 'red' }}> {omitMeta.error} </div>
+        </div>
+      ) : null
+    }
   </div>
 )
 
@@ -101,6 +111,10 @@ class SignUpForm extends React.Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleOpen = this.handleOpen.bind(this)
   }
+  componentWillMount() {
+    const { getDefaultAccountImages } = this.props
+    getDefaultAccountImages()
+  }
   handleOpen() {
     this.setState({ open: true })
   }
@@ -108,7 +122,9 @@ class SignUpForm extends React.Component {
     this.setState({ open: false, continueWithEmail: false })
   }
   render() {
-    const { account, handleSubmit, error, submitting, pristine, sendSubmit, signUpWithGoogle, signUpWithFacebook } = this.props
+    const {
+      account, handleSubmit, error, submitting, pristine, sendSubmit,
+      signUpWithGoogle, signUpWithFacebook, defaultAccountImages } = this.props
     const { continueWithEmail } = this.state
     const socialSignInError = get(account, 'socialSignInError.code')
     const actions = [
@@ -130,7 +146,7 @@ class SignUpForm extends React.Component {
       <div>
         <FlatButton label="Sign Up" style={{ color: 'white' }} labelStyle={{ fontSize: '12pt' }} onClick={this.handleOpen} />
         <Dialog
-          contentStyle={{ width: '100%', marginBottom: 150 }}
+          contentStyle={{ width: '100%', marginBottom: 150, maxWidth: 800 }}
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           title="Sign Up"
           actions={continueWithEmail ? actions : []}
@@ -175,6 +191,18 @@ class SignUpForm extends React.Component {
                   type="file"
                 />
               </div>
+              <Field
+                name="avatar"
+                component={props => (
+                  <AvatarPicker
+                    value={props.input.value}
+                    onChange={(value) => {
+                      props.input.onChange(value)
+                    }}
+                    images={defaultAccountImages}
+                  />)}
+              />
+
               <div>
                 <Field
                   name="email"
@@ -247,6 +275,8 @@ class SignUpForm extends React.Component {
 SignUpForm.propTypes = {
   cancelSignInUpForm: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
+  defaultAccountImages: PropTypes.arrayOf(PropTypes.string).isRequired,
+  getDefaultAccountImages: PropTypes.func.isRequired,
   signUpWithGoogle: PropTypes.func.isRequired,
   signUpWithFacebook: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
