@@ -6,11 +6,13 @@ import Divider from 'material-ui/Divider'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
 import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import ActionDelete from 'material-ui/svg-icons/action/delete'
 import PropTypes from 'prop-types'
 import { get, pickBy } from 'lodash'
 import moment from 'moment'
@@ -158,7 +160,7 @@ class EditProfile extends React.Component {
   render() {
     const { auth, profile, data, pristine, submitting,
       handleSubmit, remoteSubmitForm, addLinkToProfile, editProfileLink, removeProfileLink, initForm,
-      addCredit, searchForRoles, roleSearchResults } = this.props
+      addCredit, deleteCredit, deleteRole, searchForRoles, roleSearchResults } = this.props
     const uid = get(auth, 'uid', '')
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
@@ -393,10 +395,30 @@ class EditProfile extends React.Component {
                   const associatedCredits = userCredits.filter(c => c.roleId === role.roleId)
                   return (
                     <div className="role-column" key={role.roleId}>
-                      <div className="rounded-header"><span>{role.roleName}</span></div>
+                      <div className="rounded-header">
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          {role.roleName}
+                          <IconButton onClick={() => deleteRole(userRoles, userCredits, role, uid)}>
+                            <ActionDelete color={'#fff'} />
+                          </IconButton>
+                        </div>
+                      </div>
                       <div className="credits">
                         { associatedCredits.map(credit => (
-                          <p style={{ textAlign: 'left' }} key={credit.title}>{credit.year}{credit.genre ? ` (${credit.genre})` : ''} : {credit.title}</p>
+                          <div>
+                            <div style={{ textAlign: 'left', display: 'flex', alignItems: 'center' }} key={credit.title}>
+                              {credit.year}{credit.genre ? ` (${credit.genre})` : ''} : {credit.title}
+                              <div>
+                                <IconButton
+                                  onClick={() => {
+                                    deleteCredit(userCredits, credit, uid)
+                                  }}
+                                >
+                                  <ActionDelete />
+                                </IconButton>
+                              </div>
+                            </div>
+                          </div>
                         )
                         )}
                       </div>
@@ -492,6 +514,8 @@ EditProfile.propTypes = {
   addLinkToProfile: PropTypes.func.isRequired,
   removeProfileLink: PropTypes.func.isRequired,
   addCredit: PropTypes.func.isRequired,
+  deleteCredit: PropTypes.func.isRequired,
+  deleteRole: PropTypes.func.isRequired,
   editProfileLink: PropTypes.func.isRequired,
   remoteSubmitForm: PropTypes.func.isRequired,
   searchForRoles: PropTypes.func.isRequired,
