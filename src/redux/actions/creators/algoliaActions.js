@@ -4,7 +4,7 @@ import { RESET_SEARCH_RESULTS, SEARCH_INDEX, SEARCH_FOR_CREW,
   SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE,
   MIGRATE_NAME, ADD_TO_NAME_INDEX, CREATE_PROFILE_RECORD, SET_PUBLIC, CREATE_VENDOR_PROFILE_RECORD,
   DELETE_VENDOR_PROFILE_RECORD, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_ROLES,
-  ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER
+  ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER, DELETE_ROLE_FROM_PROFILE
 } from '../types/algoliaActionsTypes'
 
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
@@ -222,5 +222,13 @@ export const searchForRoles = (query) => {
   return {
     type: SEARCH_FOR_ROLES,
     payload: roleIndex.search({ query, hitsPerPage: '100', facets: ['roleName'] })
+  }
+}
+
+export const deleteRolesFromProfile = (newRoles, uid) => {
+  const profileIndex = algoliaClient.initIndex('profiles')
+  return {
+    type: DELETE_ROLE_FROM_PROFILE,
+    payload: profileIndex.partialUpdateObject({ roles: newRoles, objectID: uid })
   }
 }
