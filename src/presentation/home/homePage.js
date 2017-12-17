@@ -237,6 +237,8 @@ const homePage = (props) => {
                       history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all&role=${encodeURIComponent(suggestion.roleName)}` })
                     } else if (index === 1) {
                       history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
+                    } else if (index === 2) {
+                      history.push({ pathname: `/vendor/${suggestion.objectID}` })
                     }
                   }}
                 />
