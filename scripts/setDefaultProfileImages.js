@@ -1,7 +1,7 @@
 const admin = require('firebase-admin')
 
 // Download this from firebase
-const serviceAccount = ('/home/kyle/Downloads/creds.json')
+const serviceAccount = ('')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
