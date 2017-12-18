@@ -163,21 +163,28 @@ export const migrateName = (uid, email, namesObject) => (dispatch) => {
   })
 }
 
-export const addToNameIndex = (uid, namesObject) => dispatch => dispatch({
-  type: ADD_TO_NAME_INDEX,
-  payload: algoliaClient.initIndex('names').addObject({
-    ...namesObject,
-    objectID: uid
-  })
-})
+export const addToNameIndex = (uid, namesObject) => {
+  const namesIndex = algoliaClient.initIndex('names')
+  const promise = namesIndex.getObject(uid)
+    .then((val) => {
+      namesIndex.partialUpdateObject({ ...namesObject, public: val.public, objectID: uid })
+    })
+    .catch(() => namesIndex.addObject({ ...namesObject, objectID: uid }))
+  return {
+    type: ADD_TO_NAME_INDEX,
+    payload: promise
+  }
+}
 
-export const createProfileRecord = (uid, profile) => dispatch => dispatch({
-  type: CREATE_PROFILE_RECORD,
-  payload: algoliaClient.initIndex('profiles').addObject({
-    ...profile,
-    objectID: uid
-  })
-})
+export const createProfileRecord = (uid, profile) => {
+  const profileIndex = algoliaClient.initIndex('profiles')
+  const promise = profileIndex.getObject(uid)
+    .catch(() => profileIndex.addObject({ ...profile, objectID: uid }))
+  return {
+    type: CREATE_PROFILE_RECORD,
+    payload: promise
+  }
+}
 
 export const partialUpdateAlgoliaObject = (index, updateObject) => dispatch => dispatch({
   type: PARTIAL_UPDATE_OBJECT,
