@@ -18,7 +18,7 @@ const encodeAsFirebaseKey = string => string.replace(/%/g, '%25')
   .replace(/\[/g, '%5B')
   .replace(/\]/g, '%5D')
 
-const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToSave, accountRef, dispatch) => {
+const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToSave, accountRef, dispatch, type) => {
   const val = snapshot.val()
   if (val) {
     // an account already exists, migrate the account
@@ -27,11 +27,12 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
     // migrate the name index with the new uid
     dispatch(algoliaActions.migrateName(uid, emailKey, nameUpdates))
     accountRef.child(emailKey).remove()
-    if (accountData.photoFile) {
+    if (accountData.photoFile && typeof (accountData.photoFile) !== 'string') {
       firebase.uploadFile(`/images/users/account/${uid}/account_image`, accountData.photoFile).then((response) => {
         accountRef.child(uid).update({
           ...val,
           ...accountData,
+          ...nameUpdates,
           photoURL: response.uploadTaskSnaphot.downloadURL,
           public: true
         })
@@ -39,6 +40,7 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
     } else {
       accountRef.child(uid).update({
         ...val,
+        ...nameUpdates,
         ...accountData,
         public: true
       })
@@ -47,32 +49,35 @@ const migrateOrCreateUserAccountEntry = (uid, emailKey, snapshot, accountDataToS
     // no row in the userAccount table exists with that email, totally new user
     const accountData = omitBy(accountDataToSave, i => !i)
     const nameUpdates = omitBy({ firstName: accountDataToSave.firstName, lastName: accountDataToSave.lastName }, i => !i)
+    const publicUpdate = type === 'signUp' ? { public: true } : {}
     dispatch(algoliaActions.addToNameIndex(uid, { ...nameUpdates, public: false }))
-    if (typeof (accountData.photoFile) !== 'string') {
+    if (accountData.photoFile && typeof (accountData.photoFile) !== 'string') {
       firebase.uploadFile(`/images/users/account/${uid}/account_image`, accountData.photoFile).then((response) => {
         accountRef.child(uid).update({
           ...accountData,
           photoURL: response.uploadTaskSnaphot.downloadURL,
-          public: false
+          ...publicUpdate
         })
       })
     } else {
+      const photoUpdate = (accountData.photoFile || accountData.photoURL)
+        ? { photoURL: (accountData.photoFile || accountData.photoURL) } : {}
       accountRef.child(uid).update({
         ...accountData,
-        photoURL: accountData.photoFile,
-        public: false
+        ...photoUpdate,
+        ...publicUpdate
       })
     }
   }
 }
 
-const migrate = (accountDataToSave, signUpResult, dispatch) => {
+const migrate = (accountDataToSave, signUpResult, dispatch, type = 'signUp') => {
   const uid = firebase.auth().currentUser.uid
   const emailKey = encodeAsFirebaseKey(accountDataToSave.email)
   const accountRef = firebase.database().ref('/userAccount')
   const profilesRef = firebase.database().ref('/userProfiles')
   accountRef.child(emailKey).once('value').then((snapshot) => {
-    migrateOrCreateUserAccountEntry(uid, emailKey, snapshot, accountDataToSave, accountRef, dispatch)
+    migrateOrCreateUserAccountEntry(uid, emailKey, snapshot, accountDataToSave, accountRef, dispatch, type)
   })
   profilesRef.child(emailKey).once('value').then((snapshot) => {
     const val = snapshot.val()
@@ -82,7 +87,6 @@ const migrate = (accountDataToSave, signUpResult, dispatch) => {
       dispatch(algoliaActions.migrateProfile(uid, emailKey))
     } else {
       profilesRef.child(uid).update({
-        public: false
       }).then(() => dispatch(algoliaActions.createProfileRecord(uid, { public: false, roles: [] })))
     }
   })
@@ -153,13 +157,13 @@ export const signUpWithGoogle = () => (dispatch) => {
     type: 'SIGN_UP_GOOGLE',
     payload: fbPromise
   }).then(({ value }) => {
-    const user = value.user
-    const displayName = get(user, 'displayName', '')
-    const email = get(user, 'email', '')
-    const photoURL = get(user, 'photoURL', '')
+    const lastName = get(value, 'additionalUserInfo.profile.family_name', '')
+    const firstName = get(value, 'additionalUserInfo.profile.given_name', '')
+    const email = get(value, 'additionalUserInfo.profile.email', '')
+    const photoURL = get(value, 'additionalUserInfo.profile.picture', '')
     const accountDataToSave = {
-      firstName: displayName,
-      lastName: '',
+      firstName,
+      lastName,
       email,
       photoURL
     }
@@ -184,7 +188,7 @@ export const signInWithGoogle = () => (dispatch) => {
     const accountDataToSave = {
       email
     }
-    migrate(accountDataToSave, value, dispatch)
+    migrate(accountDataToSave, value, dispatch, 'signIn')
   })
 }
 
@@ -203,7 +207,7 @@ export const signInWithFacebook = () => (dispatch) => {
     const accountDataToSave = {
       email: defaultEmail
     }
-    migrate(accountDataToSave, value, dispatch)
+    migrate(accountDataToSave, value, dispatch, 'signIn')
   })
 }
 
