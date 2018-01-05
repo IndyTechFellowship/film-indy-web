@@ -40,6 +40,7 @@ import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
 import SignUpForm from './presentation/signup/SignUpForm'
 import SignInForm from './presentation/login/SignInForm'
+import VendorMenu from './presentation/common/VendorMenu'
 
 // Style and images
 import './App.css'
@@ -223,7 +224,7 @@ class App extends React.Component {
   render() {
     const { cancelSignInUpForm, account, profile, auth, firebase,
       history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn,
-      signInWithFacebook, signInWithGoogle, submitSignIn, location,
+      signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors,
       getDefaultAccountImages } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
@@ -361,6 +362,7 @@ class App extends React.Component {
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
                 <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
                 <Link to={{ pathname: '/profile', search: `?query=${uid}` }}><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
+                <VendorMenu vendors={usersVendors} />
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
               </div>
             ) : (
@@ -404,6 +406,13 @@ App.propTypes = {
   signInWithGoogle: PropTypes.func.isRequired,
   submitSignIn: PropTypes.func.isRequired,
   getDefaultAccountImages: PropTypes.func.isRequired,
+  usersVendors: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.objectOf(PropTypes.shape({
+      creator: PropTypes.string,
+      name: PropTypes.string
+    }))
+  ]),
   history: PropTypes.shape({
     push: PropTypes.func
   }).isRequired,
@@ -412,9 +421,22 @@ App.propTypes = {
   }).isRequired
 }
 
-const wrappedApp = firebaseConnect()(App)
+App.defaultProps = {
+  usersVendors: PropTypes.any
+}
+
+const wrappedApp = firebaseConnect((props) => {
+  const uid = get(props, 'firebase.auth.uid', '')
+  return [
+    {
+      path: 'vendorProfiles',
+      storeAs: 'usersVendors',
+      queryParams: ['orderByChild=creator', `equalTo=${uid}`]
+    }
+  ]
+})(App)
 
 export default withRouter(connect(
-  state => ({ account: state.account, firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth }),
+  state => ({ account: state.account, firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth, usersVendors: state.firebase.data.usersVendors }),
   { ...accountActions },
 )(wrappedApp))
