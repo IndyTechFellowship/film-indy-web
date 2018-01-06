@@ -41,6 +41,7 @@ import ForgotPassword from './containers/forgotPassword/forgotPassword'
 import SignUpForm from './presentation/signup/SignUpForm'
 import SignInForm from './presentation/login/SignInForm'
 import VendorMenu from './presentation/common/VendorMenu'
+import AddVendorModal from './presentation/common/AddVenorModalMenu'
 
 // Style and images
 import './App.css'
@@ -183,7 +184,8 @@ class App extends React.Component {
     super(props)
     this.state = {
       open: false,
-      signedOut: false
+      signedOut: false,
+      addVendorModalOpen: false
     }
     this.handleAvatarTouch = this.handleAvatarTouch.bind(this)
     this.handleDropdownClose = this.handleDropdownClose.bind(this)
@@ -224,8 +226,9 @@ class App extends React.Component {
   render() {
     const { cancelSignInUpForm, account, profile, auth, firebase,
       history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn,
-      signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors,
+      signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors, submitVendorCreate, createVendor,
       getDefaultAccountImages } = this.props
+    const { addVendorModalOpen } = this.state
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const parsed = QueryString.parse(location.search)
@@ -349,6 +352,18 @@ class App extends React.Component {
           )}
           zDepth={2}
         />
+        <AddVendorModal
+          open={addVendorModalOpen}
+          onCancel={() => {
+            this.handleDropdownClose()
+            this.setState({ addVendorModalOpen: false })
+          }}
+          submitVendorCreate={submitVendorCreate}
+          onSubmit={(values) => {
+            createVendor(values.name)
+            this.setState({ addVendorModalOpen: false })
+          }}
+        />
         <Popover
           open={this.state.open}
           anchorEl={this.state.anchorEl}
@@ -362,7 +377,13 @@ class App extends React.Component {
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
                 <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
                 <Link to={{ pathname: '/profile', search: `?query=${uid}` }}><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
-                <VendorMenu vendors={usersVendors} />
+                <VendorMenu
+                  vendors={usersVendors}
+                  onAddVendorClick={() => {
+                    this.handleDropdownClose()
+                    this.setState({ addVendorModalOpen: true })
+                  }}
+                />
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
               </div>
             ) : (
