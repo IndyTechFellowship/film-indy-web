@@ -4,6 +4,7 @@ import { get } from 'lodash'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { firebaseConnect } from 'react-redux-firebase'
+import * as firebase from 'firebase'
 import EditProfile from '../../presentation/profile/EditProfile'
 import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
 import * as accountActions from '../../redux/actions/creators/accountActions'
@@ -12,6 +13,8 @@ import AuthenticatedComponent from '../../AuthenticatedComponent'
 
 const createInitialValues = (state) => {
   const uid = state.firebase.auth.uid
+  let displayEmail = get(state, `firebase.data.userProfiles.${uid}.displayEmail`)
+  if (!displayEmail) displayEmail = get(firebase.auth(), 'currentUser.email')
   return {
     headline: get(state, `firebase.data.userProfiles.${uid}.headline`),
     experience: get(state, `firebase.data.userProfiles.${uid}.experience`),
@@ -20,7 +23,10 @@ const createInitialValues = (state) => {
     website: get(state, `firebase.data.userProfiles.${uid}.website`),
     video: get(state, `firebase.data.userProfiles.${uid}.video`),
     youtubeVideo: get(state, `firebase.data.userProfiles.${uid}.youtubeVideo`),
-    vimeoVideo: get(state, `firebase.data.userProfiles.${uid}.vimeoVideo`)
+    vimeoVideo: get(state, `firebase.data.userProfiles.${uid}.vimeoVideo`),
+    firstName: get(state, `firebase.data.userAccounts.${uid}.firstName`),
+    lastName: get(state, `firebase.data.userAccounts.${uid}.lastName`),
+    email: displayEmail
   }
 }
 
@@ -46,6 +52,9 @@ EditProfileContainer.propTypes = {
     userProfile: PropTypes.object
   }).isRequired,
   firebase: PropTypes.shape({
+    uploadFile: PropTypes.func.isRequired,
+    updateProfile: PropTypes.func.isRequired,
+    updateEmail: PropTypes.func.isRequired,
     set: PropTypes.func
   }).isRequired
 }
