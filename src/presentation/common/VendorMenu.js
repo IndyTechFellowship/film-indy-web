@@ -5,6 +5,9 @@ import { Link } from 'react-router-dom'
 import ArrowDropLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left'
 
 const VendorMenu = ({ vendors, onAddVendorClick }) => {
+  const defaultMenu = [
+    <MenuItem primaryText="Add Vendor" onClick={onAddVendorClick} />
+  ]
   if (vendors) {
     const menuItems = Object.keys(vendors).map((key) => {
       const vendor = vendors[key]
@@ -14,7 +17,7 @@ const VendorMenu = ({ vendors, onAddVendorClick }) => {
     })
     const moreMenuItems = [
       ...menuItems,
-      <MenuItem primaryText="Add Vendor" onClick={onAddVendorClick} />
+      ...defaultMenu
     ]
     return (
       <MenuItem
@@ -23,7 +26,13 @@ const VendorMenu = ({ vendors, onAddVendorClick }) => {
         menuItems={moreMenuItems}
       />)
   }
-  return null
+  return (
+    <MenuItem
+      primaryText="Vendors"
+      leftIcon={<ArrowDropLeft />}
+      menuItems={defaultMenu}
+    />
+  )
 }
 
 VendorMenu.propTypes = {
