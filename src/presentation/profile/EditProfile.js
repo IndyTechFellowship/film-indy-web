@@ -205,7 +205,7 @@ class EditProfile extends React.Component {
         onClick={this.handleAddLinkClose}
       />,
       <FlatButton
-        label="Submit"
+        label="Save"
         primary
         onClick={() => {
           remoteSubmitForm('AddLinkForm')
