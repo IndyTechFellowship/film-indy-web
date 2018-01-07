@@ -492,7 +492,7 @@ class EditProfile extends React.Component {
                           onClick={this.handleEditLinkClose}
                         />,
                         <FlatButton
-                          label="Submit"
+                          label="Save"
                           primary
                           onClick={() => {
                             remoteSubmitForm('EditLinkForm')
@@ -563,7 +563,7 @@ class EditProfile extends React.Component {
                         onClick={this.handleEditVideoClose}
                       />,
                       <FlatButton
-                        label="Submit"
+                        label="Save"
                         primary
                         onClick={() => {
                           remoteSubmitForm('EditVideoForm')
