@@ -99,7 +99,7 @@ class ViewProfile extends React.Component {
                 null
                 : (
                   <CardText className="crew-text">
-                    {numYears} years in industry
+                    {numYears} year(s) in industry
                   </CardText>
                 )
               }
