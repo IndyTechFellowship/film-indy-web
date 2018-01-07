@@ -2,12 +2,9 @@ import React from 'react'
 import QueryString from 'query-string'
 import { Card, CardMedia, CardText, CardTitle, CardActions } from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
-import FlatButton from 'material-ui/FlatButton'
-import WebsiteIcon from 'material-ui/svg-icons/hardware/laptop-mac'
-import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
+import LinkIcon from 'material-ui/svg-icons/content/link'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 import '../../App.css'
 import './ViewProfile.css'
 
@@ -22,14 +19,14 @@ function formatPhoneNumber(s) {
 function linkToEmbed(link, type) {
   if (link) {
     switch (type) {
-      case 'youtube':
+      case 1:
         const youtubeRegExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
         const youtubeMatch = link.match(youtubeRegExp)
         const youtubeVideoID = youtubeMatch[7]
 
         return `https://www.youtube.com/embed/${youtubeVideoID}`
 
-      case 'vimeo':
+      case 2:
         // Source: http://jsbin.com/asuqic/184/edit?html,js,output
         const vimeoRegExp = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/
         const vimeoMatch = link.match(vimeoRegExp)
@@ -47,12 +44,14 @@ function linkToEmbed(link, type) {
 
 class ViewProfile extends React.Component {
   render() {
-    const { data, location, auth } = this.props
+    const { data, location } = this.props
+
 
     // gets uid of current public profile from URL
     const parsed = QueryString.parse(location.search)
     const uid = parsed.query
-    const authorizedUid = get(auth, 'uid')
+
+    // grabs data using uid to populate page
     const roles = get(data, 'roles', {})
     const userProfile = get(data, `userProfiles.${uid}`)
     const userAccount = get(data, `userAccount.${uid}`)
@@ -77,28 +76,18 @@ class ViewProfile extends React.Component {
     const currentDate = new Date()
     const numYears = currentDate.getFullYear() - experience
     const headline = get(userProfile, 'headline')
-    const video = get(userProfile, 'video', '')
     const youtubeVideo = get(userProfile, 'youtubeVideo', '')
     const vimeoVideo = get(userProfile, 'vimeoVideo', '')
+    const video = youtubeVideo ? youtubeVideo[0] : vimeoVideo[0]
+    const videoType = youtubeVideo ? 1 : 2
 
     const profileImageUrl = get(userAccount, 'photoURL', defaultImage)
-    const email = get(userAccount, 'email')
     const name = `${get(userAccount, 'firstName', '')} ${get(userAccount, 'lastName', '')}`
     const phone = formatPhoneNumber(get(userAccount, 'phone'))
+
+    const email = get(userProfile, 'displayEmail') ? userProfile.displayEmail : userAccount.email
     return (
-      <div className="ViewProfile">
-        { authorizedUid === uid ? (
-          <div className="editButton" style={{ textAlign: 'right' }}>
-            <Link to="/profile/edit">
-              <FlatButton
-                label="Edit Profile"
-                primary
-                icon={<ModeEditIcon />}
-              />
-            </Link>
-          </div>
-        ) : null
-        }
+      <div className="profile">
         <div style={{ display: 'block', margin: 'auto' }}>
           <Card className="profile-card top-card" containerStyle={{ width: '50%', paddingBottom: 0, display: 'flex', flexDirection: 'row' }}>
             <CardMedia className="crew-image">
@@ -129,38 +118,25 @@ class ViewProfile extends React.Component {
           { bio || userLinks.length !== 0 ? (
             <Card className="profile-card small-card">
               <CardTitle title="About Me" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-              <CardText>
+              <CardText style={{ lineHeight: '20px' }}>
                 {bio}
               </CardText>
               <CardActions>
                 {userLinks.map(link => (
-                  <RaisedButton primary label={link.title} target="_blank" href={link.url} icon={<WebsiteIcon />} />
+                  <RaisedButton primary label={link.title} target="_blank" href={link.url} icon={<LinkIcon />} />
                 ))}
               </CardActions>
             </Card>
           ) : null
           }
 
-          { youtubeVideo ? (
-            <Card className="profile-card big-card">
-              <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-              <embed width="100%" height="500px" src={linkToEmbed(youtubeVideo, 'youtube')} />
-            </Card>
-          ) : null}
-
-          { vimeoVideo ? (
-            <Card className="profile-card big-card">
-              <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-              <embed width="100%" height="500px" src={linkToEmbed(vimeoVideo, 'vimeo')} />
-            </Card>
-          ) : null}
-
           { video ? (
             <Card className="profile-card big-card">
-              <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-              <embed width="100%" height="500px" src={video} />
+              <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={video.title} />
+              <embed width="100%" height="500px" src={linkToEmbed(video.url, videoType)} />
             </Card>
           ) : null}
+
 
           <Card className="profile-card big-card">
             <CardTitle title="Credits" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
@@ -202,9 +178,6 @@ ViewProfile.propTypes = {
   data: PropTypes.shape({
     roles: PropTypes.object,
     userProfile: PropTypes.object
-  }).isRequired,
-  auth: PropTypes.shape({
-    uid: PropTypes.string
   }).isRequired
 }
 

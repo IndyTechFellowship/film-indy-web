@@ -274,7 +274,7 @@ class App extends React.Component {
                     <RaisedButton
                       label="Search"
                       labelColor="#fff"
-                      backgroundColor={'#38b5e6'}
+                      backgroundColor={'#02BDF2'}
                       style={{ height: 30, marginTop: 10, marginLeft: 30 }}
                       onClick={() => {
                         if (this.searchQuery) {

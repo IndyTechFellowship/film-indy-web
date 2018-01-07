@@ -1,6 +1,5 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
-import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import PropTypes from 'prop-types'
 
@@ -30,7 +29,7 @@ const renderTextField = ({ input, name, label, meta: { touched, error }, ...cust
   />
 )
 
-const EditLinkForm = ({ handleSubmit, onDelete }) => (
+const AddVideoForm = ({ handleSubmit }) => (
   <form onSubmit={handleSubmit}>
     <div>
       <Field
@@ -45,22 +44,15 @@ const EditLinkForm = ({ handleSubmit, onDelete }) => (
         floatingLabelText="Url"
         type="url"
       />
-      <RaisedButton
-        style={{ marginTop: 10 }}
-        primary
-        onClick={onDelete}
-        label="Delete"
-      />
     </div>
   </form>
 )
 
-EditLinkForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired
+AddVideoForm.propTypes = {
+  handleSubmit: PropTypes.func.isRequired
 }
 
 export default reduxForm({
-  form: 'EditLinkForm',
+  form: 'AddVideoForm',
   validate
-})(EditLinkForm)
+})(AddVideoForm)
