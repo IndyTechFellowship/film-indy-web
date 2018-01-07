@@ -13,7 +13,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Chip from 'material-ui/Chip'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
-import Toggle from 'material-ui/Toggle'
 
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera'
 import UploadIcon from 'material-ui/svg-icons/file/file-upload'
@@ -84,11 +83,10 @@ class AccountPage extends React.Component {
 
   render() {
     const { handleSubmit, pristine, submitting, handleProfileChanges,
-      profile, firebase, auth, setPublic, submitVendorCreate, createVendor, deleteVendor,
+      profile, firebase, auth, submitVendorCreate, createVendor, deleteVendor,
       usersVendors, resetPassword, account } = this.props
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
-    const isPublic = get(profile, 'public', false)
     const vendors = usersVendors || {}
     const authProviderId = get(auth, 'providerData[0].providerId', '')
     return (
@@ -132,27 +130,6 @@ class AccountPage extends React.Component {
               </div>
               <RaisedButton type="submit" className="accountButton" primary label="Save" disabled={pristine || submitting} onClick={this.updateMessage} />
             </form>
-          </div>
-        </Card>
-
-        <h2 className="privacyHeader"> Profile Privacy Settings </h2>
-        <Card className="privacySettingsCard">
-          <div className="toggleContainer">
-            <div className="toggle">
-              <Toggle
-                label="Public"
-                toggled={isPublic}
-                onToggle={(event, toggleValue) => {
-                  firebase.updateProfile({
-                    public: toggleValue
-                  })
-                  setPublic(toggleValue, uid)
-                }}
-              />
-            </div>
-            <div>
-            Just here to search? Turn your profile to "Private" to not appear in other's searches.
-            </div>
           </div>
         </Card>
 
