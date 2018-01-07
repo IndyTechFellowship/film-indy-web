@@ -85,7 +85,7 @@ class ViewProfile extends React.Component {
     const name = `${get(userAccount, 'firstName', '')} ${get(userAccount, 'lastName', '')}`
     const phone = formatPhoneNumber(get(userAccount, 'phone'))
 
-    const email = get(userProfile, 'displayEmail') ? userProfile.displayEmail : userAccount.email
+    const email = get(userProfile, 'displayEmail') ? userProfile.displayEmail : get(data, 'auth.email')
     return (
       <div className="profile">
         <div style={{ display: 'block', margin: 'auto' }}>
