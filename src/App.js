@@ -36,6 +36,7 @@ import Account from './containers/account/account'
 import EditProfile from './containers/profile/EditProfile'
 import ViewProfile from './containers/profile/ViewProfile'
 import VendorProfile from './containers/vendorProfile/VendorProfile'
+import EditVendorProfile from './containers/vendorProfile/EditVendorProfile'
 import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
 import SignUpForm from './presentation/signup/SignUpForm'
@@ -404,7 +405,8 @@ class App extends React.Component {
         <Route exact path="/forgotpassword" component={ForgotPassword} />
         <Route exact path="/profile/edit" component={EditProfile} />
         <Route exact path="/profile" component={ViewProfile} />
-        <Route eact path="/vendor/:vendorId" component={VendorProfile} />
+        <Route exact path="/vendor/:vendorId" component={VendorProfile} />
+        <Route exact path="/vendor/:vendorId/edit" component={EditVendorProfile} />
       </div>
     )
   }
