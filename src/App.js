@@ -26,7 +26,6 @@ import { Tabs, Tab } from 'material-ui/Tabs'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import AccountCircle from 'material-ui/svg-icons/action/account-circle'
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
-import EditIcon from 'material-ui/svg-icons/content/create'
 import ViewIcon from 'material-ui/svg-icons/image/remove-red-eye'
 import ArrowIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
