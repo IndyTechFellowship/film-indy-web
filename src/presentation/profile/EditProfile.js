@@ -259,8 +259,6 @@ class EditProfile extends React.Component {
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
     const isPublic = get(userProfile, 'public', false)
-    console.log('is public')
-    console.log(isPublic)
     const youtubeVideo = get(userProfile, 'youtubeVideo', '')
     const vimeoVideo = get(userProfile, 'vimeoVideo', '')
     const video = youtubeVideo ? youtubeVideo[0] : vimeoVideo[0]
@@ -360,7 +358,6 @@ class EditProfile extends React.Component {
                   label="Public"
                   toggled={isPublic}
                   onToggle={(event, toggleValue) => {
-                    console.log(toggleValue)
                     firebase.updateProfile({
                       public: toggleValue
                     })
