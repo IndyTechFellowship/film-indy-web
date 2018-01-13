@@ -3,17 +3,21 @@ import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-mo
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar'
 import Paper from 'material-ui/Paper'
 import Popover from 'react-simple-popover'
+import InputRange from 'react-input-range'
 import QueryString from 'query-string'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
+import 'react-input-range/lib/css/index.css'
 import SearchAndSelectRoles from '../common/SearchAndSelectRoles'
 
 class FilterBar extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { menuOpen: false }
+    this.state = { menuOpen: false, experienceMenuOpen: false, experience: { min: 0, max: 100 } }
     this.openMenu = this.openMenu.bind(this)
     this.closeMenu = this.closeMenu.bind(this)
+    this.openExperienceMenu = this.openExperienceMenu.bind(this)
+    this.closeExperienceMenu = this.closeExperienceMenu.bind(this)
   }
   openMenu(event) {
     event.preventDefault()
@@ -22,8 +26,15 @@ class FilterBar extends React.Component {
   closeMenu() {
     this.setState({ menuOpen: false })
   }
+  openExperienceMenu(event) {
+    event.preventDefault()
+    this.setState({ experienceMenuOpen: true, anchorEl: event.currentTarget })
+  }
+  closeExperienceMenu() {
+    this.setState({ experienceMenuOpen: false })
+  }
   render() {
-    const { menuOpen } = this.state
+    const { menuOpen, experienceMenuOpen } = this.state
     const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters } = this.props
     return (
       <Toolbar style={{ backgroundColor: '#004b8d' }}>
@@ -58,6 +69,30 @@ class FilterBar extends React.Component {
                     }
                   }}
                 />
+              </Paper>
+            </Popover>
+          </div>
+          <div role="button" style={{ color: 'white', marginLeft: 10 }} onClick={this.openExperienceMenu} >
+            <ToolbarTitle text="Experience" />
+            <NavigationExpandMoreIcon style={{ color: 'white' }} />
+            <Popover
+              placement="bottom"
+              container={this}
+              target={this.state.anchorEl}
+              show={experienceMenuOpen}
+              onHide={this.closeExperienceMenu}
+            >
+              <Paper style={{ marginTop: 75, position: 'fixed', zIndex: 2100, overflowY: 'auto' }}>
+                <h4 style={{ fontWeight: 300, fontSize: 18 }}> {`< ${this.state.experience.min} years - ${this.state.experience.max} years`} </h4>
+                <div style={{ width: 400, height: 70, marginLeft: 60, marginRight: 60, marginTop: 40 }}>
+                  <InputRange
+                    style={{ width: '50%' }}
+                    minValue={0}
+                    maxValue={100}
+                    value={this.state.experience}
+                    onChange={value => this.setState({ experience: value })}
+                  />
+                </div>
               </Paper>
             </Popover>
           </div>
