@@ -258,7 +258,7 @@ class EditProfile extends React.Component {
     const userCredits = get(userProfile, 'credits', [])
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
-    const isPublic = get(profile, 'public', false)
+    const isPublic = get(userProfile, 'public', false)
     const youtubeVideo = get(userProfile, 'youtubeVideo', '')
     const vimeoVideo = get(userProfile, 'vimeoVideo', '')
     const video = youtubeVideo ? youtubeVideo[0] : vimeoVideo[0]
