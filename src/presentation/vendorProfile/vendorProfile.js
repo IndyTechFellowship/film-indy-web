@@ -1,7 +1,9 @@
 import React from 'react'
 import { get } from 'lodash'
-import { Card, CardMedia, CardText, CardTitle } from 'material-ui/Card'
+import { Card, CardMedia, CardText, CardTitle, CardActions } from 'material-ui/Card'
 import './VendorProfile.css'
+import LinkIcon from 'material-ui/svg-icons/content/link'
+import RaisedButton from 'material-ui/RaisedButton'
 
 const defaultImage = 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png'
 
@@ -42,11 +44,10 @@ const VendorProfilePage = (props) => {
   const vendorProfile = get(props, `data.vendorProfiles.${vendorId}`)
   const vendorPhone = formatPhoneNumber(get(vendorProfile, 'phone', ''))
   const vendorName = get(vendorProfile, 'name', '')
-  const profileImageUrl = get(vendorProfile, 'photoUrl', defaultImage)
+  const profileImageUrl = get(vendorProfile, 'profileImageUrl', defaultImage)
   const vendorEmail = get(vendorProfile, 'email', '')
-  const vendorBio = get(vendorProfile, 'bio', '')
-  // const vendorWebsite = get(vendorProfile, 'website', '')
-  // const displayWebsiteUrl = vendorWebsite.indexOf('http:') === -1 ? `http://${vendorWebsite}` : vendorWebsite
+  const vendorBio = get(vendorProfile, 'aboutUs', '')
+  const vendorLinks = get(vendorProfile, 'links', [])
   const vendorStreet = get(vendorProfile, 'addressLine1', '')
   const vendorCityState = get(vendorProfile, 'addressLine2', '')
   const video = get(vendorProfile, 'video', '')
@@ -96,6 +97,12 @@ const VendorProfilePage = (props) => {
                         </CardText>
                     )
                 }
+
+                <CardActions>
+                    {vendorLinks.map(link => (
+                        <RaisedButton primary label={link.title} target="_blank" href={link.url} icon={<LinkIcon />} />
+                    ))}
+                </CardActions>
             </div>
         </Card>
 
