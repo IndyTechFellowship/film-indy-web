@@ -1,5 +1,6 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
+import { Link } from 'react-router-dom'
 import { Card, CardTitle } from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar'
 import Chip from 'material-ui/Chip'
@@ -8,6 +9,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import IconButton from 'material-ui/IconButton'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
 import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
@@ -16,6 +18,7 @@ import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import YoutubeIcon from '../profile/YoutubeLogo'
 import VimeoIcon from '../profile/VimeoLogo'
 import ActionDelete from 'material-ui/svg-icons/action/delete'
+import BackIcon from 'material-ui/svg-icons/hardware/keyboard-backspace'
 import PropTypes from 'prop-types'
 import { get, pickBy } from 'lodash'
 import moment from 'moment'
@@ -340,6 +343,13 @@ class EditProfile extends React.Component {
     const currentYear = moment().year()
     return (
       <div style={{ paddingTop: 10, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ textAlign: 'left', marginLeft: 20, marginTop: 5 }}>
+          <Link to={`/profile?query=${uid}`}>
+            <FloatingActionButton mini backgroundColor="#FFFFFF">
+              <BackIcon style={{ fill: 'black' }} />
+            </FloatingActionButton>
+          </Link>
+        </div>
         <div style={{ paddingTop: 30 }}>
           <Card style={styles.card}>
             <div className="toggleContainer">

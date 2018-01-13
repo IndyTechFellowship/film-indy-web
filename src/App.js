@@ -375,7 +375,6 @@ class App extends React.Component {
             { uid ? ( // renders dropdown items depending on if logged in
               <div>
                 <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
-                <Link to="/profile/edit"><MenuItem primaryText="Edit Profile" leftIcon={<EditIcon />} /></Link>
                 <Link to={{ pathname: '/profile', search: `?query=${uid}` }}><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
                 <VendorMenu
                   vendors={usersVendors}
