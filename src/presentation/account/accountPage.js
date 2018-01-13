@@ -6,16 +6,11 @@ import ResetPasswordForm from './resetPasswordForm'
 
 
 // Material UI Imports
-import Avatar from 'material-ui/Avatar'
 import { Card } from 'material-ui/Card'
-import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import Chip from 'material-ui/Chip'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
-
-import CameraIcon from 'material-ui/svg-icons/image/photo-camera'
-import UploadIcon from 'material-ui/svg-icons/file/file-upload'
 
 import VendorCreateModal from './VendorCreateModal'
 
@@ -82,11 +77,8 @@ class AccountPage extends React.Component {
   }
 
   render() {
-    const { handleSubmit, pristine, submitting, handleProfileChanges,
-      profile, firebase, auth, submitVendorCreate, createVendor, deleteVendor,
+    const { handleSubmit, pristine, submitting, handleProfileChanges, auth, submitVendorCreate, createVendor, deleteVendor,
       usersVendors, resetPassword, account } = this.props
-    const photoURL = get(profile, 'photoURL', '')
-    const uid = get(auth, 'uid')
     const vendors = usersVendors || {}
     const authProviderId = get(auth, 'providerData[0].providerId', '')
     return (
@@ -94,15 +86,8 @@ class AccountPage extends React.Component {
         <h2 className="accountHeader">Account Information</h2>
         <Card className="profileCard" >
           <div className="profileContainer">
-            <div className="imageWrapper">
-              <Avatar className="accountImage avatar" src={photoURL} size={300} />
-              <CameraIcon className="cameraIcon" color="white" />
-              <FlatButton className="imageText" icon={<UploadIcon />} label="Upload Picture" labelPosition="before" containerElement="label">
-                <FileUploader uid={uid} uploadFile={firebase.uploadFile} updateProfile={firebase.updateProfile} />
-              </FlatButton>
-            </div>
             <form onSubmit={handleSubmit(handleProfileChanges)}>
-              <div className="fields">
+              <div className="fields" style={{ textAlign: 'center' }}>
                 <div>
                   <Field
                     name="firstName"
