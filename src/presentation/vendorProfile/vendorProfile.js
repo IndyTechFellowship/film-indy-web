@@ -1,7 +1,7 @@
 import React from 'react'
 import { get } from 'lodash'
 import { Card, CardMedia, CardText, CardTitle } from 'material-ui/Card'
-import RaisedButton from 'material-ui/RaisedButton'
+import './VendorProfile.css'
 
 const defaultImage = 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png'
 
@@ -45,7 +45,8 @@ const VendorProfilePage = (props) => {
   const profileImageUrl = get(vendorProfile, 'photoUrl', defaultImage)
   const vendorEmail = get(vendorProfile, 'email', '')
   const vendorBio = get(vendorProfile, 'bio', '')
-  const vendorWebsite = "http://" + get(vendorProfile, 'website', '')
+  // const vendorWebsite = get(vendorProfile, 'website', '')
+  // const displayWebsiteUrl = vendorWebsite.indexOf('http:') === -1 ? `http://${vendorWebsite}` : vendorWebsite
   const vendorStreet = get(vendorProfile, 'addressLine1', '')
   const vendorCityState = get(vendorProfile, 'addressLine2', '')
   const video = get(vendorProfile, 'video', '')
@@ -53,14 +54,14 @@ const VendorProfilePage = (props) => {
   const vimeoVideo = get(vendorProfile, 'vimeoVideo', '')
     return (
     <div>
-        <Card className="profile-card vendor-profile" containerStyle={{ width: '50%', paddingBottom: 0, display: 'flex', flexDirection: 'row' }}>
+        <Card className="profile-card vendor-profile" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
             <CardMedia className="crew-image">
-                <img src={profileImageUrl} alt="" style={{ width: 200, height: 200, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />
+                <img src={profileImageUrl} alt="" style={{ width: 200, height: 200, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2, minWidth: 200, minHeight: 200 }} />
             </CardMedia>
-            <div>
+            <div style={{ minWidth: '200px', width: '100%' }}>
                 <CardTitle title={vendorName} titleStyle={{ fontWeight: 500, fontSize: '20px' }}/>
                 { vendorStreet ? (
-                        <CardText className="vendor-text">
+                        <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '0px', width: '100%' }}>
                             {vendorStreet}
                             <br/>
                             {vendorCityState}
@@ -68,13 +69,13 @@ const VendorProfilePage = (props) => {
                     ) : null
                 }
                 { vendorPhone ? (
-                        <CardText className="vendor-text">
+                        <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
                             {vendorPhone}
                         </CardText>
                     ) : null
                 }
                 { vendorEmail ? (
-                        <CardText className="vendor-text">
+                        <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
                             {vendorEmail}
                         </CardText>
                     ) : null
@@ -82,63 +83,39 @@ const VendorProfilePage = (props) => {
             </div>
         </Card>
 
-        <Card className="profile-card vendor-bio" containerStyle={{ width: '95%', paddingBottom: 0, display: 'flex', flexDirection: 'row' }}>
+        <Card className="profile-card vendor-bio" containerStyle={{ width: '95%', paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left'}}>
             <div>
                 <CardTitle title={"About Us"} titleStyle={{ fontWeight: 500, fontSize: '20px' }}/>
                 { vendorBio ? (
-                        <CardText style={{ paddingBottom: '40' }}>
+                        <CardText style={{ paddingBottom: '40px' }}>
                             {vendorBio}
                         </CardText>
                     ) : (
-                    <CardText style={{ paddingBottom: '40' }}>
-                        Contact us directly for more information.
-                    </CardText>
+                        <CardText style={{ paddingBottom: '48px' }}>
+                            Contact us directly for more information.
+                        </CardText>
                     )
                 }
-                <div style={{  display: 'flex', flexDirection: 'row'}}>
-                    <div className="website-button" style={{ textAlign: 'center', height: '32', width: '114', fontSize: '12px'  }}>
-                        <a href={vendorWebsite}>
-                            <RaisedButton
-                                label="Reviews"
-                                primary
-                                buttonStyle={{ borderRadius: '5px' }}
-                            />
-                        </a>
-                    </div>
-                    { vendorWebsite ? (
-                            <div className="website-button" style={{ textAlign: 'center', height: '32', fontSize: '12px' }}>
-                                <a href={vendorWebsite}>
-                                    <RaisedButton
-                                        label="Our Website"
-                                        primary
-                                        buttonStyle={{ borderRadius: '5px' }}
-                                    />
-                                </a>
-                            </div>
-                        ) : null
-                    }
-
-                </div>
             </div>
         </Card>
 
         { youtubeVideo ? (
                 <Card className="profile-card big-card">
-                    <CardTitle title="Featured Video" style={{ paddingLeft: '0px' }} titleStyle={{ fontWeight: 500, fontSize: '20px'}} />
+                    <CardTitle title="Featured Video" style={{ paddingLeft: '0px' }} titleStyle={{ fontWeight: 500, fontSize: '20px', textAlign: 'left'}} />
                     <embed width="100%" height="500px" src={linkToEmbed(youtubeVideo, 'youtube')} />
                 </Card>
             ) : null}
 
         { vimeoVideo ? (
                 <Card className="profile-card big-card">
-                    <CardTitle title="Featured Video" style={{ paddingLeft: '0px' }} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+                    <CardTitle title="Featured Video" style={{ paddingLeft: '0px' }} titleStyle={{ fontWeight: 500, fontSize: '20px', textAlign: 'left' }} />
                     <embed width="100%" height="500px" src={linkToEmbed(vimeoVideo, 'vimeo')} />
                 </Card>
             ) : null}
 
         { video ? (
                 <Card className="profile-card big-card">
-                    <CardTitle title="Featured Video" style={{ paddingLeft: '0px' }} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+                    <CardTitle title="Featured Video" style={{ paddingLeft: '0px' }} titleStyle={{ fontWeight: 500, fontSize: '20px', textAlign: 'left' }} />
                     <embed width="100%" height="500px" src={video} />
                 </Card>
             ) : null}
