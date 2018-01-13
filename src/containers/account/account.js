@@ -58,7 +58,8 @@ const wrappedAccount = firebaseConnect((props, store) => {
       path: 'vendorProfiles',
       storeAs: 'usersVendors',
       queryParams: ['orderByChild=creator', `equalTo=${uid}`]
-    }
+    },
+    `/userAccount/${uid}`
   ]
 })(Authed(Account))
 

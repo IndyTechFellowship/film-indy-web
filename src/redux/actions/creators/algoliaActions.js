@@ -192,6 +192,7 @@ export const partialUpdateAlgoliaObject = (index, updateObject) => dispatch => d
 })
 
 export const setPublic = (isPublic, uid) => (dispatch) => {
+  const profileRef = firebase.database().ref(`/userProfiles/${uid}`)
   const nameIndex = algoliaClient.initIndex('names')
   const profileIndex = algoliaClient.initIndex('profiles')
   const promise = nameIndex.partialUpdateObject({
@@ -199,6 +200,7 @@ export const setPublic = (isPublic, uid) => (dispatch) => {
     objectID: uid
   })
     .then(() => profileIndex.partialUpdateObject({ public: isPublic, objectID: uid }))
+    .then(() => profileRef.update({ public: isPublic }))
   return dispatch({
     type: SET_PUBLIC,
     payload: promise
