@@ -3,6 +3,8 @@ import QueryString from 'query-string'
 import { Card, CardMedia, CardText, CardTitle, CardActions } from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
 import LinkIcon from 'material-ui/svg-icons/content/link'
+import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
+import { Link } from 'react-router-dom'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import '../../App.css'
@@ -44,12 +46,13 @@ function linkToEmbed(link, type) {
 
 class ViewProfile extends React.Component {
   render() {
-    const { data, location } = this.props
+    const { data, location, auth } = this.props
 
 
     // gets uid of current public profile from URL
     const parsed = QueryString.parse(location.search)
     const uid = parsed.query
+    const authorizedUid = get(auth, 'uid')
 
     // grabs data using uid to populate page
     const roles = get(data, 'roles', {})
@@ -88,6 +91,15 @@ class ViewProfile extends React.Component {
     const email = get(userProfile, 'displayEmail') ? userProfile.displayEmail : get(data, 'auth.email')
     return (
       <div className="profile">
+        {
+          authorizedUid === uid ? (
+            <div style={{ textAlign: 'right', marginRight: 20 }}>
+              <Link to="/profile/edit">
+                <RaisedButton label="Edit Profile" icon={<ModeEditIcon />} />
+              </Link>
+            </div>
+          ) : null
+        }
         <div style={{ display: 'block', margin: 'auto' }}>
           <Card className="profile-card top-card" containerStyle={{ width: '50%', paddingBottom: 0, display: 'flex', flexDirection: 'row' }}>
             <CardMedia className="crew-image">
