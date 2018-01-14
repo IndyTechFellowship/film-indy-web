@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { firebaseConnect } from 'react-redux-firebase'
+import { firebaseConnect, populate } from 'react-redux-firebase'
 import * as firebase from 'firebase'
 import EditProfile from '../../presentation/profile/EditProfile'
 import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
@@ -61,7 +61,7 @@ EditProfileContainer.propTypes = {
 
 const WrappedEditProfile = firebaseConnect((props, store) => {
   const firebaseProp = store.getState()
-  const uid = get(firebaseProp, 'auth.uid', '')
+  const uid = get(firebaseProp, 'firebase.auth.uid', '')
   return [
     `/userAccount/${uid}`,
     `/userProfiles/${uid}`,

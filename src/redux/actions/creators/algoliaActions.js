@@ -200,7 +200,6 @@ export const setPublic = (isPublic, uid) => (dispatch) => {
     objectID: uid
   })
     .then(() => profileIndex.partialUpdateObject({ public: isPublic, objectID: uid }))
-    .then(() => profileRef.update({ public: isPublic }))
   return dispatch({
     type: SET_PUBLIC,
     payload: promise
