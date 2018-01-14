@@ -15,6 +15,9 @@ import LinkIcon from 'material-ui/svg-icons/content/link'
 import { FormControl } from 'material-ui-next/Form'
 import { InputLabel } from 'material-ui-next/Input'
 import { MenuItem } from 'material-ui-next/Menu'
+import { Link } from 'react-router-dom'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import BackIcon from 'material-ui/svg-icons/hardware/keyboard-backspace'
 import RenderSelectField from './CustomSelect'
 import AddLinkForm from '../profile/AddLinkForm'
 import EditLinkForm from '../profile/EditLinkForm'
@@ -191,6 +194,13 @@ class EditVendorProfile extends React.Component {
       ]
       return (
         <div style={{ paddingTop: 10, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ textAlign: 'left', marginLeft: 20, marginTop: 5 }}>
+            <Link to={`/vendor/${vendorId}`}>
+              <FloatingActionButton mini backgroundColor="#FFFFFF">
+                <BackIcon style={{ fill: 'black' }} />
+              </FloatingActionButton>
+            </Link>
+          </div>
           <div style={{ paddingTop: 30 }}>
             <Card style={styles.card}>
               <div className="toggleContainer">

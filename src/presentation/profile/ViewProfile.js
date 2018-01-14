@@ -93,7 +93,7 @@ class ViewProfile extends React.Component {
       <div className="profile">
         {
           authorizedUid === uid ? (
-            <div style={{ textAlign: 'right', marginRight: 20 }}>
+            <div style={{ textAlign: 'right', marginRight: 20, marginTop: 10 }}>
               <Link to="/profile/edit">
                 <RaisedButton label="Edit Profile" icon={<ModeEditIcon />} />
               </Link>
@@ -135,7 +135,7 @@ class ViewProfile extends React.Component {
               </CardText>
               <CardActions>
                 {userLinks.map(link => (
-                  <RaisedButton primary label={link.title} target="_blank" href={link.url} icon={<LinkIcon />} />
+                  <RaisedButton primary key={link.title} label={link.title} target="_blank" href={link.url} icon={<LinkIcon />} />
                 ))}
               </CardActions>
             </Card>

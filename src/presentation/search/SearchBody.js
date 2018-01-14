@@ -93,7 +93,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
                       <Link to={{ pathname: `/vendor/${enrichedResult.objectID}` }}>
                         <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
                           <CardMedia>
-                            <img src={get(enrichedResult, 'photoURL', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                            <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10, objectFit: 'contain' }} />
                           </CardMedia>
                         </Card>
                       </Link>
