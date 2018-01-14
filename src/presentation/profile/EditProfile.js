@@ -3,7 +3,6 @@ import { Field, reduxForm } from 'redux-form'
 import { Link } from 'react-router-dom'
 import { Card, CardTitle } from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar'
-import Chip from 'material-ui/Chip'
 import Toggle from 'material-ui/Toggle'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
@@ -552,17 +551,20 @@ class EditProfile extends React.Component {
           <Card className="profile-card big-card" style={styles.card}>
             <CardTitle style={{ textAlign: 'left' }} title="Featured Video" />
             { video ? (
-              <Chip
-                onRequestDelete={() => {
-                  removeVideo(video, videoType, uid)
-                }}
+              <RaisedButton
+                backgroundColor="#4A90E2"
+                labelColor="#fff"
+                labelPosition="before"
+                icon={<EditIcon />}
+                label={video.title}
+                buttonStyle={{ borderRadius: 5 }}
+                style={{ marginRight: 5 }}
                 key={video.title}
                 onClick={() => {
                   initForm('EditVideoForm', { title: video.title, url: video.url })
                   this.handleEditVideoOpen()
                 }}
               >
-                {video.title}
                 <Dialog
                   title="Edit a Video"
                   actions={
@@ -589,10 +591,14 @@ class EditProfile extends React.Component {
                     onSubmit={(values) => {
                       editVideo(video, videoType, values.title, values.url, uid)
                     }}
+                    onDelete={() => {
+                      removeVideo(video, videoType, uid)
+                      this.handleEditVideoClose()
+                    }}
                     initialValues={{ title: video.title, url: video.url }}
                   />
                 </Dialog>
-              </Chip>
+              </RaisedButton>
             ) : (
               <div>
                 <div style={{ textAlign: 'center', marginBottom: 20 }}>
