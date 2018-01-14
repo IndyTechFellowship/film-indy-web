@@ -124,10 +124,11 @@ class EditProfile extends React.Component {
     const { data, auth } = props
     const uid = get(auth, 'uid', '')
     const userProfile = get(data, `userProfiles.${uid}`)
+    const isPublic = get(data, `userAccount.${uid}.public`, false)
     const userRoleIds = get(userProfile, 'roles', [])
     const roles = get(data, 'roles', {})
     const roleNames = userRoleIds.map(roleId => roles[roleId]).filter(i => i !== undefined).map(r => r.roleName)
-    this.setState({ selectedRoles: roleNames })
+    this.setState({ selectedRoles: roleNames, isPublic })
   }
 
   handleAddCreditClose() {
@@ -258,7 +259,7 @@ class EditProfile extends React.Component {
     const userCredits = get(userProfile, 'credits', [])
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
-    const isPublic = get(userProfile, 'public', false)
+    const isPublic = get(this.state, 'isPublic', false)
     const youtubeVideo = get(userProfile, 'youtubeVideo', '')
     const vimeoVideo = get(userProfile, 'vimeoVideo', '')
     const video = youtubeVideo ? youtubeVideo[0] : vimeoVideo[0]
@@ -362,6 +363,7 @@ class EditProfile extends React.Component {
                       public: toggleValue
                     })
                     setPublic(toggleValue, uid)
+                    this.setState({ isPublic: toggleValue })
                   }}
                 />
               </div>

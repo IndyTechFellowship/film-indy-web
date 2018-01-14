@@ -61,7 +61,7 @@ EditProfileContainer.propTypes = {
 
 const WrappedEditProfile = firebaseConnect((props, store) => {
   const firebaseProp = store.getState()
-  const uid = get(firebaseProp, 'auth.uid', '')
+  const uid = get(firebaseProp, 'firebase.auth.uid', '')
   return [
     `/userAccount/${uid}`,
     `/userProfiles/${uid}`,
