@@ -259,10 +259,10 @@ class EditProfile extends React.Component {
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
     const isPublic = get(userProfile, 'public', false)
-    const youtubeVideo = get(userProfile, 'youtubeVideo', '')
-    const vimeoVideo = get(userProfile, 'vimeoVideo', '')
-    const video = youtubeVideo ? youtubeVideo[0] : vimeoVideo[0]
-    const videoType = youtubeVideo ? 1 : 2
+    const video = get(userProfile, 'video', '')[0]
+    let videoType = 0
+    if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+
 
     const addYoutubeActions = [
       <FlatButton
@@ -610,7 +610,7 @@ class EditProfile extends React.Component {
                       modal
                       open={this.state.addYoutubeDialogOpen}
                     >
-                      <AddVideoForm onSubmit={values => addYoutubeToProfile(youtubeVideo, values.title, values.url, uid)} />
+                      <AddVideoForm onSubmit={values => addYoutubeToProfile(video, values.title, values.url, uid)} />
                     </Dialog>
                   </RaisedButton>
                   <RaisedButton
@@ -624,7 +624,7 @@ class EditProfile extends React.Component {
                       modal
                       open={this.state.addVimeoDialogOpen}
                     >
-                      <AddVideoForm onSubmit={values => addVimeoToProfile(vimeoVideo, values.title, values.url, uid)} />
+                      <AddVideoForm onSubmit={values => addVimeoToProfile(video, values.title, values.url, uid)} />
                     </Dialog>
                   </RaisedButton>
                 </div>

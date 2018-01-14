@@ -12,6 +12,10 @@ const validate = (values) => {
   if (!values.url) {
     errors.url = 'A url is required'
   }
+  if ( values.url && (values.url.indexOf("youtube") < 0 && values.url.indexOf("vimeo") < 0) ) {
+    errors.url = 'Enter a valid Youtube or Vimeo link'
+  }
+
   return errors
 }
 
@@ -49,7 +53,8 @@ const EditVideoForm = ({ handleSubmit }) => (
 )
 
 EditVideoForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired
+  handleSubmit: PropTypes.func.isRequired,
+  url: PropTypes.string.isRequired
 }
 
 export default reduxForm({

@@ -79,10 +79,9 @@ class ViewProfile extends React.Component {
     const currentDate = new Date()
     const numYears = currentDate.getFullYear() - experience
     const headline = get(userProfile, 'headline')
-    const youtubeVideo = get(userProfile, 'youtubeVideo', '')
-    const vimeoVideo = get(userProfile, 'vimeoVideo', '')
-    const video = youtubeVideo ? youtubeVideo[0] : vimeoVideo[0]
-    const videoType = youtubeVideo ? 1 : 2
+    const video = get(userProfile, 'video', '')[0]
+    let videoType = 0
+    if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
 
     const profileImageUrl = get(userAccount, 'photoURL', defaultImage)
     const name = `${get(userAccount, 'firstName', '')} ${get(userAccount, 'lastName', '')}`
@@ -147,7 +146,7 @@ class ViewProfile extends React.Component {
               <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={video.title} />
               <embed width="100%" height="500px" src={linkToEmbed(video.url, videoType)} />
             </Card>
-          ) : null}
+          ) : null }
 
 
           <Card className="profile-card big-card">
