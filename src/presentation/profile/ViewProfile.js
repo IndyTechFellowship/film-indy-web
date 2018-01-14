@@ -3,8 +3,8 @@ import QueryString from 'query-string'
 import { Card, CardMedia, CardText, CardTitle, CardActions } from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
 import LinkIcon from 'material-ui/svg-icons/content/link'
-import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import { Link } from 'react-router-dom'
+import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import '../../App.css'
@@ -103,7 +103,7 @@ class ViewProfile extends React.Component {
         <div style={{ display: 'block', margin: 'auto' }}>
           <Card className="profile-card top-card" containerStyle={{ width: '50%', paddingBottom: 0, display: 'flex', flexDirection: 'row' }}>
             <CardMedia className="crew-image">
-              <img src={profileImageUrl} alt="" style={{ width: 250, height: 250, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />
+              <img src={profileImageUrl} alt="" style={{ width: 250, height: 250, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2, minWidth: 250, minHeight: 250 }} />
             </CardMedia>
             <div>
               <CardTitle title={name} titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={headline} subtitleStyle={{ minWidth: '250%', fontStyle: 'italic' }} />
