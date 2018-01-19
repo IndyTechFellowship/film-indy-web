@@ -233,12 +233,13 @@ class EditProfile extends React.Component {
   }
 
   render() {
-    const { auth, profile, data, pristine, submitting, firebase,
+    const { auth, data, pristine, submitting, firebase,
       handleSubmit, remoteSubmitForm, addLinkToProfile, editProfileLink, removeProfileLink, initForm,
       addCredit, deleteCredit, deleteRole, searchForRoles, roleSearchResults,
       addYoutubeToProfile, addVimeoToProfile, removeVideo, editVideo, setPublic } = this.props
 
     const uid = get(auth, 'uid', '')
+    const profile = get(data, `account.${uid}`)
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
     const genres = get(data, 'genres', [])
