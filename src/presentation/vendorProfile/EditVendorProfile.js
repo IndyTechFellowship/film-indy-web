@@ -338,7 +338,7 @@ class EditVendorProfile extends React.Component {
                     <form onSubmit={handleSubmit(values => updateVendorProfile(values, vendorId))}>
                       <div>
                         <Field
-                            name="name"
+                            name="primaryContactName"
                             component={renderTextField}
                             floatingLabelText="Name"
                             type="text"
@@ -346,7 +346,7 @@ class EditVendorProfile extends React.Component {
                       </div>
                       <div>
                         <Field
-                            name="addressLine1"
+                            name="primaryContactAddressLine1"
                             component={renderTextField}
                             floatingLabelText="Address Line 1"
                             type="text"
@@ -354,7 +354,7 @@ class EditVendorProfile extends React.Component {
                       </div>
                       <div>
                         <Field
-                            name="addressLine2"
+                            name="primaryContactAddressLine2"
                             component={renderTextField}
                             floatingLabelText="Address Line 2"
                             type="text"
@@ -363,7 +363,7 @@ class EditVendorProfile extends React.Component {
                       <div style={{ display: 'flex' }}>
                         <div style={{ marginRight: 5 }}>
                           <Field
-                              name="city"
+                              name="primaryContactCity"
                               component={renderTextField}
                               floatingLabelText="City"
                               type="text"
@@ -373,7 +373,7 @@ class EditVendorProfile extends React.Component {
                           <FormControl style={{ width: 60 }}>
                             <InputLabel htmlFor="state">State</InputLabel>
                             <Field
-                                name="state"
+                                name="primaryContactState"
                                 component={RenderSelectField}
                             >
                                 {States.map(state => (
@@ -386,7 +386,7 @@ class EditVendorProfile extends React.Component {
                         </div>
                         <div style={{ marginRight: 5 }}>
                           <Field
-                              name="zip"
+                              name="primaryContactZip"
                               component={renderTextField}
                               floatingLabelText="Zip Code"
                               type="text"
@@ -395,7 +395,7 @@ class EditVendorProfile extends React.Component {
                       </div>
                       <div>
                         <Field
-                            name="phone"
+                            name="primaryContactPhone"
                             component={renderTextField}
                             floatingLabelText="Phone Number"
                             type="text"
@@ -403,10 +403,21 @@ class EditVendorProfile extends React.Component {
                       </div>
                       <div>
                         <Field
-                            name="email"
+                            name="primaryContactEmail"
                             component={renderTextField}
                             floatingLabelText="Email Address"
                             type="email"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                            name="primaryContactAboutUs"
+                            component={renderTextField}
+                            floatingLabelStyle={{ display: 'flex' }}
+                            floatingLabelText="About Primary Contact"
+                            type="text"
+                            multiLine
+                            rows={3}
                         />
                       </div>
                       <div style={{ marginTop: 10 }}>

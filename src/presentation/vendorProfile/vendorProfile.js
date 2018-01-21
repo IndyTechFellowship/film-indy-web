@@ -15,16 +15,9 @@ function formatPhoneNumber(s) {
   return (!m) ? null : `(${m[1]}) ${m[2]}-${m[3]}`
 }
 
-function formatFullAddress(addressLine1, addressLine2, city, state, zip) {
-    if (addressLine1) {
-        var fullAddress = addressLine1;
-        fullAddress = addressLine2 ? fullAddress + ` \r\n ${addressLine2}` : fullAddress;
-        var cityWithComma = city ? city + ', ' : null;
-        fullAddress = (city || state || zip) ? fullAddress + ` \r\n ${cityWithComma} ${state} ${zip}`: null;
-        return fullAddress;
-    } else {
-        return null;
-    }
+function formatCityStateZip(city, state, zip) {
+    var cityWithComma = city ? city + ', ' : null;
+    return (city || state || zip) ? `${cityWithComma} ${state} ${zip}`: null;
 }
 
 function linkToEmbed(link, type) {
@@ -69,14 +62,18 @@ const VendorProfilePage = (props) => {
   const vendorCity = get(vendorProfile, 'city', '')
   const vendorState = get(vendorProfile, 'state', '')
   const vendorZip = get(vendorProfile, 'zip', '')
-  const vendorFullAddress = formatFullAddress(vendorAddressLine1, vendorAddressLine2, vendorCity, vendorState, vendorZip)
+  const vendorCityStateZip = formatCityStateZip(vendorCity, vendorState, vendorZip)
 
-  const primaryContactPhone = formatPhoneNumber(get(vendorProfile, 'phone', ''))
-  const primaryContactName = get(vendorProfile, 'name', '')
-  const primaryContactEmail = get(vendorProfile, 'email', '')
-  const primaryContactBio = get(vendorProfile, 'aboutUs', '')
-  const primaryContactStreet = get(vendorProfile, 'addressLine1', '')
-  const primaryContactCityState = get(vendorProfile, 'addressLine2', '')
+  const primaryContactPhone = formatPhoneNumber(get(vendorProfile, 'primaryContactPhone', ''))
+  const primaryContactName = get(vendorProfile, 'primaryContactName', '')
+  const primaryContactEmail = get(vendorProfile, 'primaryContactEmail', '')
+  const primaryContactAboutUs = get(vendorProfile, 'primaryContactAboutUs', '')
+  const primaryContactAddressLine1 = get(vendorProfile, 'primaryContactAddressLine1', '')
+  const primaryContactAddressLine2 = get(vendorProfile, 'primaryContactAddressLine2', '')
+  const primaryContactCity = get(vendorProfile, 'primaryContactCity', '')
+  const primaryContactState = get(vendorProfile, 'primaryContactState', '')
+  const primaryContactZip = get(vendorProfile, 'primaryContactZip', '')
+  const primaryContactCityStateZip = formatCityStateZip(primaryContactCity, primaryContactState, primaryContactZip)
 
   const video = get(vendorProfile, 'video', '')
   const youtubeVideo = get(vendorProfile, 'youtubeVideo', '')
@@ -99,12 +96,24 @@ const VendorProfilePage = (props) => {
           </CardMedia>
           <div style={{ minWidth: '200px', width: '100%' }}>
             <CardTitle title={vendorName} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-            { vendorFullAddress ? (
-                <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '0px', width: '100%' }}>
-                    {vendorFullAddress}
+            { vendorAddressLine1 ? (
+                <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '0px', width: '100%' }}>
+                    {vendorAddressLine1}
                 </CardText>
             ) : null
             }
+              { vendorAddressLine2 ? (
+                      <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '4px', width: '100%' }}>
+                          {vendorAddressLine2}
+                      </CardText>
+                  ) : null
+              }
+              { vendorCityStateZip ? (
+                      <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '4px', width: '100%' }}>
+                          {vendorCityStateZip}
+                      </CardText>
+                  ) : null
+              }
             { vendorPhone ? (
               <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
                 {vendorPhone}
@@ -128,11 +137,21 @@ const VendorProfilePage = (props) => {
                           </CardText>
                       ) : null
                   }
-                  { primaryContactStreet ? (
-                          <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px' }}>
-                              {primaryContactStreet}
-                              <br />
-                              {primaryContactCityState}
+                  { primaryContactAddressLine1 ? (
+                          <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '8px', width: '100%' }}>
+                              {primaryContactAddressLine1}
+                          </CardText>
+                      ) : null
+                  }
+                  { primaryContactAddressLine2 ? (
+                          <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '4px', width: '100%' }}>
+                              {primaryContactAddressLine2}
+                          </CardText>
+                      ) : null
+                  }
+                  { primaryContactCityStateZip ? (
+                          <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '4px', width: '100%' }}>
+                              {primaryContactCityStateZip}
                           </CardText>
                       ) : null
                   }
@@ -150,9 +169,9 @@ const VendorProfilePage = (props) => {
                   }
               </div>
               <div style={{ width: '75%' }}>
-                  { primaryContactBio ? (
+                  { primaryContactAboutUs ? (
                           <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '16px'}}>
-                              {primaryContactBio}
+                              {primaryContactAboutUs}
                           </CardText>
                       ) : null
                   }
