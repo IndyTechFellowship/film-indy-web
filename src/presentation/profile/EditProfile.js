@@ -3,7 +3,6 @@ import { Field, reduxForm } from 'redux-form'
 import { Link } from 'react-router-dom'
 import { Card, CardTitle } from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar'
-import Chip from 'material-ui/Chip'
 import Toggle from 'material-ui/Toggle'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
@@ -262,7 +261,7 @@ class EditProfile extends React.Component {
     const isPublic = get(profile, 'public', false)
     const video = get(userProfile, 'video', '')[0]
     let videoType = 0
-    if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+    if (video) videoType = video.url.indexOf('youtube') > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
 
     const addYoutubeActions = [
       <FlatButton
