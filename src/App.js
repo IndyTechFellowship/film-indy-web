@@ -293,7 +293,7 @@ class App extends React.Component {
                 }
               </div>
               {location.pathname === '/search' ?
-                (<Tabs tabItemContainerStyle={{ width: '55%' }} style={{ marginLeft: 200 }} value={showOnly}>
+                (<Tabs tabItemContainerStyle={{ width: '100%' }} style={{ marginLeft: 200 }} value={showOnly}>
                   <Tab
                     style={{ zIndex: 0 }}
                     label="All"
@@ -318,6 +318,15 @@ class App extends React.Component {
                     value="vendors"
                     onActive={() => {
                       const newQs = QueryString.stringify({ ...parsed, show: 'vendors' })
+                      history.push({ pathname: '/search', search: newQs })
+                    }}
+                  />
+                  <Tab
+                    style={{ zIndex: 0 }}
+                    label="Locations"
+                    value="locations"
+                    onActive={() => {
+                      const newQs = QueryString.stringify({ ...parsed, show: 'locations' })
                       history.push({ pathname: '/search', search: newQs })
                     }}
                   />

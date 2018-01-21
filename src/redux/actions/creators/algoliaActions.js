@@ -4,6 +4,7 @@ import { RESET_SEARCH_RESULTS, SEARCH_INDEX, SEARCH_FOR_CREW,
   SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE,
   MIGRATE_NAME, ADD_TO_NAME_INDEX, CREATE_PROFILE_RECORD, SET_PUBLIC, CREATE_VENDOR_PROFILE_RECORD,
   DELETE_VENDOR_PROFILE_RECORD, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, 
+  SEARCH_FOR_LOCATIONS, SEARCH_FOR_LOCATIONS_ENRICHED,
   CREATE_LOCATION_PROFILE_RECORD, DELETE_LOCATION_PROFILE_RECORD, SEARCH_FOR_ROLES,
   ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER, DELETE_ROLE_FROM_PROFILE
 } from '../types/algoliaActionsTypes'
@@ -118,6 +119,37 @@ export const searchForVendors = (query, offset = 0, length = 10) => (dispatch) =
       .then(snapshot => ({ objectID: uniqueHit.objectID, value: { ...snapshot.val() } }))))
     return dispatch({
       type: SEARCH_FOR_VENDORS_ENRICHED,
+      payload: {
+        data: { totalHits },
+        promise: enrichPromises
+      }
+    })
+  })
+}
+
+export const searchForLocations = (query, offset = 0, length = 10) => (dispatch) => {
+  const indexNames = ['locations']
+  const searchPromises = indexNames.map((indexName) => {
+    const index = algoliaClient.initIndex(indexName)
+    return index.search({ query, offset, length }).then(results => ({ indexName, results }))
+  })
+  return dispatch({
+    type: SEARCH_FOR_LOCATIONS,
+    payload: {
+      data: { offset, length },
+      promise: Promise.all(searchPromises)
+    }
+  }).then((searchResults) => {
+    const totalHits = searchResults.value.reduce((acc, results) => {
+      const indexName = results.indexName
+      return { ...acc, [indexName]: results.results.hits.length }
+    }, {})
+    const uniqueHits = searchResults.value.reduce((acc, result) => [...acc, ...result.results.hits], [])
+    const enrichPromises = Promise.all(uniqueHits.map(uniqueHit => firebase.database().ref(`locationProfiles/${uniqueHit.objectID}`)
+      .once('value')
+      .then(snapshot => ({ objectID: uniqueHit.objectID, value: { ...snapshot.val() } }))))
+    return dispatch({
+      type: SEARCH_FOR_LOCATIONS_ENRICHED,
       payload: {
         data: { totalHits },
         promise: enrichPromises
