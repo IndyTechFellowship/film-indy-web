@@ -4,7 +4,6 @@ import { Card, CardMedia, CardText, CardTitle, CardActions } from 'material-ui/C
 import { Link } from 'react-router-dom'
 import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import './VendorProfile.css'
-import LinkIcon from 'material-ui/svg-icons/content/link'
 import RaisedButton from 'material-ui/RaisedButton'
 
 const defaultImage = 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png'
@@ -18,14 +17,14 @@ function formatPhoneNumber(s) {
 function linkToEmbed(link, type) {
   if (link) {
     switch (type) {
-      case 'youtube':
+      case 1:
         const youtubeRegExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
         const youtubeMatch = link.match(youtubeRegExp)
         const youtubeVideoID = youtubeMatch[7]
 
         return `https://www.youtube.com/embed/${youtubeVideoID}`
 
-      case 'vimeo':
+      case 2:
         // Source: http://jsbin.com/asuqic/184/edit?html,js,output
         const vimeoRegExp = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/
         const vimeoMatch = link.match(vimeoRegExp)
@@ -54,9 +53,11 @@ const VendorProfilePage = (props) => {
   const vendorLinks = get(vendorProfile, 'links', [])
   const vendorStreet = get(vendorProfile, 'addressLine1', '')
   const vendorCityState = get(vendorProfile, 'addressLine2', '')
-  const video = get(vendorProfile, 'video', '')
-  const youtubeVideo = get(vendorProfile, 'youtubeVideo', '')
-  const vimeoVideo = get(vendorProfile, 'vimeoVideo', '')
+  const video = get(vendorProfile, 'video', '')[0]
+  let videoType = 0
+  if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+
+
   if (vendorProfile) {
     return (
       <div>
@@ -98,11 +99,11 @@ const VendorProfilePage = (props) => {
           </div>
         </Card>
 
-        <Card className="profile-card vendor-bio" containerStyle={{ width: '95%', paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
+        <Card className="profile-card big-card vendor-bio" containerStyle={{ width: '95%', paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
           <div>
             <CardTitle title={'About Us'} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
             { vendorBio ? (
-              <CardText style={{ paddingBottom: '40px' }}>
+              <CardText style={{ lineHeight: '20px', paddingBottom: '40px' }}>
                 {vendorBio}
               </CardText>
             ) : (
@@ -114,32 +115,18 @@ const VendorProfilePage = (props) => {
 
             <CardActions>
               {vendorLinks.map(link => (
-                <RaisedButton primary key={link.title} label={link.title} target="_blank" href={link.url} icon={<LinkIcon />} />
+                <RaisedButton primary key={link.title} label={link.title} target="_blank" href={link.url}/>
               ))}
             </CardActions>
           </div>
         </Card>
 
-        { youtubeVideo ? (
-          <Card className="profile-card big-card">
-            <CardTitle title="Featured Video" style={{ paddingLeft: '0px' }} titleStyle={{ fontWeight: 500, fontSize: '20px', textAlign: 'left' }} />
-            <embed width="100%" height="500px" src={linkToEmbed(youtubeVideo, 'youtube')} />
-          </Card>
-        ) : null}
-
-        { vimeoVideo ? (
-          <Card className="profile-card big-card">
-            <CardTitle title="Featured Video" style={{ paddingLeft: '0px' }} titleStyle={{ fontWeight: 500, fontSize: '20px', textAlign: 'left' }} />
-            <embed width="100%" height="500px" src={linkToEmbed(vimeoVideo, 'vimeo')} />
-          </Card>
-        ) : null}
-
         { video ? (
           <Card className="profile-card big-card">
-            <CardTitle title="Featured Video" style={{ paddingLeft: '0px' }} titleStyle={{ fontWeight: 500, fontSize: '20px', textAlign: 'left' }} />
-            <embed width="100%" height="500px" src={video} />
+            <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={video.title} />
+            <embed width="100%" height="500px" src={linkToEmbed(video.url, videoType)} />
           </Card>
-        ) : null}
+        ) : null }
       </div>
 
     )

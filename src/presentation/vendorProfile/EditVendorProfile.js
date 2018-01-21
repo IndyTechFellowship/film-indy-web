@@ -9,7 +9,6 @@ import Avatar from 'material-ui/Avatar'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import Dialog from 'material-ui/Dialog'
-import Chip from 'material-ui/Chip'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import LinkIcon from 'material-ui/svg-icons/content/link'
 import { FormControl } from 'material-ui-next/Form'
@@ -92,9 +91,12 @@ class EditVendorProfile extends React.Component {
     this.handleAddYoutubeOpen = this.handleAddYoutubeOpen.bind(this)
     this.handleAddVimeoClose = this.handleAddVimeoClose.bind(this)
     this.handleAddVimeoOpen = this.handleAddVimeoOpen.bind(this)
-    this.handleEditVideoOpen = this.handleEditVideoOpen.bind(this)
+    this.handleEditLinkClose = this.handleEditLinkClose.bind(this)
+    this.handleEditLinkOpen = this.handleEditLinkOpen.bind(this)
     this.handleEditVideoClose = this.handleEditVideoClose.bind(this)
+    this.handleEditVideoOpen = this.handleEditVideoOpen.bind(this)
   }
+
   handleEditLinkClose() {
     this.setState({ editLinkDialogOpen: false })
   }
@@ -139,11 +141,11 @@ class EditVendorProfile extends React.Component {
       editVendorVideo, removeVendorVideo, updateVendorProfile } = this.props
     if (vendorProfile) {
       const vendorLinks = get(vendorProfile, 'links', [])
-      const youtubeVideo = get(vendorProfile, 'youtubeVideo', '')
-      const vimeoVideo = get(vendorProfile, 'vimeoVideo', '')
       const isPublic = get(vendorProfile, 'public', false)
-      const video = youtubeVideo ? youtubeVideo[0] : vimeoVideo[0]
-      const videoType = youtubeVideo ? 1 : 2
+      const video = get(vendorProfile, 'video', '')[0]
+      let videoType = 0
+      if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+
       const profileImageUrl = get(vendorProfile, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')
       const addLinkActions = [
         <FlatButton
@@ -433,21 +435,25 @@ class EditVendorProfile extends React.Component {
               </div>
             </Card>
           </div>
+
           <div style={{ paddingTop: 30 }}>
             <Card className="profile-card big-card" style={styles.card}>
               <CardTitle style={{ textAlign: 'left' }} title="Featured Video" />
               { video ? (
-                <Chip
-                  onRequestDelete={() => {
-                    removeVendorVideo(video, videoType, vendorId)
-                  }}
+                <RaisedButton
+                  backgroundColor="#4A90E2"
+                  labelColor="#fff"
+                  labelPosition="before"
+                  icon={<EditIcon />}
+                  label={video.title}
+                  buttonStyle={{ borderRadius: 5 }}
+                  style={{ marginRight: 5 }}
                   key={video.title}
                   onClick={() => {
                     initForm('EditVideoForm', { title: video.title, url: video.url })
                     this.handleEditVideoOpen()
                   }}
                 >
-                  {video.title}
                   <Dialog
                     title="Edit a Video"
                     actions={
@@ -472,16 +478,20 @@ class EditVendorProfile extends React.Component {
                   >
                     <EditVideoForm
                       onSubmit={(values) => {
-                        editVendorVideo(video, videoType, values.title, values.url, vendorId)
+                        editVendorVideo(video, values.title, values.url, vendorId)
+                      }}
+                      onDelete={() => {
+                        removeVendorVideo(video, videoType, vendorId)
+                        this.handleEditVideoClose()
                       }}
                       initialValues={{ title: video.title, url: video.url }}
                     />
                   </Dialog>
-                </Chip>
+                </RaisedButton>
               ) : (
                 <div>
                   <div style={{ textAlign: 'center', marginBottom: 20 }}>
-                  Where is your video?
+                Where is your video?
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                     <RaisedButton
@@ -495,7 +505,7 @@ class EditVendorProfile extends React.Component {
                         modal
                         open={this.state.addYoutubeDialogOpen}
                       >
-                        <AddVideoForm onSubmit={values => addYoutubeToVendorProfile(youtubeVideo, values.title, values.url, vendorId)} />
+                        <AddVideoForm onSubmit={values => addYoutubeToVendorProfile(video, values.title, values.url, vendorId)} />
                       </Dialog>
                     </RaisedButton>
                     <RaisedButton
@@ -509,7 +519,7 @@ class EditVendorProfile extends React.Component {
                         modal
                         open={this.state.addVimeoDialogOpen}
                       >
-                        <AddVideoForm onSubmit={values => addVimeoToVendorProfile(vimeoVideo, values.title, values.url, vendorId)} />
+                        <AddVideoForm onSubmit={values => addVimeoToVendorProfile(video, values.title, values.url, vendorId)} />
                       </Dialog>
                     </RaisedButton>
                   </div>
@@ -517,6 +527,7 @@ class EditVendorProfile extends React.Component {
               }
             </Card>
           </div>
+          
         </div>
       )
     }
@@ -532,14 +543,6 @@ EditVendorProfile.propTypes = {
     name: PropTypes.string,
     phone: PropTypes.string,
     website: PropTypes.string,
-    youtubeVideo: PropTypes.arrayOf(PropTypes.shape({
-      title: PropTypes.string,
-      url: PropTypes.string
-    })),
-    vimeoVideo: PropTypes.arrayOf(PropTypes.shape({
-      title: PropTypes.string,
-      url: PropTypes.string
-    }))
   }),
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,

@@ -2,7 +2,6 @@ import React from 'react'
 import QueryString from 'query-string'
 import { Card, CardMedia, CardText, CardTitle, CardActions } from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
-import LinkIcon from 'material-ui/svg-icons/content/link'
 import { Link } from 'react-router-dom'
 import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import { get } from 'lodash'
@@ -126,20 +125,26 @@ class ViewProfile extends React.Component {
             </div>
           </Card>
 
-          { bio || userLinks.length !== 0 ? (
-            <Card className="profile-card small-card">
-              <CardTitle title="About Me" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-              <CardText style={{ lineHeight: '20px' }}>
+          <Card className="profile-card small-card">
+            <CardTitle title="About Me" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+
+            { bio ? (
+              <CardText style={{ lineHeight: '20px', paddingBottom: '40px' }}>
                 {bio}
               </CardText>
-              <CardActions>
-                {userLinks.map(link => (
-                  <RaisedButton primary key={link.title} label={link.title} target="_blank" href={link.url} icon={<LinkIcon />} />
-                ))}
-              </CardActions>
-            </Card>
-          ) : null
-          }
+            ) : (
+              <CardText style={{ paddingBottom: '48px' }}>
+                Contact me directly for more information.
+              </CardText>
+            )
+            }
+
+            <CardActions >
+              {userLinks.map(link => (
+                <RaisedButton primary key={link.title} label={link.title} target="_blank" href={link.url} />
+              ))}
+            </CardActions>
+          </Card>
 
           { video ? (
             <Card className="profile-card big-card">
