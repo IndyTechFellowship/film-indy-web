@@ -4,7 +4,7 @@ import { RESET_SEARCH_RESULTS, SEARCH_INDEX, SEARCH_FOR_CREW,
   SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE,
   MIGRATE_NAME, ADD_TO_NAME_INDEX, CREATE_PROFILE_RECORD, SET_PUBLIC, CREATE_VENDOR_PROFILE_RECORD,
   DELETE_VENDOR_PROFILE_RECORD, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_ROLES,
-  ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER, DELETE_ROLE_FROM_PROFILE
+  ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER, DELETE_ROLE_FROM_PROFILE, SET_VENDOR_PUBLIC
 } from '../types/algoliaActionsTypes'
 
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
@@ -98,7 +98,7 @@ export const searchForVendors = (query, offset = 0, length = 10) => (dispatch) =
   const indexNames = ['vendors']
   const searchPromises = indexNames.map((indexName) => {
     const index = algoliaClient.initIndex(indexName)
-    return index.search({ query, offset, length }).then(results => ({ indexName, results }))
+    return index.search({ query, offset, length, filters: 'public:true' }).then(results => ({ indexName, results }))
   })
   return dispatch({
     type: SEARCH_FOR_VENDORS,
@@ -205,12 +205,22 @@ export const setPublic = (isPublic, uid) => (dispatch) => {
   })
 }
 
+export const setVendorPublic = (isPublic, vendorId) => {
+  const vendorIndex = algoliaClient.initIndex('vendors')
+  const promise = vendorIndex.partialUpdateObject({ objectID: vendorId, public: isPublic })
+  return {
+    type: SET_VENDOR_PUBLIC,
+    payload: promise
+  }
+}
+
 export const createVendorProfileRecord = (vendorId, vendorInfo) => {
   const vendorIndex = algoliaClient.initIndex('vendors')
   return {
     type: CREATE_VENDOR_PROFILE_RECORD,
     payload: vendorIndex.addObject({
       ...vendorInfo,
+      public: false,
       objectID: vendorId
     })
   }
