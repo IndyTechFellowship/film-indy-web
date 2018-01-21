@@ -67,16 +67,13 @@ export const removeVideo = (video, videoType, uid) => {
 export const editVideo = (video, videoType, newTitle, newUrl, uid) => {
   const newVideo = [...video, { title: newTitle, url: newUrl }]
   const profileRef = firebase.database().ref(`/userProfiles/${uid}`)
-  console.log("Video Type: ", videoType)
 
   if (videoType === 1 && newUrl.indexOf("youtube") > -1) {
-    console.log("Setting type 1: YT")
     return {
       type: EDIT_PROFILE_VIDEO,
       payload: profileRef.update({ video: newVideo })
     }
   } else {
-    console.log("Setting type 2: Vimeo")
     return {
       type: EDIT_PROFILE_VIDEO,
       payload: profileRef.update({ video: newVideo })
