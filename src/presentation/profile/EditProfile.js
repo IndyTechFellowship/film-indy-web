@@ -124,11 +124,10 @@ class EditProfile extends React.Component {
     const { data, auth } = props
     const uid = get(auth, 'uid', '')
     const userProfile = get(data, `userProfiles.${uid}`)
-    const isPublic = get(data, `userAccount.${uid}.public`, false)
     const userRoleIds = get(userProfile, 'roles', [])
     const roles = get(data, 'roles', {})
     const roleNames = userRoleIds.map(roleId => roles[roleId]).filter(i => i !== undefined).map(r => r.roleName)
-    this.setState({ selectedRoles: roleNames, isPublic })
+    this.setState({ selectedRoles: roleNames })
   }
 
   handleAddCreditClose() {
@@ -260,7 +259,7 @@ class EditProfile extends React.Component {
     const userCredits = get(userProfile, 'credits', [])
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
-    const isPublic = get(this.state, 'isPublic', false)
+    const isPublic = get(profile, 'public', false)
     const youtubeVideo = get(userProfile, 'youtubeVideo', '')
     const vimeoVideo = get(userProfile, 'vimeoVideo', '')
     const video = youtubeVideo ? youtubeVideo[0] : vimeoVideo[0]
@@ -364,7 +363,6 @@ class EditProfile extends React.Component {
                       public: toggleValue
                     })
                     setPublic(toggleValue, uid)
-                    this.setState({ isPublic: toggleValue })
                   }}
                 />
               </div>
@@ -654,18 +652,16 @@ class EditProfile extends React.Component {
                       </div>
                       <div className="credits">
                         { associatedCredits.map(credit => (
-                          <div>
-                            <div style={{ textAlign: 'left', display: 'flex', alignItems: 'center' }} key={credit.title}>
-                              {credit.year}{credit.genre ? ` (${credit.genre})` : ''} : {credit.title}
-                              <div>
-                                <IconButton
-                                  onClick={() => {
-                                    deleteCredit(userCredits, credit, uid)
-                                  }}
-                                >
-                                  <ActionDelete />
-                                </IconButton>
-                              </div>
+                          <div style={{ textAlign: 'left', display: 'flex', alignItems: 'center' }} key={credit.title}>
+                            {credit.year}{credit.genre ? ` (${credit.genre})` : ''} : {credit.title}
+                            <div>
+                              <IconButton
+                                onClick={() => {
+                                  deleteCredit(userCredits, credit, uid)
+                                }}
+                              >
+                                <ActionDelete />
+                              </IconButton>
                             </div>
                           </div>
                         )
