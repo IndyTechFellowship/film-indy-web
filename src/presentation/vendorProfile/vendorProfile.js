@@ -64,7 +64,7 @@ const VendorProfilePage = (props) => {
           vendorCreator === uid ? (
             <div style={{ textAlign: 'right', marginRight: 20, marginTop: 10 }}>
               <Link to={`/vendor/${vendorId}/edit`}>
-                <RaisedButton label="Edit Profile" icon={<ModeEditIcon />} />
+                <RaisedButton label="Edit Vendor" icon={<ModeEditIcon />} />
               </Link>
             </div>
           ) : null
