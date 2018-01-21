@@ -328,6 +328,104 @@ class EditVendorProfile extends React.Component {
               </div>
             </Card>
           </div>
+
+          <div style={{ display: 'flex', marginTop: 30 }}>
+            <Card style={styles.card}>
+              <CardTitle style={{ textAlign: 'left' }}title="Point of Contact" />
+              <div style={{ display: 'flex', justifyContent: 'left' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', marginLeft: '25px' }}>
+                  <div>
+                    <form onSubmit={handleSubmit(values => updateVendorProfile(values, vendorId))}>
+                      <div>
+                        <Field
+                            name="name"
+                            component={renderTextField}
+                            floatingLabelText="Name"
+                            type="text"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                            name="addressLine1"
+                            component={renderTextField}
+                            floatingLabelText="Address Line 1"
+                            type="text"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                            name="addressLine2"
+                            component={renderTextField}
+                            floatingLabelText="Address Line 2"
+                            type="text"
+                        />
+                      </div>
+                      <div style={{ display: 'flex' }}>
+                        <div style={{ marginRight: 5 }}>
+                          <Field
+                              name="city"
+                              component={renderTextField}
+                              floatingLabelText="City"
+                              type="text"
+                          />
+                        </div>
+                        <div style={{ marginRight: 5, marginTop: 16 }}>
+                          <FormControl style={{ width: 60 }}>
+                            <InputLabel htmlFor="state">State</InputLabel>
+                            <Field
+                                name="state"
+                                component={RenderSelectField}
+                            >
+                                {States.map(state => (
+                                    <MenuItem key={state.abbreviation} value={state.abbreviation} >
+                                        {state.abbreviation}
+                                    </MenuItem>
+                                ))}
+                            </Field>
+                          </FormControl>
+                        </div>
+                        <div style={{ marginRight: 5 }}>
+                          <Field
+                              name="zip"
+                              component={renderTextField}
+                              floatingLabelText="Zip Code"
+                              type="text"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Field
+                            name="phone"
+                            component={renderTextField}
+                            floatingLabelText="Phone Number"
+                            type="text"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                            name="email"
+                            component={renderTextField}
+                            floatingLabelText="Email Address"
+                            type="email"
+                        />
+                      </div>
+                      <div style={{ marginTop: 10 }}>
+                        <RaisedButton
+                            buttonStyle={{ borderRadius: 5 }}
+                            type="submit"
+                            primary
+                            label="Save"
+                            disabled={pristine || submitting}
+                            onClick={this.updateMessage}
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
           <div style={{ paddingTop: 30 }}>
             <Card style={styles.card}>
               <CardTitle style={{ textAlign: 'left' }} title="About Us" />

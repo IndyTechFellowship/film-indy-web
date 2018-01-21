@@ -15,6 +15,18 @@ function formatPhoneNumber(s) {
   return (!m) ? null : `(${m[1]}) ${m[2]}-${m[3]}`
 }
 
+function formatFullAddress(addressLine1, addressLine2, city, state, zip) {
+    if (addressLine1) {
+        var fullAddress = addressLine1;
+        fullAddress = addressLine2 ? fullAddress + ` \r\n ${addressLine2}` : fullAddress;
+        var cityWithComma = city ? city + ', ' : null;
+        fullAddress = (city || state || zip) ? fullAddress + ` \r\n ${cityWithComma} ${state} ${zip}`: null;
+        return fullAddress;
+    } else {
+        return null;
+    }
+}
+
 function linkToEmbed(link, type) {
   if (link) {
     switch (type) {
@@ -52,8 +64,20 @@ const VendorProfilePage = (props) => {
   const vendorEmail = get(vendorProfile, 'email', '')
   const vendorBio = get(vendorProfile, 'aboutUs', '')
   const vendorLinks = get(vendorProfile, 'links', [])
-  const vendorStreet = get(vendorProfile, 'addressLine1', '')
-  const vendorCityState = get(vendorProfile, 'addressLine2', '')
+  const vendorAddressLine1 = get(vendorProfile, 'addressLine1', '')
+  const vendorAddressLine2 = get(vendorProfile, 'addressLine2', '')
+  const vendorCity = get(vendorProfile, 'city', '')
+  const vendorState = get(vendorProfile, 'state', '')
+  const vendorZip = get(vendorProfile, 'zip', '')
+  const vendorFullAddress = formatFullAddress(vendorAddressLine1, vendorAddressLine2, vendorCity, vendorState, vendorZip)
+
+  const primaryContactPhone = formatPhoneNumber(get(vendorProfile, 'phone', ''))
+  const primaryContactName = get(vendorProfile, 'name', '')
+  const primaryContactEmail = get(vendorProfile, 'email', '')
+  const primaryContactBio = get(vendorProfile, 'aboutUs', '')
+  const primaryContactStreet = get(vendorProfile, 'addressLine1', '')
+  const primaryContactCityState = get(vendorProfile, 'addressLine2', '')
+
   const video = get(vendorProfile, 'video', '')
   const youtubeVideo = get(vendorProfile, 'youtubeVideo', '')
   const vimeoVideo = get(vendorProfile, 'vimeoVideo', '')
@@ -75,12 +99,10 @@ const VendorProfilePage = (props) => {
           </CardMedia>
           <div style={{ minWidth: '200px', width: '100%' }}>
             <CardTitle title={vendorName} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-            { vendorStreet ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '0px', width: '100%' }}>
-                {vendorStreet}
-                <br />
-                {vendorCityState}
-              </CardText>
+            { vendorFullAddress ? (
+                <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '0px', width: '100%' }}>
+                    {vendorFullAddress}
+                </CardText>
             ) : null
             }
             { vendorPhone ? (
@@ -97,6 +119,45 @@ const VendorProfilePage = (props) => {
             }
           </div>
         </Card>
+
+          <Card className="profile-card vendor-primaryContact" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
+              <div style={{ width: '35%' }}>
+                  { primaryContactName ? (
+                          <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '16px' }}>
+                              {primaryContactName}
+                          </CardText>
+                      ) : null
+                  }
+                  { primaryContactStreet ? (
+                          <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px' }}>
+                              {primaryContactStreet}
+                              <br />
+                              {primaryContactCityState}
+                          </CardText>
+                      ) : null
+                  }
+                  { primaryContactPhone ? (
+                          <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px' }}>
+                              {primaryContactPhone}
+                          </CardText>
+                      ) : null
+                  }
+                  { primaryContactEmail ? (
+                          <CardText className="vendor-text" style={{ paddingBottom: '16px', paddingTop: '8px' }}>
+                              {primaryContactEmail}
+                          </CardText>
+                      ) : null
+                  }
+              </div>
+              <div style={{ width: '75%' }}>
+                  { primaryContactBio ? (
+                          <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '16px'}}>
+                              {primaryContactBio}
+                          </CardText>
+                      ) : null
+                  }
+              </div>
+          </Card>
 
         <Card className="profile-card vendor-bio" containerStyle={{ width: '95%', paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
           <div>
