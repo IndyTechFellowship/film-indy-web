@@ -36,7 +36,7 @@ export const addYoutubeToProfile = (youtubeVideo, title, url, uid) => {
   const newYoutubeVideo = [{ title, url }]
   return {
     type: ADD_PROFILE_YOUTUBE_VIDEO,
-    payload: profileRef.update({ youtubeVideo: newYoutubeVideo })
+    payload: profileRef.update({ video: newYoutubeVideo })
   }
 }
 
@@ -45,7 +45,7 @@ export const addVimeoToProfile = (vimeoVideo, title, url, uid) => {
   const newVimeoVideo = [{ title, url }]
   return {
     type: ADD_PROFILE_VIMEO_VIDEO,
-    payload: profileRef.update({ vimeoVideo: newVimeoVideo })
+    payload: profileRef.update({ video: newVimeoVideo })
   }
 }
 
@@ -55,12 +55,13 @@ export const removeVideo = (video, videoType, uid) => {
   if (videoType === 1) {
     return {
       type: REMOVE_PROFILE_VIDEO,
-      payload: profileRef.update({ youtubeVideo: video })
+      payload: profileRef.update({ video: video })
     }
-  }
-  return {
-    type: REMOVE_PROFILE_VIDEO,
-    payload: profileRef.update({ vimeoVideo: video })
+  } else {
+    return {
+      type: REMOVE_PROFILE_VIDEO,
+      payload: profileRef.update({ video: video })
+    }
   }
 }
 
@@ -68,15 +69,16 @@ export const editVideo = (video, videoType, newTitle, newUrl, uid) => {
   const newVideo = [...video, { title: newTitle, url: newUrl }]
   const profileRef = firebase.database().ref(`/userProfiles/${uid}`)
 
-  if (videoType === 1) {
+  if (videoType === 1 && newUrl.indexOf("youtube") > -1) {
     return {
       type: EDIT_PROFILE_VIDEO,
-      payload: profileRef.update({ youtubeVideo: newVideo })
+      payload: profileRef.update({ video: newVideo })
     }
-  }
-  return {
-    type: EDIT_PROFILE_VIDEO,
-    payload: profileRef.update({ vimeoVideo: newVideo })
+  } else {
+    return {
+      type: EDIT_PROFILE_VIDEO,
+      payload: profileRef.update({ video: newVideo })
+    }
   }
 }
 
