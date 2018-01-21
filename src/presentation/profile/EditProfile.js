@@ -123,10 +123,11 @@ class EditProfile extends React.Component {
     const { data, auth } = props
     const uid = get(auth, 'uid', '')
     const userProfile = get(data, `userProfiles.${uid}`)
+    const isPublic = get(data, `userAccount.${uid}.public`, false)
     const userRoleIds = get(userProfile, 'roles', [])
     const roles = get(data, 'roles', {})
     const roleNames = userRoleIds.map(roleId => roles[roleId]).filter(i => i !== undefined).map(r => r.roleName)
-    this.setState({ selectedRoles: roleNames })
+    this.setState({ selectedRoles: roleNames, isPublic })
   }
 
   handleAddCreditClose() {
@@ -262,7 +263,6 @@ class EditProfile extends React.Component {
     let videoType = 0
     if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
 
-
     const addYoutubeActions = [
       <FlatButton
         label="Cancel"
@@ -361,6 +361,7 @@ class EditProfile extends React.Component {
                       public: toggleValue
                     })
                     setPublic(toggleValue, uid)
+                    this.setState({ isPublic: toggleValue })
                   }}
                 />
               </div>
