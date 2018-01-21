@@ -7,6 +7,7 @@ import EditVendorProfile from '../../presentation/vendorProfile/EditVendorProfil
 import * as accountActions from '../../redux/actions/creators/accountActions'
 import * as profileActions from '../../redux/actions/creators/profileActions'
 import * as vendorActions from '../../redux/actions/creators/vendorActions'
+import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
 import AuthenticatedOwner from '../../AuthenticatedOwner'
 
 const createInitialValues = (state, props) => {
@@ -40,6 +41,6 @@ export default withRouter(connect(
     vendorId: get(props, 'match.params.vendorId', ''),
     initialValues: createInitialValues(state, props)
   }),
-  { ...accountActions, ...profileActions, ...vendorActions },
+  { ...accountActions, ...profileActions, ...vendorActions, ...algoliaActions },
 )(WrappedEditProfile))
 

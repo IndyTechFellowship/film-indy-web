@@ -136,7 +136,7 @@ class EditVendorProfile extends React.Component {
   render() {
     const { vendorProfile, vendorId, firebase, pristine, submitting, handleSubmit, remoteSubmitForm, initForm,
       addLinkToVendorProfile, removeVendorProfileLink, editVendorProfileLink, addVimeoToVendorProfile, addYoutubeToVendorProfile,
-      editVendorVideo, removeVendorVideo, updateVendorProfile } = this.props
+      editVendorVideo, removeVendorVideo, updateVendorProfile, setVendorPublic } = this.props
     if (vendorProfile) {
       const vendorLinks = get(vendorProfile, 'links', [])
       const youtubeVideo = get(vendorProfile, 'youtubeVideo', '')
@@ -210,6 +210,7 @@ class EditVendorProfile extends React.Component {
                     toggled={isPublic}
                     onToggle={(event, toggleValue) => {
                       updateVendorProfile({ public: toggleValue }, vendorId)
+                      setVendorPublic(toggleValue, vendorId)
                     }}
                   />
                 </div>
@@ -554,7 +555,8 @@ EditVendorProfile.propTypes = {
   addVimeoToVendorProfile: PropTypes.func.isRequired,
   removeVendorVideo: PropTypes.func.isRequired,
   editVendorVideo: PropTypes.func.isRequired,
-  updateVendorProfile: PropTypes.func.isRequired
+  updateVendorProfile: PropTypes.func.isRequired,
+  setVendorPublic: PropTypes.func.isRequired
 }
 
 EditVendorProfile.defaultProps = {
