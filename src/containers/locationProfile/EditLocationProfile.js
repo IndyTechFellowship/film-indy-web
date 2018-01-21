@@ -7,7 +7,7 @@ import EditLocationProfile from '../../presentation/locationProfile/EditLocation
 import * as accountActions from '../../redux/actions/creators/accountActions'
 import * as profileActions from '../../redux/actions/creators/profileActions'
 import * as locationActions from '../../redux/actions/creators/locationActions'
-import AuthenticatedOwner from '../../AuthenticatedOwner'
+import AuthenticatedOwner from '../../AuthenticatedLocationOwner'
 
 const createInitialValues = (state, props) => {
   const location = get(state, `firebase.data.locationProfiles.${get(props, 'match.params.locationId', '')}`)
