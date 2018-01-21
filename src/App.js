@@ -36,12 +36,16 @@ import EditProfile from './containers/profile/EditProfile'
 import ViewProfile from './containers/profile/ViewProfile'
 import VendorProfile from './containers/vendorProfile/VendorProfile'
 import EditVendorProfile from './containers/vendorProfile/EditVendorProfile'
+import LocationProfile from './containers/locationProfile/LocationProfile'
+import EditLocationProfile from './containers/locationProfile/EditLocationProfile'
 import Search from './containers/search/Search'
 import ForgotPassword from './containers/forgotPassword/forgotPassword'
 import SignUpForm from './presentation/signup/SignUpForm'
 import SignInForm from './presentation/login/SignInForm'
 import VendorMenu from './presentation/common/VendorMenu'
-import AddVendorModal from './presentation/common/AddVenorModalMenu'
+import AddVendorModal from './presentation/common/AddVendorModalMenu'
+import LocationMenu from './presentation/common/LocationMenu'
+import AddLocationModal from './presentation/common/AddLocationModalMenu'
 
 // Style and images
 import './App.css'
@@ -185,7 +189,8 @@ class App extends React.Component {
     this.state = {
       open: false,
       signedOut: false,
-      addVendorModalOpen: false
+      addVendorModalOpen: false,
+      addLocationModalOpen: false
     }
     this.handleAvatarTouch = this.handleAvatarTouch.bind(this)
     this.handleDropdownClose = this.handleDropdownClose.bind(this)
@@ -226,9 +231,10 @@ class App extends React.Component {
   render() {
     const { cancelSignInUpForm, account, profile, auth, firebase,
       history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn,
-      signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors, submitVendorCreate, createVendor,
+      signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors, 
+      submitVendorCreate, createVendor, usersLocations, submitLocationCreate, createLocation,
       getDefaultAccountImages } = this.props
-    const { addVendorModalOpen } = this.state
+    const { addVendorModalOpen, addLocationModalOpen } = this.state
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const parsed = QueryString.parse(location.search)
@@ -363,6 +369,18 @@ class App extends React.Component {
             createVendor(values.name)
             this.setState({ addVendorModalOpen: false })
           }}
+        />        
+        <AddLocationModal
+          open={addLocationModalOpen}
+          onCancel={() => {
+            this.handleDropdownClose()
+            this.setState({ addLocationModalOpen: false })
+          }}
+          submitLocationCreate={submitLocationCreate}
+          onSubmit={(values) => {
+            createLocation(values.name)
+            this.setState({ addLocationModalOpen: false })
+          }}
         />
         <Popover
           open={this.state.open}
@@ -381,6 +399,13 @@ class App extends React.Component {
                   onAddVendorClick={() => {
                     this.handleDropdownClose()
                     this.setState({ addVendorModalOpen: true })
+                  }}
+                />
+                <LocationMenu
+                  locations={usersLocations}
+                  onAddLocationClick={() => {
+                    this.handleDropdownClose()
+                    this.setState({ addLocationModalOpen: true })
                   }}
                 />
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
@@ -404,7 +429,9 @@ class App extends React.Component {
         <Route exact path="/profile/edit" component={EditProfile} />
         <Route exact path="/profile" component={ViewProfile} />
         <Route exact path="/vendor/:vendorId" component={VendorProfile} />
-        <Route exact path="/vendor/:vendorId/edit" component={EditVendorProfile} />
+        <Route exact path="/vendor/:vendorId/edit" component={EditVendorProfile} />        
+        <Route exact path="/location/:locationId" component={LocationProfile} />
+        <Route exact path="/location/:locationId/edit" component={EditLocationProfile} />
       </div>
     )
   }
@@ -433,6 +460,13 @@ App.propTypes = {
       creator: PropTypes.string,
       name: PropTypes.string
     }))
+  ]),  
+  usersLocations: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.objectOf(PropTypes.shape({
+      creator: PropTypes.string,
+      name: PropTypes.string
+    }))
   ]),
   history: PropTypes.shape({
     push: PropTypes.func
@@ -443,7 +477,8 @@ App.propTypes = {
 }
 
 App.defaultProps = {
-  usersVendors: PropTypes.any
+  usersVendors: PropTypes.any,
+  usersLocations: PropTypes.any
 }
 
 const wrappedApp = firebaseConnect((props) => {
@@ -453,11 +488,17 @@ const wrappedApp = firebaseConnect((props) => {
       path: 'vendorProfiles',
       storeAs: 'usersVendors',
       queryParams: ['orderByChild=creator', `equalTo=${uid}`]
+    },
+    {
+      path: 'locationProfiles',
+      storeAs: 'usersLocations',
+      queryParams: ['orderByChild=creator', `equalTo=${uid}`]
     }
   ]
 })(App)
 
 export default withRouter(connect(
-  state => ({ account: state.account, firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth, usersVendors: state.firebase.data.usersVendors }),
+  state => ({ account: state.account, firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth, 
+    usersVendors: state.firebase.data.usersVendors, usersLocations: state.firebase.data.usersLocations }),
   { ...accountActions },
 )(wrappedApp))

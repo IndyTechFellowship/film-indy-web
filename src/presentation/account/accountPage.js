@@ -13,6 +13,7 @@ import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 
 import VendorCreateModal from './VendorCreateModal'
+import LocationCreateModal from './LocationCreateModal'
 
 import '../../App.css'
 import './accountPage.css'
@@ -78,8 +79,9 @@ class AccountPage extends React.Component {
 
   render() {
     const { handleSubmit, pristine, submitting, handleProfileChanges, auth, submitVendorCreate, createVendor, deleteVendor,
-      usersVendors, resetPassword, account } = this.props
+      usersVendors, submitLocationCreate, createLocation, deleteLocation, usersLocations, resetPassword, account } = this.props
     const vendors = usersVendors || {}
+    const locations = usersLocations || {}
     const authProviderId = get(auth, 'providerData[0].providerId', '')
     return (
       <div>
@@ -166,6 +168,34 @@ class AccountPage extends React.Component {
               createVendor(values.name)
             }}
           />
+          </Card>
+
+          <h2 className="resetHeader">Locations</h2>
+          <Card className="passwordCard">
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              {Object.keys(locations).map((key) => {
+                const loc = locations[key]
+                return (
+                  <Chip
+                    onRequestDelete={() => deleteLocation(key)}
+                    key={loc.name}
+                    style={{ marginRight: 5 }}
+                  >
+                    {loc.name}
+                  </Chip>
+                )
+              })}
+              {Object.keys(locations).length === 0 ?
+                'Press Add to create a Location'
+                : null
+              }
+            </div>
+          <LocationCreateModal
+            submitLocationCreate={submitLocationCreate}
+            onSubmit={(values) => {
+              createLocation(values.name)
+            }}
+          />
         </Card>
       </div>
     )
@@ -229,6 +259,15 @@ AccountPage.propTypes = {
       name: PropTypes.string
     }))
   ]),
+  createLocation: PropTypes.func.isRequired,
+  deleteLocation: PropTypes.func.isRequired,
+  usersLocations: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.objectOf(PropTypes.shape({
+      creator: PropTypes.string,
+      name: PropTypes.string
+    }))
+  ]),
   handleSubmit: PropTypes.func.isRequired,
   submitVendorCreate: PropTypes.func.isRequired,
   account: PropTypes.shape({
@@ -242,6 +281,10 @@ AccountPage.propTypes = {
 
 AccountPage.defaultProps = {
   usersVendors: PropTypes.objectOf(PropTypes.shape({
+    creator: PropTypes.string,
+    name: PropTypes.string
+  })),
+  usersLocations: PropTypes.objectOf(PropTypes.shape({
     creator: PropTypes.string,
     name: PropTypes.string
   }))

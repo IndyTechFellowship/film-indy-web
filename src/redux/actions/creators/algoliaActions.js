@@ -3,7 +3,8 @@ import algoliasearch from 'algoliasearch'
 import { RESET_SEARCH_RESULTS, SEARCH_INDEX, SEARCH_FOR_CREW,
   SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE,
   MIGRATE_NAME, ADD_TO_NAME_INDEX, CREATE_PROFILE_RECORD, SET_PUBLIC, CREATE_VENDOR_PROFILE_RECORD,
-  DELETE_VENDOR_PROFILE_RECORD, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_ROLES,
+  DELETE_VENDOR_PROFILE_RECORD, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, 
+  CREATE_LOCATION_PROFILE_RECORD, DELETE_LOCATION_PROFILE_RECORD, SEARCH_FOR_ROLES,
   ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER, DELETE_ROLE_FROM_PROFILE
 } from '../types/algoliaActionsTypes'
 
@@ -221,6 +222,25 @@ export const deleteVendorProfileRecord = (vendorId) => {
   return {
     type: DELETE_VENDOR_PROFILE_RECORD,
     payload: vendorIndex.deleteObject(vendorId)
+  }
+}
+
+export const createLocationProfileRecord = (locationId, locationInfo) => {
+  const locationIndex = algoliaClient.initIndex('locations')
+  return {
+    type: CREATE_LOCATION_PROFILE_RECORD,
+    payload: locationIndex.addObject({
+      ...locationInfo,
+      objectID: locationId
+    })
+  }
+}
+
+export const deleteLocationProfileRecord = (locationId) => {
+  const locationIndex = algoliaClient.initIndex('locations')
+  return {
+    type: DELETE_LOCATION_PROFILE_RECORD,
+    payload: locationIndex.deleteObject(locationId)
   }
 }
 
