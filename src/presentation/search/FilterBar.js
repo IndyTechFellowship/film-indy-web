@@ -43,7 +43,7 @@ class FilterBar extends React.Component {
   }
   render() {
     const { menuOpen, experienceMenuOpen, applyExperienceFilter, experience } = this.state
-    const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters, onExperienceFilterChange, onExperienceFilterApplyToggle, experienceFilter } = this.props
+    const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters, onExperienceFilterChange } = this.props
     return (
       <Toolbar style={{ backgroundColor: '#004b8d' }}>
         <ToolbarGroup>
