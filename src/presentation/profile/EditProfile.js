@@ -278,6 +278,7 @@ class EditProfile extends React.Component {
         primary
         onClick={() => {
           remoteSubmitForm('AddVideoForm')
+          this.setState({ updated: true })
           this.handleAddYoutubeClose()
         }}
       />
@@ -294,6 +295,7 @@ class EditProfile extends React.Component {
         primary
         onClick={() => {
           remoteSubmitForm('AddVideoForm')
+          this.setState({ updated: true })
           this.handleAddVimeoClose()
         }}
       />
@@ -308,7 +310,10 @@ class EditProfile extends React.Component {
       <FlatButton
         label="Save"
         primary
-        onClick={this.handleSubmit}
+        onClick={() => {
+          this.setState({ updated: true })
+          this.handleSubmit()
+        }}
       />
     ]
 
@@ -323,6 +328,7 @@ class EditProfile extends React.Component {
         primary
         onClick={() => {
           remoteSubmitForm('AddLinkForm')
+          this.setState({ updated: true })
           this.handleAddLinkClose()
         }}
       />
@@ -339,6 +345,7 @@ class EditProfile extends React.Component {
         primary
         onClick={() => {
           remoteSubmitForm('AddCreditForm')
+          this.setState({ updated: true })
           this.handleAddCreditClose()
         }}
       />
@@ -509,6 +516,7 @@ class EditProfile extends React.Component {
                           primary
                           onClick={() => {
                             remoteSubmitForm('EditLinkForm')
+                            this.setState({ updated: true })
                             this.handleEditLinkClose()
                           }}
                         />
@@ -583,6 +591,7 @@ class EditProfile extends React.Component {
                         primary
                         onClick={() => {
                           remoteSubmitForm('EditVideoForm')
+                          this.setState({ updated: true })
                           this.handleEditVideoClose()
                         }}
                       />
@@ -654,7 +663,11 @@ class EditProfile extends React.Component {
                       <div className="rounded-header">
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                           {role.roleName}
-                          <IconButton onClick={() => deleteRole(userRoles, userCredits, role, uid)}>
+                          <IconButton onClick={() => {
+                            this.setState({ updated: true })
+                            deleteRole(userRoles, userCredits, role, uid)
+                          }}
+                          >
                             <ActionDelete color={'#fff'} />
                           </IconButton>
                         </div>
@@ -667,6 +680,7 @@ class EditProfile extends React.Component {
                               <div>
                                 <IconButton
                                   onClick={() => {
+                                    this.setState({ updated: true })
                                     deleteCredit(userCredits, credit, uid)
                                   }}
                                 >
