@@ -226,7 +226,11 @@ class EditProfile extends React.Component {
 
     partialUpdateAlgoliaObject('profiles', {
       objectID: uid,
-      experience: values.experience
+      experience: Number.parseInt(values.experience, 10)
+    })
+    partialUpdateAlgoliaObject('names', {
+      objectID: uid,
+      experience: Number.parseInt(values.experience, 10)
     })
   }
 

@@ -2,6 +2,7 @@ import React from 'react'
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more'
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar'
 import Paper from 'material-ui/Paper'
+import Toggle from 'material-ui/Toggle'
 import Popover from 'react-simple-popover'
 import InputRange from 'react-input-range'
 import QueryString from 'query-string'
@@ -13,11 +14,18 @@ import SearchAndSelectRoles from '../common/SearchAndSelectRoles'
 class FilterBar extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { menuOpen: false, experienceMenuOpen: false, experience: { min: 0, max: 100 } }
+    this.state = { menuOpen: false, experienceMenuOpen: false, experience: { min: 0, max: 100 }, applyExperienceFilter: false }
     this.openMenu = this.openMenu.bind(this)
     this.closeMenu = this.closeMenu.bind(this)
     this.openExperienceMenu = this.openExperienceMenu.bind(this)
     this.closeExperienceMenu = this.closeExperienceMenu.bind(this)
+  }
+  componentWillReceiveProps(nextProps) {
+    const { experienceFilter } = nextProps
+    const { experience } = this.state
+    if (experienceFilter.min >= 0 && experienceFilter.max >= 0 && (experience.min !== experienceFilter.min || experienceFilter.max !== experience.max)) {
+      this.setState({ experience: { min: experienceFilter.min, max: experienceFilter.max }, applyExperienceFilter: true })
+    }
   }
   openMenu(event) {
     event.preventDefault()
@@ -34,8 +42,8 @@ class FilterBar extends React.Component {
     this.setState({ experienceMenuOpen: false })
   }
   render() {
-    const { menuOpen, experienceMenuOpen } = this.state
-    const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters } = this.props
+    const { menuOpen, experienceMenuOpen, applyExperienceFilter, experience } = this.state
+    const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters, onExperienceFilterChange, onExperienceFilterApplyToggle, experienceFilter } = this.props
     return (
       <Toolbar style={{ backgroundColor: '#004b8d' }}>
         <ToolbarGroup>
@@ -90,9 +98,33 @@ class FilterBar extends React.Component {
                     minValue={0}
                     maxValue={100}
                     value={this.state.experience}
-                    onChange={value => this.setState({ experience: value })}
+                    onChange={(value) => {
+                      const parsedQs = QueryString.parse(window.location.search)
+                      const expMin = value.min
+                      const expMax = value.max
+                      const newQs = QueryString.stringify({ ...parsedQs, expMin, expMax })
+                      history.push({ pathname: '/search', search: newQs })
+                      this.setState({ experience: value, applyExperienceFilter: true })
+                      onExperienceFilterChange(value)
+                    }}
                   />
                 </div>
+                <Toggle
+                  label="Apply"
+                  style={{ width: '20%', paddingBottom: 10 }}
+                  toggled={applyExperienceFilter}
+                  onToggle={() => {
+                    const parsedQs = QueryString.parse(window.location.search)
+                    if (applyExperienceFilter) {
+                      const newQs = QueryString.stringify({ ...parsedQs, expMin: undefined, expMax: undefined })
+                      history.push({ pathname: '/search', search: newQs })
+                    } else {
+                      const newQs = QueryString.stringify({ ...parsedQs, expMin: experience.min, expMax: experience.max })
+                      history.push({ pathname: '/search', search: newQs })
+                    }
+                    this.setState({ applyExperienceFilter: !applyExperienceFilter })
+                  }}
+                />
               </Paper>
             </Popover>
           </div>
@@ -108,7 +140,13 @@ FilterBar.propTypes = {
   }).isRequired,
   removeRoleSearchFilter: PropTypes.func.isRequired,
   addRoleSearchFilter: PropTypes.func.isRequired,
-  roleFilters: PropTypes.arrayOf(PropTypes.string).isRequired
+  onExperienceFilterChange: PropTypes.func.isRequired,
+  onExperienceFilterApplyToggle: PropTypes.func.isRequired,
+  roleFilters: PropTypes.arrayOf(PropTypes.string).isRequired,
+  experienceFilter: PropTypes.shape({
+    min: PropTypes.number,
+    max: PropTypes.number
+  }).isRequired
 }
 
 export default FilterBar
