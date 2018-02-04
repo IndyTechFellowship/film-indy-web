@@ -123,11 +123,10 @@ class EditProfile extends React.Component {
     const { data, auth } = props
     const uid = get(auth, 'uid', '')
     const userProfile = get(data, `userProfiles.${uid}`)
-    const isPublic = get(data, `userAccount.${uid}.public`, false)
     const userRoleIds = get(userProfile, 'roles', [])
     const roles = get(data, 'roles', {})
     const roleNames = userRoleIds.map(roleId => roles[roleId]).filter(i => i !== undefined).map(r => r.roleName)
-    this.setState({ selectedRoles: roleNames, isPublic })
+    this.setState({ selectedRoles: roleNames })
   }
 
   handleAddCreditClose() {
@@ -227,17 +226,22 @@ class EditProfile extends React.Component {
 
     partialUpdateAlgoliaObject('profiles', {
       objectID: uid,
-      experience: values.experience
+      experience: Number.parseInt(values.experience, 10)
+    })
+    partialUpdateAlgoliaObject('names', {
+      objectID: uid,
+      experience: Number.parseInt(values.experience, 10)
     })
   }
 
   render() {
-    const { auth, profile, data, pristine, submitting, firebase,
+    const { auth, data, pristine, submitting, firebase,
       handleSubmit, remoteSubmitForm, addLinkToProfile, editProfileLink, removeProfileLink, initForm,
       addCredit, deleteCredit, deleteRole, searchForRoles, roleSearchResults,
       addYoutubeToProfile, addVimeoToProfile, removeVideo, editVideo, setPublic } = this.props
 
     const uid = get(auth, 'uid', '')
+    const profile = get(data, `account.${uid}`)
     const selectedRoles = get(this.state, 'selectedRoles', [])
     const roles = get(data, 'roles', {})
     const genres = get(data, 'genres', [])
@@ -258,10 +262,10 @@ class EditProfile extends React.Component {
     const userCredits = get(userProfile, 'credits', [])
     const profileImageUrl = get(profile, 'photoURL', '')
     const name = `${get(profile, 'firstName', '')} ${get(profile, 'lastName', '')}`
-    const isPublic = get(userProfile, 'public', false)
+    const isPublic = get(profile, 'public', false)
     const video = get(userProfile, 'video', '')[0]
     let videoType = 0
-    if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+    if (video) videoType = video.url.indexOf('youtube') > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
 
     const addYoutubeActions = [
       <FlatButton
@@ -274,6 +278,7 @@ class EditProfile extends React.Component {
         primary
         onClick={() => {
           remoteSubmitForm('AddVideoForm')
+          this.setState({ updated: true })
           this.handleAddYoutubeClose()
         }}
       />
@@ -290,6 +295,7 @@ class EditProfile extends React.Component {
         primary
         onClick={() => {
           remoteSubmitForm('AddVideoForm')
+          this.setState({ updated: true })
           this.handleAddVimeoClose()
         }}
       />
@@ -304,7 +310,10 @@ class EditProfile extends React.Component {
       <FlatButton
         label="Save"
         primary
-        onClick={this.handleSubmit}
+        onClick={() => {
+          this.setState({ updated: true })
+          this.handleSubmit()
+        }}
       />
     ]
 
@@ -319,6 +328,7 @@ class EditProfile extends React.Component {
         primary
         onClick={() => {
           remoteSubmitForm('AddLinkForm')
+          this.setState({ updated: true })
           this.handleAddLinkClose()
         }}
       />
@@ -335,6 +345,7 @@ class EditProfile extends React.Component {
         primary
         onClick={() => {
           remoteSubmitForm('AddCreditForm')
+          this.setState({ updated: true })
           this.handleAddCreditClose()
         }}
       />
@@ -361,7 +372,6 @@ class EditProfile extends React.Component {
                       public: toggleValue
                     })
                     setPublic(toggleValue, uid)
-                    this.setState({ isPublic: toggleValue })
                   }}
                 />
               </div>
@@ -506,6 +516,7 @@ class EditProfile extends React.Component {
                           primary
                           onClick={() => {
                             remoteSubmitForm('EditLinkForm')
+                            this.setState({ updated: true })
                             this.handleEditLinkClose()
                           }}
                         />
@@ -581,6 +592,7 @@ class EditProfile extends React.Component {
                         primary
                         onClick={() => {
                           remoteSubmitForm('EditVideoForm')
+                          this.setState({ updated: true })
                           this.handleEditVideoClose()
                         }}
                       />
@@ -653,7 +665,11 @@ class EditProfile extends React.Component {
                       <div className="rounded-header">
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                           {role.roleName}
-                          <IconButton onClick={() => deleteRole(userRoles, userCredits, role, uid)}>
+                          <IconButton onClick={() => {
+                            this.setState({ updated: true })
+                            deleteRole(userRoles, userCredits, role, uid)
+                          }}
+                          >
                             <ActionDelete color={'#fff'} />
                           </IconButton>
                         </div>
@@ -666,6 +682,7 @@ class EditProfile extends React.Component {
                               <div>
                                 <IconButton
                                   onClick={() => {
+                                    this.setState({ updated: true })
                                     deleteCredit(userCredits, credit, uid)
                                   }}
                                 >

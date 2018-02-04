@@ -6,8 +6,11 @@ import { RESET_SEARCH_RESULTS, SEARCH_INDEX, SEARCH_FOR_CREW,
   DELETE_VENDOR_PROFILE_RECORD, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED,
   SEARCH_FOR_LOCATIONS, SEARCH_FOR_LOCATIONS_ENRICHED,
   CREATE_LOCATION_PROFILE_RECORD, DELETE_LOCATION_PROFILE_RECORD, SEARCH_FOR_ROLES,
-  ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER, DELETE_ROLE_FROM_PROFILE
+  ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER, DELETE_ROLE_FROM_PROFILE,
+  SET_VENDOR_PUBLIC, ADD_EXPERIENCE_SEARCH_FILTER
 } from '../types/algoliaActionsTypes'
+
+import moment from 'moment'
 
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 const ALGOLA_ADMIN_KEY = process.env.REACT_APP_ALGOLIA_ADMIN_KEY
@@ -22,6 +25,11 @@ export const addRoleSearchFilter = role => ({
 export const removeRoleSearchFilter = role => ({
   type: REMOVE_ROLE_SEARCH_FILTER,
   payload: role
+})
+
+export const addExperienceSearchFilter = (min, max) => ({
+  type: ADD_EXPERIENCE_SEARCH_FILTER,
+  payload: { min, max }
 })
 
 export const searchIndex = (indexName, query, tableToEnrichFrom) => (dispatch) => {
@@ -54,17 +62,30 @@ const createFilters = (filters) => {
   return roles ? `(${roles}) AND public:true` : 'public:true'
 }
 
-export const searchForCrew = (query, filters, offset = 0, length = 10) => (dispatch) => {
+const createExperienceFilterString = ({ min, max }) => {
+  if (!min && !max) {
+    return ''
+  }
+  const currentYear = moment().year()
+  const minYear = currentYear - max
+  const maxYear = currentYear - min
+  return `experience: ${minYear} TO ${maxYear}`
+}
+
+export const searchForCrew = (query, filters, experienceFilter, offset = 0, length = 10) => (dispatch) => {
   const filtersString = createFilters(filters)
+  const experienceFilterString = createExperienceFilterString(experienceFilter)
+  const allFiltersString = experienceFilterString !== '' ? `${filtersString} AND ${experienceFilterString}` : filtersString
+  const namesIndexFilters = experienceFilterString !== '' ? `public:true AND ${experienceFilterString}` : 'public:true'
   const searchObject = { offset, length }
   const indexNames = ['profiles', 'names']
   const searchPromises = indexNames.map((indexName) => {
     const index = algoliaClient.initIndex(indexName)
     if (indexName === 'profiles') {
-      const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: filtersString } : { ...searchObject, query: '', filters: filtersString }
+      const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: allFiltersString } : { ...searchObject, query: '', filters: allFiltersString }
       return index.search(enhancedSearchObject).then(results => ({ indexName, results }))
     } else if (indexName === 'names') {
-      const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: 'public:true' } : { ...searchObject, query, filters: 'public:true' }
+      const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: namesIndexFilters } : { ...searchObject, query, filters: namesIndexFilters }
       return index.search(enhancedSearchObject).then(results => ({ indexName, results }))
     }
     return Promise.resolve()
@@ -100,7 +121,7 @@ export const searchForVendors = (query, offset = 0, length = 10) => (dispatch) =
   const indexNames = ['vendors']
   const searchPromises = indexNames.map((indexName) => {
     const index = algoliaClient.initIndex(indexName)
-    return index.search({ query, offset, length }).then(results => ({ indexName, results }))
+    return index.search({ query, offset, length, filters: 'public:true' }).then(results => ({ indexName, results }))
   })
   return dispatch({
     type: SEARCH_FOR_VENDORS,
@@ -158,14 +179,14 @@ export const searchForLocations = (query, offset = 0, length = 10) => (dispatch)
   })
 }
 
-export const resetAndSearch = (query, filters = [], offset = 0, length = 10) => dispatch => dispatch({
+export const resetAndSearch = (query, filters = [], experienceFilter = { min: undefined, max: undefined }, offset = 0, length = 10) => dispatch => dispatch({
   type: RESET_SEARCH_RESULTS,
   payload: {
     data: { offset, length, filters },
     promise: Promise.resolve()
   }
 })
-  .then(() => dispatch(searchForCrew(query, filters, offset, length)))
+  .then(() => dispatch(searchForCrew(query, filters, experienceFilter, offset, length)))
   .then(() => dispatch(searchForVendors(query, offset, length)))
   .then(() => dispatch(searchForLocations(query, offset, length)))
 
@@ -239,12 +260,22 @@ export const setPublic = (isPublic, uid) => (dispatch) => {
   })
 }
 
+export const setVendorPublic = (isPublic, vendorId) => {
+  const vendorIndex = algoliaClient.initIndex('vendors')
+  const promise = vendorIndex.partialUpdateObject({ objectID: vendorId, public: isPublic })
+  return {
+    type: SET_VENDOR_PUBLIC,
+    payload: promise
+  }
+}
+
 export const createVendorProfileRecord = (vendorId, vendorInfo) => {
   const vendorIndex = algoliaClient.initIndex('vendors')
   return {
     type: CREATE_VENDOR_PROFILE_RECORD,
     payload: vendorIndex.addObject({
       ...vendorInfo,
+      public: false,
       objectID: vendorId
     })
   }

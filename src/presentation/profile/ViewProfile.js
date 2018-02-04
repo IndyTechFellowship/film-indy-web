@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
+import formatLink from '../../util/formatLink'
 import '../../App.css'
 import './ViewProfile.css'
 
@@ -80,7 +81,7 @@ class ViewProfile extends React.Component {
     const headline = get(userProfile, 'headline')
     const video = get(userProfile, 'video', '')[0]
     let videoType = 0
-    if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+    if (video) videoType = video.url.indexOf('youtube') > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
 
     const profileImageUrl = get(userAccount, 'photoURL', defaultImage)
     const name = `${get(userAccount, 'firstName', '')} ${get(userAccount, 'lastName', '')}`
@@ -141,7 +142,7 @@ class ViewProfile extends React.Component {
 
             <CardActions >
               {userLinks.map(link => (
-                <RaisedButton primary key={link.title} label={link.title} target="_blank" href={link.url} />
+                <RaisedButton primary key={link.title} label={link.title} target="_blank" href={formatLink(link.url)} />
               ))}
             </CardActions>
           </Card>

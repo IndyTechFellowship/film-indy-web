@@ -285,6 +285,8 @@ class App extends React.Component {
                       onClick={() => {
                         if (this.searchQuery) {
                           history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
+                        } else {
+                          history.push({ pathname: '/search', search: `?query=${encodeURIComponent('')}&show=all` })
                         }
                       }}
                     />

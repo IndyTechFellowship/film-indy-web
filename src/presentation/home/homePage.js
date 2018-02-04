@@ -249,8 +249,10 @@ const homePage = (props) => {
               label="Search"
               style={{ display: 'inline' }}
               onClick={() => {
-                if (this.searchQuery !== '') {
+                if (this.searchQuery && this.searchQuery !== '') {
                   history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}` })
+                } else {
+                  history.push({ pathname: '/search', search: `?query=${encodeURIComponent('')}` })
                 }
               }}
             />

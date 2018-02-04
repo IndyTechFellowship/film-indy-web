@@ -1,7 +1,9 @@
-import { REMOVE_ROLE_SEARCH_FILTER, ADD_ROLE_SEARCH_FILTER, SEARCH_INDEX, 
-  ENRICH_SEARCH_RESULT, SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS, 
-  SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, 
-  SEARCH_FOR_LOCATIONS, SEARCH_FOR_LOCATIONS_ENRICHED, SEARCH_FOR_ROLES } from '../actions/types/algoliaActionsTypes'
+import { 
+  REMOVE_ROLE_SEARCH_FILTER, ADD_ROLE_SEARCH_FILTER, SEARCH_INDEX, ENRICH_SEARCH_RESULT, 
+  SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS, SEARCH_FOR_VENDORS, 
+  SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_LOCATIONS, SEARCH_FOR_LOCATIONS_ENRICHED, 
+  SEARCH_FOR_ROLES, ADD_EXPERIENCE_SEARCH_FILTER } from '../actions/types/algoliaActionsTypes'
+
 import { uniqBy } from 'lodash'
 
 const initalState = {
@@ -18,6 +20,7 @@ const initalState = {
   enrichedLocationQueryResults: [],
   roleSearchResults: [],
   roleFilters: [],
+  experienceFilter: { min: undefined, max: undefined },
   totalVendorHits: { hasLoaded: false },
   totalLocationHits: { hasLoaded: false }
 }
@@ -214,6 +217,12 @@ export default (state = initalState, action) => {
       return {
         ...state,
         roleFilters: state.roleFilters.filter(role => role !== action.payload)
+      }
+
+    case ADD_EXPERIENCE_SEARCH_FILTER:
+      return {
+        ...state,
+        experienceFilter: { min: action.payload.min, max: action.payload.max }
       }
 
 
