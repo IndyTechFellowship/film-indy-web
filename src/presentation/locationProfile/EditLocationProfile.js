@@ -25,7 +25,7 @@ import EditVideoForm from '../profile/EditVideoForm'
 import YoutubeIcon from '../profile/YoutubeLogo'
 import VimeoIcon from '../profile/VimeoLogo'
 import States from './States'
-import './EditVendorProfile.css'
+import './EditLocationProfile.css'
 
 
 const styles = {
@@ -48,12 +48,12 @@ const FileUploader = props => (
     type="file"
     style={{ display: 'none' }}
     onChange={(event) => {
-      const { vendorId, uploadFile, updateVendorProfile } = props
+      const { locationId, uploadFile, updateLocationProfile } = props
       const file = event.target.files[0]
-      const fbFilePath = `/images/vendors/account/${vendorId}/account_image`
+      const fbFilePath = `/images/locations/account/${locationId}/account_image`
       uploadFile(fbFilePath, file).then((response) => {
         const downloadUrl = response.uploadTaskSnaphot.downloadURL
-        updateVendorProfile({ profileImage: downloadUrl }, vendorId)
+        updateLocationProfile({ profileImage: downloadUrl }, locationId)
       })
     }}
   />
@@ -72,7 +72,7 @@ const renderTextField = ({ input, name, label, meta: { touched, error }, ...cust
     {...custom}
   />
 )
-class EditVendorProfile extends React.Component {
+class EditLocationProfile extends React.Component {
   constructor(props) {
     super(props)
     this.state = ({
@@ -136,17 +136,17 @@ class EditVendorProfile extends React.Component {
     this.setState({ editVideoDialogOpen: false })
   }
   render() {
-    const { vendorProfile, vendorId, firebase, pristine, submitting, handleSubmit, remoteSubmitForm, initForm,
-      addLinkToVendorProfile, removeVendorProfileLink, editVendorProfileLink, addVimeoToVendorProfile, addYoutubeToVendorProfile,
-      editVendorVideo, removeVendorVideo, updateVendorProfile, setVendorPublic } = this.props
-    if (vendorProfile) {
-      const vendorLinks = get(vendorProfile, 'links', [])
-      const isPublic = get(vendorProfile, 'public', false)
-      const video = get(vendorProfile, 'video', '')[0]
+    const { locationProfile, locationId, firebase, pristine, submitting, handleSubmit, remoteSubmitForm, initForm,
+      addLinkToLocationProfile, removeLocationProfileLink, editLocationProfileLink, addVimeoToLocationProfile, addYoutubeToLocationProfile,
+      editLocationVideo, removeLocationVideo, updateLocationProfile } = this.props
+    if (locationProfile) {
+      const locationLinks = get(locationProfile, 'links', [])
+      const isPublic = get(locationProfile, 'public', false)
+      const video = get(locationProfile, 'video', '')[0]
       let videoType = 0
       if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
 
-      const profileImageUrl = get(vendorProfile, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')
+      const profileImageUrl = get(locationProfile, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')
       const addLinkActions = [
         <FlatButton
           label="Cancel"
@@ -197,7 +197,7 @@ class EditVendorProfile extends React.Component {
       return (
         <div style={{ paddingTop: 10, display: 'flex', flexDirection: 'column' }}>
           <div style={{ textAlign: 'left', marginLeft: 20, marginTop: 5 }}>
-            <Link to={`/vendor/${vendorId}`}>
+            <Link to={`/location/${locationId}`}>
               <FloatingActionButton mini backgroundColor="#FFFFFF">
                 <BackIcon style={{ fill: 'black' }} />
               </FloatingActionButton>
@@ -211,8 +211,7 @@ class EditVendorProfile extends React.Component {
                     label="Public"
                     toggled={isPublic}
                     onToggle={(event, toggleValue) => {
-                      updateVendorProfile({ public: toggleValue }, vendorId)
-                      setVendorPublic(toggleValue, vendorId)
+                      updateLocationProfile({ public: toggleValue }, locationId)
                     }}
                   />
                 </div>
@@ -236,12 +235,12 @@ class EditVendorProfile extends React.Component {
                     labelPosition="before"
                     containerElement="label"
                   >
-                    <FileUploader vendorId={vendorId} uploadFile={firebase.uploadFile} updateVendorProfile={updateVendorProfile} />
+                    <FileUploader locationId={locationId} uploadFile={firebase.uploadFile} updateLocationProfile={updateLocationProfile} />
                   </RaisedButton>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', marginLeft: '25px' }}>
                   <div>
-                    <form onSubmit={handleSubmit(values => updateVendorProfile(values, vendorId))}>
+                    <form onSubmit={handleSubmit(values => updateLocationProfile(values, locationId))}>
                       <div>
                         <Field
                           name="name"
@@ -331,119 +330,10 @@ class EditVendorProfile extends React.Component {
               </div>
             </Card>
           </div>
-
-          <div style={{ display: 'flex', marginTop: 30 }}>
-            <Card style={styles.card}>
-              <CardTitle style={{ textAlign: 'left' }}title="Point of Contact" />
-              <div style={{ display: 'flex', justifyContent: 'left' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', marginLeft: '25px' }}>
-                  <div>
-                    <form onSubmit={handleSubmit(values => updateVendorProfile(values, vendorId))}>
-                      <div>
-                        <Field
-                            name="primaryContactName"
-                            component={renderTextField}
-                            floatingLabelText="Name"
-                            type="text"
-                        />
-                      </div>
-                      <div>
-                        <Field
-                            name="primaryContactAddressLine1"
-                            component={renderTextField}
-                            floatingLabelText="Address Line 1"
-                            type="text"
-                        />
-                      </div>
-                      <div>
-                        <Field
-                            name="primaryContactAddressLine2"
-                            component={renderTextField}
-                            floatingLabelText="Address Line 2"
-                            type="text"
-                        />
-                      </div>
-                      <div style={{ display: 'flex' }}>
-                        <div style={{ marginRight: 5 }}>
-                          <Field
-                              name="primaryContactCity"
-                              component={renderTextField}
-                              floatingLabelText="City"
-                              type="text"
-                          />
-                        </div>
-                        <div style={{ marginRight: 5, marginTop: 16 }}>
-                          <FormControl style={{ width: 60 }}>
-                            <InputLabel htmlFor="state">State</InputLabel>
-                            <Field
-                                name="primaryContactState"
-                                component={RenderSelectField}
-                            >
-                                {States.map(state => (
-                                    <MenuItem key={state.abbreviation} value={state.abbreviation} >
-                                        {state.abbreviation}
-                                    </MenuItem>
-                                ))}
-                            </Field>
-                          </FormControl>
-                        </div>
-                        <div style={{ marginRight: 5 }}>
-                          <Field
-                              name="primaryContactZip"
-                              component={renderTextField}
-                              floatingLabelText="Zip Code"
-                              type="text"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <Field
-                            name="primaryContactPhone"
-                            component={renderTextField}
-                            floatingLabelText="Phone Number"
-                            type="text"
-                        />
-                      </div>
-                      <div>
-                        <Field
-                            name="primaryContactEmail"
-                            component={renderTextField}
-                            floatingLabelText="Email Address"
-                            type="email"
-                        />
-                      </div>
-                      <div>
-                        <Field
-                            name="primaryContactAboutUs"
-                            component={renderTextField}
-                            floatingLabelStyle={{ display: 'flex' }}
-                            floatingLabelText="About Primary Contact"
-                            type="text"
-                            multiLine
-                            rows={3}
-                        />
-                      </div>
-                      <div style={{ marginTop: 10 }}>
-                        <RaisedButton
-                            buttonStyle={{ borderRadius: 5 }}
-                            type="submit"
-                            primary
-                            label="Save"
-                            disabled={pristine || submitting}
-                            onClick={this.updateMessage}
-                        />
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </div>
-
           <div style={{ paddingTop: 30 }}>
             <Card style={styles.card}>
               <CardTitle style={{ textAlign: 'left' }} title="About Us" />
-              <form onSubmit={handleSubmit(values => updateVendorProfile(values, vendorId))}>
+              <form onSubmit={handleSubmit(values => updateLocationProfile(values, locationId))}>
                 <div>
                   <div>
                     <Field
@@ -474,7 +364,7 @@ class EditVendorProfile extends React.Component {
             <Card className="profile-card big-card" style={styles.card}>
               <CardTitle title="Links" style={{ textAlign: 'left' }} />
               <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', paddingTop: 5 }}>
-                {vendorLinks.map((link, i) => (
+                {locationLinks.map((link, i) => (
                   <RaisedButton
                     backgroundColor="#4A90E2"
                     labelColor="#fff"
@@ -513,10 +403,10 @@ class EditVendorProfile extends React.Component {
                     >
                       <EditLinkForm
                         onSubmit={(values) => {
-                          editVendorProfileLink(vendorLinks, i, values.title, values.url, vendorId)
+                          editLocationProfileLink(locationLinks, i, values.title, values.url, locationId)
                         }}
                         onDelete={() => {
-                          removeVendorProfileLink(vendorLinks, i, vendorId)
+                          removeLocationProfileLink(locationLinks, i, locationId)
                           this.handleEditLinkClose()
                         }}
                         initialValues={{ title: link.title, url: link.url }}
@@ -539,7 +429,7 @@ class EditVendorProfile extends React.Component {
                     open={this.state.addLinkDialogOpen}
                     onRequestClose={this.handleAddLinkClose}
                   >
-                    <AddLinkForm userLinks={vendorLinks} onSubmit={values => addLinkToVendorProfile(vendorLinks, values.title, values.url, vendorId)} />
+                    <AddLinkForm userLinks={locationLinks} onSubmit={values => addLinkToLocationProfile(locationLinks, values.title, values.url, locationId)} />
                   </Dialog>
                 </RaisedButton>
               </div>
@@ -588,10 +478,10 @@ class EditVendorProfile extends React.Component {
                   >
                     <EditVideoForm
                       onSubmit={(values) => {
-                        editVendorVideo(video, values.title, values.url, vendorId)
+                        editLocationVideo(video, values.title, values.url, locationId)
                       }}
                       onDelete={() => {
-                        removeVendorVideo(video, videoType, vendorId)
+                        removeLocationVideo(video, videoType, locationId)
                         this.handleEditVideoClose()
                       }}
                       initialValues={{ title: video.title, url: video.url }}
@@ -615,7 +505,7 @@ class EditVendorProfile extends React.Component {
                         modal
                         open={this.state.addYoutubeDialogOpen}
                       >
-                        <AddVideoForm onSubmit={values => addYoutubeToVendorProfile(video, values.title, values.url, vendorId)} />
+                        <AddVideoForm onSubmit={values => addYoutubeToLocationProfile(video, values.title, values.url, locationId)} />
                       </Dialog>
                     </RaisedButton>
                     <RaisedButton
@@ -629,7 +519,7 @@ class EditVendorProfile extends React.Component {
                         modal
                         open={this.state.addVimeoDialogOpen}
                       >
-                        <AddVideoForm onSubmit={values => addVimeoToVendorProfile(video, values.title, values.url, vendorId)} />
+                        <AddVideoForm onSubmit={values => addVimeoToLocationProfile(video, values.title, values.url, locationId)} />
                       </Dialog>
                     </RaisedButton>
                   </div>
@@ -645,8 +535,8 @@ class EditVendorProfile extends React.Component {
   }
 }
 
-EditVendorProfile.propTypes = {
-  vendorProfile: PropTypes.shape({
+EditLocationProfile.propTypes = {
+  locationProfile: PropTypes.shape({
     addressLine1: PropTypes.string,
     addressLine2: PropTypes.string,
     email: PropTypes.string,
@@ -657,28 +547,27 @@ EditVendorProfile.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
-  vendorId: PropTypes.string.isRequired,
+  locationId: PropTypes.string.isRequired,
   remoteSubmitForm: PropTypes.func.isRequired,
   initForm: PropTypes.func.isRequired,
-  editVendorProfileLink: PropTypes.func.isRequired,
-  removeVendorProfileLink: PropTypes.func.isRequired,
-  addLinkToVendorProfile: PropTypes.func.isRequired,
-  addYoutubeToVendorProfile: PropTypes.func.isRequired,
-  addVimeoToVendorProfile: PropTypes.func.isRequired,
-  removeVendorVideo: PropTypes.func.isRequired,
-  editVendorVideo: PropTypes.func.isRequired,
-  updateVendorProfile: PropTypes.func.isRequired,
-  setVendorPublic: PropTypes.func.isRequired
+  editLocationProfileLink: PropTypes.func.isRequired,
+  removeLocationProfileLink: PropTypes.func.isRequired,
+  addLinkToLocationProfile: PropTypes.func.isRequired,
+  addYoutubeToLocationProfile: PropTypes.func.isRequired,
+  addVimeoToLocationProfile: PropTypes.func.isRequired,
+  removeLocationVideo: PropTypes.func.isRequired,
+  editLocationVideo: PropTypes.func.isRequired,
+  updateLocationProfile: PropTypes.func.isRequired
 }
 
-EditVendorProfile.defaultProps = {
-  vendorProfile: undefined
+EditLocationProfile.defaultProps = {
+  locationProfile: undefined
 }
 
-const EditVendorProfileFormEnriched = reduxForm({
-  form: 'UpdateVendorProfile',
+const EditLocationProfileFormEnriched = reduxForm({
+  form: 'UpdateLocationProfile',
   enableReinitialize: true
-})(EditVendorProfile)
+})(EditLocationProfile)
 
-export default EditVendorProfileFormEnriched
+export default EditLocationProfileFormEnriched
 

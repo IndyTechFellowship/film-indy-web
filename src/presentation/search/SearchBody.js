@@ -8,7 +8,7 @@ import MasonryInfiniteScroller from 'react-masonry-infinite'
 import { get, take } from 'lodash'
 import PropTypes from 'prop-types'
 
-const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendorHits, searchForCrew, searchForVendors, offset, length, history }) => {
+const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, totalHits, totalVendorHits, totalLocationHits, searchForCrew, searchForVendors, searchForLocations, offset, length, history }) => {
   const parsed = QueryString.parse(location.search)
   const query = get(parsed, 'query', ' ')
   const showOnly = get(parsed, 'show', 'all')
@@ -23,7 +23,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
   const parsedExpMax = expMax ? Number.parseInt(expMax, 10) : undefined
   const experienceFilter = { min: parsedExpMin, max: parsedExpMax }
 
-  if (enriched.length === 0 && totalHits.hasLoaded && enrichedVendors.length === 0 && totalVendorHits.hasLoaded) {
+  if (enriched.length === 0 && totalHits.hasLoaded && enrichedVendors.length === 0 && totalVendorHits.hasLoaded && enrichedLocations.length === 0 && totalLocationHits.hasLoaded) {
     return (
       <div style={{ marginTop: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <h2 style={{ fontWeight: 200 }}>  Yikes! Your search didn't return any results. Try searching for a media specialist role or a name. </h2>
@@ -31,7 +31,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
     )
   }
   if (showOnly === 'all') {
-    if ((totalHits.hasLoaded && enriched.length > 0) || (totalVendorHits.hasLoaded && enrichedVendors.length > 0)) {
+    if ((totalHits.hasLoaded && enriched.length > 0) || (totalVendorHits.hasLoaded && enrichedVendors.length > 0) || (totalLocationHits.hasLoaded && enrichedLocations.length > 0)) {
       return (
         <div>
           { enriched.length > 0 ? (
@@ -110,9 +110,46 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
             </div>
           ) : null
           }
+
+          {enrichedLocations.length !== 0 ? (
+            <div>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20, paddingTop: 20 }}>
+                <h1 style={{ textAlign: 'left', paddingLeft: 40, margin: 0 }}> Locations</h1>
+                {showOnly === 'all' ?
+                  <RaisedButton
+                    label="See More"
+                    labelColor="white"
+                    backgroundColor={'#38b5e6'}
+                    onClick={() => {
+                      const newQs = QueryString.stringify({ ...parsed, show: 'vendors' })
+                      history.push({ pathname: '/search', search: newQs })
+                    }}
+                    style={{ marginRight: 225, backgroundColor: '#38b5e6' }}
+                  />
+                  : null }
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'center' }}>
+                <GridList style={{ display: 'flex', flexWrap: 'nowrap' }} padding={4}>
+                  {take(enrichedLocations, 8).map((enrichedResult, i) => (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <Link to={{ pathname: `/location/${enrichedResult.objectID}` }}>
+                        <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
+                          <CardMedia>
+                            <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10, objectFit: 'contain' }} />
+                          </CardMedia>
+                        </Card>
+                      </Link>
+                      <h3 style={{ textAlign: 'center', marginLeft: enrichedLocations.length === 1 ? 100 : 0 }}> {`${get(enrichedResult, 'locationName', '')}`} </h3>
+                    </div>
+                  ))}
+                </GridList>
+              </div>
+            </div>
+          ) : null
+          }
         </div>
       )
-    } else if (totalHits.hasLoaded && enriched.length === 0 && enrichedVendors.length === 0 && totalVendorHits.hasLoaded) {
+    } else if (totalHits.hasLoaded && enriched.length === 0 && enrichedVendors.length === 0 && totalVendorHits.hasLoaded && enrichedLocations.length === 0 && totalLocationHits.hasLoaded) {
       return (
         <div style={{ marginTop: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <h2 style={{ fontWeight: 200 }}>  Yikes! Your search didn't return any results. Try searching for a media specialist role or a name. </h2>
@@ -204,6 +241,46 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
         </MasonryInfiniteScroller>
       </div>
     )
+  } else if (showOnly === 'locations') {
+    const hasMore = totalLocationHits.hasLoaded && totalLocationHits.locations !== 0
+    return (
+      <div style={{ marginTop: 15 }}>
+        <MasonryInfiniteScroller
+          hasMore
+          sizes={[
+            { columns: 1, gutter: 5 },
+            { columns: 2, mq: '900px', gutter: 100 },
+            { columns: 3, mq: '1330px', gutter: 70 },
+            { columns: 4, mq: '1900px', gutter: 70 },
+            { columns: 5, mq: '2500px', gutter: 70 }
+          ]}
+          pageStart={1}
+          loadMore={() => {
+            if (hasMore) {
+              searchForLocations(query, offset + length)
+            }
+          }}
+        >
+          {enrichedLocations.map(enrichedResult => (
+            <div style={{ width: 150 }}>
+              <Card
+                onClick={() => {
+                  history.push({ pathname: `/location/${enrichedResult.objectID}` })
+                }}
+                key={enrichedResult.objectID}
+                containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
+                style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
+              >
+                <CardMedia>
+                  <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                </CardMedia>
+              </Card>
+              <h3 style={{ marginLeft: 100 }}> {`${get(enrichedResult, 'locationName', '')}`} </h3>
+            </div>
+          ))}
+        </MasonryInfiniteScroller>
+      </div>
+    )
   }
   return (
     <div> {' '} </div>
@@ -213,6 +290,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
 SearchBody.propTypes = {
   searchForCrew: PropTypes.func.isRequired,
   searchForVendors: PropTypes.func.isRequired,
+  searchForLocations: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired
   }).isRequired,
@@ -221,6 +299,7 @@ SearchBody.propTypes = {
   }).isRequired,
   enriched: PropTypes.arrayOf(PropTypes.object).isRequired,
   enrichedVendors: PropTypes.arrayOf(PropTypes.object).isRequired,
+  enrichedLocations: PropTypes.arrayOf(PropTypes.object).isRequired,
   offset: PropTypes.number.isRequired,
   length: PropTypes.number.isRequired,
   totalHits: PropTypes.shape({
@@ -231,6 +310,10 @@ SearchBody.propTypes = {
   totalVendorHits: PropTypes.shape({
     hasLoaded: PropTypes.bool.isRequired,
     vendors: PropTypes.number
+  }).isRequired,
+  totalLocationHits: PropTypes.shape({
+    hasLoaded: PropTypes.bool.isRequired,
+    locations: PropTypes.number
   }).isRequired
 }
 

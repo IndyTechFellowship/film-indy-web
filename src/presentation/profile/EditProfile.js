@@ -559,6 +559,7 @@ class EditProfile extends React.Component {
             </div>
           </Card>
         </div>
+
         <div style={{ paddingTop: 30 }}>
           <Card className="profile-card big-card" style={styles.card}>
             <CardTitle style={{ textAlign: 'left' }} title="Featured Video" />
@@ -602,7 +603,7 @@ class EditProfile extends React.Component {
                 >
                   <EditVideoForm
                     onSubmit={(values) => {
-                      editVideo(video, videoType, values.title, values.url, uid)
+                      editVideo(video, values.title, values.url, uid)
                     }}
                     onDelete={() => {
                       removeVideo(video, videoType, uid)
@@ -651,6 +652,7 @@ class EditProfile extends React.Component {
             }
           </Card>
         </div>
+
         <div style={{ paddingTop: 30 }}>
           <Card className="profile-card big-card" style={styles.card}>
             <CardTitle style={{ textAlign: 'left' }} title="Credits" />
