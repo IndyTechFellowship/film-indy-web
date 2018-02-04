@@ -121,7 +121,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                     labelColor="white"
                     backgroundColor={'#38b5e6'}
                     onClick={() => {
-                      const newQs = QueryString.stringify({ ...parsed, show: 'vendors' })
+                      const newQs = QueryString.stringify({ ...parsed, show: 'locations' })
                       history.push({ pathname: '/search', search: newQs })
                     }}
                     style={{ marginRight: 225, backgroundColor: '#38b5e6' }}
@@ -130,7 +130,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'center' }}>
                 <GridList style={{ display: 'flex', flexWrap: 'nowrap' }} padding={4}>
-                  {take(enrichedLocations, 8).map((enrichedResult, i) => (
+                  {take(enrichedLocations, 4).map((enrichedResult, i) => (
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <Link to={{ pathname: `/location/${enrichedResult.objectID}` }} style={{ display: 'block', margin: 'auto' }}>
                         <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} style={{ width: 300, height: 200, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
@@ -229,13 +229,13 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                 }}
                 key={enrichedResult.objectID}
                 containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
-                style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
+                style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer', display: 'block', margin: 'a' }}
               >
                 <CardMedia>
                   <img src={get(enrichedResult, 'photoURL', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
                 </CardMedia>
               </Card>
-              <h3 style={{ marginLeft: 100 }}> {`${get(enrichedResult, 'vendorName', '')}`} </h3>
+              <h3 style={{ textAlign: 'center', width: '100%' }}> {`${get(enrichedResult, 'vendorName', '')}`} </h3>
             </div>
           ))}
         </MasonryInfiniteScroller>
@@ -262,7 +262,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
           }}
         >
           {enrichedLocations.map(enrichedResult => (
-            <div style={{ width: 150 }}>
+            <div style={{ width: 300 }}>
               <Card
                 onClick={() => {
                   history.push({ pathname: `/location/${enrichedResult.objectID}` })
