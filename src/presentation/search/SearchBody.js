@@ -94,7 +94,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'center' }}>
                 <GridList style={{ display: 'flex', flexWrap: 'nowrap' }} padding={4}>
                   {take(enrichedVendors, 8).map((enrichedResult, i) => (
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div key={enrichedResult.objectID} style={{ display: 'flex', flexDirection: 'column' }}>
                       <Link to={{ pathname: `/vendor/${enrichedResult.objectID}` }}>
                         <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
                           <CardMedia>
@@ -149,7 +149,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
               style={{ width: 400, height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
             >
               <CardMedia>
-                <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ objectFit: 'cover', width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
               </CardMedia>
               <div>
                 <CardText style={{ fontSize: 25 }}>
