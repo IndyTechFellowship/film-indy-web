@@ -79,7 +79,7 @@ const VendorProfilePage = (props) => {
   const primaryContactState = get(vendorProfile, 'primaryContactState', '')
   const primaryContactZip = get(vendorProfile, 'primaryContactZip', '')
   const primaryContactCityStateZip = formatCityStateZip(primaryContactCity, primaryContactState, primaryContactZip)
-  
+
   if (vendorProfile) {
     return (
       <div>

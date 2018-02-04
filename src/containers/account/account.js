@@ -59,6 +59,11 @@ const wrappedAccount = firebaseConnect((props, store) => {
       storeAs: 'usersVendors',
       queryParams: ['orderByChild=creator', `equalTo=${uid}`]
     },
+    {
+      path: 'locationProfiles',
+      storeAs: 'usersLocations',
+      queryParams: ['orderByChild=creator', `equalTo=${uid}`]
+    },
     `/userAccount/${uid}`
   ]
 })(Authed(Account))
@@ -69,6 +74,7 @@ export default withRouter(connect(
     auth: state.firebase.auth,
     profile: state.firebase.profile,
     usersVendors: state.firebase.data.usersVendors,
+    usersLocations: state.firebase.data.usersLocations,
     initialValues: { firstName: state.firebase.profile.firstName, lastName: state.firebase.profile.lastName, email: get(firebase.auth(), 'currentUser.email') } }),
   { ...accountActions, ...algoliaActions },
 )(wrappedAccount))

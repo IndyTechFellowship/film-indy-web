@@ -15,7 +15,7 @@ const renderTextField = ({ input, label, meta: { touched, error }, ...custom }) 
   />
 )
 
-class VendorcreateModal extends React.Component {
+class VendorCreateModal extends React.Component {
   constructor(props) {
     super(props)
     this.state = { open: false }
@@ -71,7 +71,7 @@ class VendorcreateModal extends React.Component {
   }
 }
 
-VendorcreateModal.propTypes = {
+VendorCreateModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
   submitVendorCreate: PropTypes.func.isRequired,
@@ -80,5 +80,5 @@ VendorcreateModal.propTypes = {
 
 export default reduxForm({
   form: 'addVendor'
-})(VendorcreateModal)
+})(VendorCreateModal)
 

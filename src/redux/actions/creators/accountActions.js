@@ -2,7 +2,7 @@ import * as firebase from 'firebase'
 import { push } from 'react-router-redux'
 import { omitBy, get } from 'lodash'
 import { submit } from 'redux-form'
-import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD, CREATE_VENDOR, DELETE_VENDOR, GET_DEFAULT_ACCOUNT_IMAGES } from '../types/accountActionTypes'
+import { SIGN_IN, SIGN_UP, SIGN_OUT, SEND_PASSWORD_RESET_EMAIL, RESET_PASSWORD, CREATE_VENDOR, DELETE_VENDOR, CREATE_LOCATION, DELETE_LOCATION, GET_DEFAULT_ACCOUNT_IMAGES } from '../types/accountActionTypes'
 import * as algoliaActions from './algoliaActions'
 
 /* this an example of how to chain actions together.
@@ -126,6 +126,12 @@ export const updateAuth = result => dispatch => dispatch({
   auth: result
 })
 
+export const deleteVendor = vendorId => dispatch => ({
+  type: DELETE_VENDOR,
+  payload: firebase.database().ref(`vendorProfiles/${vendorId}`).remove()
+    .then(() => dispatch(algoliaActions.deleteVendorProfileRecord(vendorId)))
+})
+
 export const createVendor = vendorName => (dispatch) => {
   const uid = firebase.auth().currentUser.uid
   const vendorRef = firebase.database().ref('/vendorProfiles')
@@ -140,11 +146,26 @@ export const createVendor = vendorName => (dispatch) => {
   })
 }
 
-export const deleteVendor = vendorId => dispatch => ({
-  type: DELETE_VENDOR,
-  payload: firebase.database().ref(`vendorProfiles/${vendorId}`).remove()
-    .then(() => dispatch(algoliaActions.deleteVendorProfileRecord(vendorId)))
+export const deleteLocation = locationId => dispatch => ({
+  type: DELETE_LOCATION,
+  payload: firebase.database().ref(`locationProfiles/${locationId}`).remove()
+    .then(() => dispatch(algoliaActions.deleteLocationProfileRecord(locationId)))
 })
+
+export const createLocation = locationName => (dispatch) => {
+  const uid = firebase.auth().currentUser.uid
+  const locationRef = firebase.database().ref('/locationProfiles')
+  return dispatch({
+    type: CREATE_LOCATION,
+    payload: locationRef.push({
+      creator: uid,
+      name: locationName
+    }).then((ref) => {
+      dispatch(algoliaActions.createLocationProfileRecord(ref.key, { locationName }))
+    })
+  })
+}
+
 export const signUpWithGoogle = () => (dispatch) => {
   const provider = new firebase.auth.GoogleAuthProvider()
   provider.addScope('https://www.googleapis.com/auth/userinfo.email')
@@ -246,6 +267,8 @@ export const submitSignUp = () => dispatch => dispatch(submit('signUp'))
 export const submitSignIn = () => dispatch => dispatch(submit('signIn'))
 
 export const submitVendorCreate = () => dispatch => dispatch(submit('addVendor'))
+
+export const submitLocationCreate = () => dispatch => dispatch(submit('addLocation'))
 
 export const remoteSubmitForm = formName => dispatch => dispatch(submit(formName))
 
