@@ -65,7 +65,7 @@ const LocationProfilePage = (props) => {
           locationCreator === uid ? (
             <div style={{ textAlign: 'right', marginRight: 20, marginTop: 10 }}>
               <Link to={`/location/${locationId}/edit`}>
-                <RaisedButton label="Edit Profile" icon={<ModeEditIcon />} />
+                <RaisedButton label="Edit Location" icon={<ModeEditIcon />} />
               </Link>
             </div>
           ) : null
