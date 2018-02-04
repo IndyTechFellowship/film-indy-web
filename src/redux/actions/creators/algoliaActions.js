@@ -3,7 +3,7 @@ import algoliasearch from 'algoliasearch'
 import { RESET_SEARCH_RESULTS, SEARCH_INDEX, SEARCH_FOR_CREW,
   SEARCH_FOR_CREW_ENRICHED, ENRICH_SEARCH_RESULT, PARTIAL_UPDATE_OBJECT, MIGRATE_PROFILE,
   MIGRATE_NAME, ADD_TO_NAME_INDEX, CREATE_PROFILE_RECORD, SET_PUBLIC, CREATE_VENDOR_PROFILE_RECORD,
-  DELETE_VENDOR_PROFILE_RECORD, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED, 
+  DELETE_VENDOR_PROFILE_RECORD, SEARCH_FOR_VENDORS, SEARCH_FOR_VENDORS_ENRICHED,
   SEARCH_FOR_LOCATIONS, SEARCH_FOR_LOCATIONS_ENRICHED,
   CREATE_LOCATION_PROFILE_RECORD, DELETE_LOCATION_PROFILE_RECORD, SEARCH_FOR_ROLES,
   ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER, DELETE_ROLE_FROM_PROFILE
@@ -167,6 +167,7 @@ export const resetAndSearch = (query, filters = [], offset = 0, length = 10) => 
 })
   .then(() => dispatch(searchForCrew(query, filters, offset, length)))
   .then(() => dispatch(searchForVendors(query, offset, length)))
+  .then(() => dispatch(searchForLocations(query, offset, length)))
 
 export const migrateProfile = (uid, email) => (dispatch) => {
   const profileIndex = algoliaClient.initIndex('profiles')

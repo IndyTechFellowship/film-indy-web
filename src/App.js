@@ -231,7 +231,7 @@ class App extends React.Component {
   render() {
     const { cancelSignInUpForm, account, profile, auth, firebase,
       history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn,
-      signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors, 
+      signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors,
       submitVendorCreate, createVendor, usersLocations, submitLocationCreate, createLocation,
       getDefaultAccountImages } = this.props
     const { addVendorModalOpen, addLocationModalOpen } = this.state
@@ -378,7 +378,7 @@ class App extends React.Component {
             createVendor(values.name)
             this.setState({ addVendorModalOpen: false })
           }}
-        />        
+        />
         <AddLocationModal
           open={addLocationModalOpen}
           onCancel={() => {
@@ -438,7 +438,7 @@ class App extends React.Component {
         <Route exact path="/profile/edit" component={EditProfile} />
         <Route exact path="/profile" component={ViewProfile} />
         <Route exact path="/vendor/:vendorId" component={VendorProfile} />
-        <Route exact path="/vendor/:vendorId/edit" component={EditVendorProfile} />        
+        <Route exact path="/vendor/:vendorId/edit" component={EditVendorProfile} />
         <Route exact path="/location/:locationId" component={LocationProfile} />
         <Route exact path="/location/:locationId/edit" component={EditLocationProfile} />
       </div>
@@ -469,7 +469,7 @@ App.propTypes = {
       creator: PropTypes.string,
       name: PropTypes.string
     }))
-  ]),  
+  ]),
   usersLocations: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.objectOf(PropTypes.shape({
@@ -507,7 +507,11 @@ const wrappedApp = firebaseConnect((props) => {
 })(App)
 
 export default withRouter(connect(
-  state => ({ account: state.account, firebase: state.firebase, profile: state.firebase.profile, auth: state.firebase.auth, 
-    usersVendors: state.firebase.data.usersVendors, usersLocations: state.firebase.data.usersLocations }),
+  state => ({ account: state.account,
+firebase: state.firebase,
+profile: state.firebase.profile,
+auth: state.firebase.auth,
+    usersVendors: state.firebase.data.usersVendors,
+usersLocations: state.firebase.data.usersLocations }),
   { ...accountActions },
 )(wrappedApp))

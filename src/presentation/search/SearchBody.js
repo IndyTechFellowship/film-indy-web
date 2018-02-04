@@ -26,7 +26,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
     )
   }
   if (showOnly === 'all') {
-    if ((totalHits.hasLoaded && enriched.length > 0) || (totalVendorHits.hasLoaded && enrichedVendors.length > 0) || (totalLocationHits.hasLoaded && enrichedLocations.length > 0) ) {
+    if ((totalHits.hasLoaded && enriched.length > 0) || (totalVendorHits.hasLoaded && enrichedVendors.length > 0) || (totalLocationHits.hasLoaded && enrichedLocations.length > 0)) {
       return (
         <div>
           { enriched.length > 0 ? (
@@ -267,7 +267,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                 style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
               >
                 <CardMedia>
-                  <img src={get(enrichedResult, 'photoURL', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                  <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
                 </CardMedia>
               </Card>
               <h3 style={{ marginLeft: 100 }}> {`${get(enrichedResult, 'locationName', '')}`} </h3>
@@ -276,7 +276,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
         </MasonryInfiniteScroller>
       </div>
     )
-  } 
+  }
   return (
     <div> {' '} </div>
   )

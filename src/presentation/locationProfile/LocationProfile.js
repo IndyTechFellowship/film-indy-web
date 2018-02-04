@@ -55,7 +55,7 @@ const LocationProfilePage = (props) => {
   const locationCityState = get(locationProfile, 'addressLine2', '')
   const video = get(locationProfile, 'video', '')[0]
   let videoType = 0
-  if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+  if (video) videoType = video.url.indexOf('youtube') > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
 
 
   if (locationProfile) {
@@ -115,7 +115,7 @@ const LocationProfilePage = (props) => {
 
             <CardActions>
               {locationLinks.map(link => (
-                <RaisedButton primary key={link.title} label={link.title} target="_blank" href={link.url}/>
+                <RaisedButton primary key={link.title} label={link.title} target="_blank" href={link.url} />
               ))}
             </CardActions>
           </div>
