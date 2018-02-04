@@ -17,6 +17,11 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
     type: 'role',
     role
   }))
+  const expMin = get(parsed, 'expMin')
+  const expMax = get(parsed, 'expMax')
+  const parsedExpMin = expMin ? Number.parseInt(expMin, 10) : undefined
+  const parsedExpMax = expMax ? Number.parseInt(expMax, 10) : undefined
+  const experienceFilter = { min: parsedExpMin, max: parsedExpMax }
 
   if (enriched.length === 0 && totalHits.hasLoaded && enrichedVendors.length === 0 && totalVendorHits.hasLoaded) {
     return (
@@ -130,7 +135,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
           pageStart={1}
           loadMore={() => {
             if (hasMore) {
-              searchForCrew(query, roleFilters, offset + length)
+              searchForCrew(query, roleFilters, experienceFilter, offset + length)
             }
           }}
         >
