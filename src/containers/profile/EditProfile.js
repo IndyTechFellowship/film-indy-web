@@ -61,8 +61,8 @@ const WrappedEditProfile = firebaseConnect((props, store) => {
   const firebaseProp = store.getState()
   const uid = get(firebaseProp, 'firebase.auth.uid', '')
   return [
-    `/userAccount/${uid}`,
-    `/userProfiles/${uid}`,
+    { path: '/userAccount', storeAs: 'account', queryParams: ['orderByKey', `equalTo=${uid}`] },
+    { path: '/userProfiles', storeAs: 'userProfiles', queryParams: ['orderByKey', `equalTo=${uid}`] },
     'roles',
     'genres'
   ]

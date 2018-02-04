@@ -138,7 +138,7 @@ class EditVendorProfile extends React.Component {
   render() {
     const { vendorProfile, vendorId, firebase, pristine, submitting, handleSubmit, remoteSubmitForm, initForm,
       addLinkToVendorProfile, removeVendorProfileLink, editVendorProfileLink, addVimeoToVendorProfile, addYoutubeToVendorProfile,
-      editVendorVideo, removeVendorVideo, updateVendorProfile } = this.props
+      editVendorVideo, removeVendorVideo, updateVendorProfile, setVendorPublic } = this.props
     if (vendorProfile) {
       const vendorLinks = get(vendorProfile, 'links', [])
       const isPublic = get(vendorProfile, 'public', false)
@@ -212,6 +212,7 @@ class EditVendorProfile extends React.Component {
                     toggled={isPublic}
                     onToggle={(event, toggleValue) => {
                       updateVendorProfile({ public: toggleValue }, vendorId)
+                      setVendorPublic(toggleValue, vendorId)
                     }}
                   />
                 </div>
@@ -330,6 +331,115 @@ class EditVendorProfile extends React.Component {
               </div>
             </Card>
           </div>
+
+          <div style={{ display: 'flex', marginTop: 30 }}>
+            <Card style={styles.card}>
+              <CardTitle style={{ textAlign: 'left' }}title="Point of Contact" />
+              <div style={{ display: 'flex', justifyContent: 'left' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', marginLeft: '25px' }}>
+                  <div>
+                    <form onSubmit={handleSubmit(values => updateVendorProfile(values, vendorId))}>
+                      <div>
+                        <Field
+                            name="primaryContactName"
+                            component={renderTextField}
+                            floatingLabelText="Name"
+                            type="text"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                            name="primaryContactAddressLine1"
+                            component={renderTextField}
+                            floatingLabelText="Address Line 1"
+                            type="text"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                            name="primaryContactAddressLine2"
+                            component={renderTextField}
+                            floatingLabelText="Address Line 2"
+                            type="text"
+                        />
+                      </div>
+                      <div style={{ display: 'flex' }}>
+                        <div style={{ marginRight: 5 }}>
+                          <Field
+                              name="primaryContactCity"
+                              component={renderTextField}
+                              floatingLabelText="City"
+                              type="text"
+                          />
+                        </div>
+                        <div style={{ marginRight: 5, marginTop: 16 }}>
+                          <FormControl style={{ width: 60 }}>
+                            <InputLabel htmlFor="state">State</InputLabel>
+                            <Field
+                                name="primaryContactState"
+                                component={RenderSelectField}
+                            >
+                                {States.map(state => (
+                                    <MenuItem key={state.abbreviation} value={state.abbreviation} >
+                                        {state.abbreviation}
+                                    </MenuItem>
+                                ))}
+                            </Field>
+                          </FormControl>
+                        </div>
+                        <div style={{ marginRight: 5 }}>
+                          <Field
+                              name="primaryContactZip"
+                              component={renderTextField}
+                              floatingLabelText="Zip Code"
+                              type="text"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Field
+                            name="primaryContactPhone"
+                            component={renderTextField}
+                            floatingLabelText="Phone Number"
+                            type="text"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                            name="primaryContactEmail"
+                            component={renderTextField}
+                            floatingLabelText="Email Address"
+                            type="email"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                            name="primaryContactAboutUs"
+                            component={renderTextField}
+                            floatingLabelStyle={{ display: 'flex' }}
+                            floatingLabelText="About Primary Contact"
+                            type="text"
+                            multiLine
+                            rows={3}
+                        />
+                      </div>
+                      <div style={{ marginTop: 10 }}>
+                        <RaisedButton
+                            buttonStyle={{ borderRadius: 5 }}
+                            type="submit"
+                            primary
+                            label="Save"
+                            disabled={pristine || submitting}
+                            onClick={this.updateMessage}
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
           <div style={{ paddingTop: 30 }}>
             <Card style={styles.card}>
               <CardTitle style={{ textAlign: 'left' }} title="About Us" />
@@ -557,7 +667,8 @@ EditVendorProfile.propTypes = {
   addVimeoToVendorProfile: PropTypes.func.isRequired,
   removeVendorVideo: PropTypes.func.isRequired,
   editVendorVideo: PropTypes.func.isRequired,
-  updateVendorProfile: PropTypes.func.isRequired
+  updateVendorProfile: PropTypes.func.isRequired,
+  setVendorPublic: PropTypes.func.isRequired
 }
 
 EditVendorProfile.defaultProps = {

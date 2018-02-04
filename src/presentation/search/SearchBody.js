@@ -17,6 +17,11 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
     type: 'role',
     role
   }))
+  const expMin = get(parsed, 'expMin')
+  const expMax = get(parsed, 'expMax')
+  const parsedExpMin = expMin ? Number.parseInt(expMin, 10) : undefined
+  const parsedExpMax = expMax ? Number.parseInt(expMax, 10) : undefined
+  const experienceFilter = { min: parsedExpMin, max: parsedExpMax }
 
   if (enriched.length === 0 && totalHits.hasLoaded && enrichedVendors.length === 0 && totalVendorHits.hasLoaded) {
     return (
@@ -89,7 +94,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'center' }}>
                 <GridList style={{ display: 'flex', flexWrap: 'nowrap' }} padding={4}>
                   {take(enrichedVendors, 8).map((enrichedResult, i) => (
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div key={enrichedResult.objectID} style={{ display: 'flex', flexDirection: 'column' }}>
                       <Link to={{ pathname: `/vendor/${enrichedResult.objectID}` }}>
                         <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
                           <CardMedia>
@@ -130,7 +135,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
           pageStart={1}
           loadMore={() => {
             if (hasMore) {
-              searchForCrew(query, roleFilters, offset + length)
+              searchForCrew(query, roleFilters, experienceFilter, offset + length)
             }
           }}
         >
@@ -144,7 +149,7 @@ const SearchBody = ({ enriched, enrichedVendors, location, totalHits, totalVendo
               style={{ width: 400, height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
             >
               <CardMedia>
-                <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                <img src={get(enrichedResult, 'photoURL', 'http://sunfieldfarm.org/wp-content/uploads/2014/02/profile-placeholder.png')} alt="" style={{ objectFit: 'cover', width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
               </CardMedia>
               <div>
                 <CardText style={{ fontSize: 25 }}>
