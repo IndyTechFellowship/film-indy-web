@@ -269,13 +269,13 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                 }}
                 key={enrichedResult.objectID}
                 containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
-                style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
+                style={{ width: 300, height: 200, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
               >
                 <CardMedia>
-                  <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                  <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 300, height: 200, borderRadius: 10 }} />
                 </CardMedia>
               </Card>
-              <h3 style={{ marginLeft: 100 }}> {`${get(enrichedResult, 'locationName', '')}`} </h3>
+              <h3 style={{ textAlign: 'center', width: '100%', marginLeft: enrichedLocations.length === 1 ? 90 : 0 }}> {`${get(enrichedResult, 'locationName', '')}`} </h3>
             </div>
           ))}
         </MasonryInfiniteScroller>

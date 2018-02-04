@@ -144,7 +144,7 @@ class EditLocationProfile extends React.Component {
       const isPublic = get(locationProfile, 'public', false)
       const video = get(locationProfile, 'video', '')[0]
       let videoType = 0
-      if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+      if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo
 
       const profileImageUrl = get(locationProfile, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')
       const addLinkActions = [
@@ -226,7 +226,7 @@ class EditLocationProfile extends React.Component {
               <CardTitle style={{ textAlign: 'left' }}title="General" />
               <div style={{ display: 'flex', justifyContent: 'left', paddingTop: 30 }}>
                 <div>
-                  <Avatar src={profileImageUrl} style={{ borderRadius: 5, objectFit: 'contain' }} size={180} />
+                  <Avatar src={profileImageUrl} style={{ borderRadius: 5, objectFit: 'cover' }} size={180} />
                   <RaisedButton
                     style={{ border: 'solid 2px #4A90E2', borderRadius: 5, marginTop: 40 }}
                     labelColor="#06397A"
@@ -527,7 +527,7 @@ class EditLocationProfile extends React.Component {
               }
             </Card>
           </div>
-          
+
         </div>
       )
     }
@@ -570,4 +570,3 @@ const EditLocationProfileFormEnriched = reduxForm({
 })(EditLocationProfile)
 
 export default EditLocationProfileFormEnriched
-
