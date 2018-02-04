@@ -156,6 +156,12 @@ const AutoCompleteBar = connectAutoComplete(
                   <strong>Vendors</strong>
                 </div>
               )
+            } else if (section.index === 'locations') {
+              return (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <strong>Locations</strong>
+                </div>
+              )
             }
           }
           return ''
