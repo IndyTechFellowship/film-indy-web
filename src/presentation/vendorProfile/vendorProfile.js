@@ -57,7 +57,7 @@ const VendorProfilePage = (props) => {
   const vendorEmail = get(vendorProfile, 'email', '')
   const vendorBio = get(vendorProfile, 'aboutUs', '')
   const vendorLinks = get(vendorProfile, 'links', [])
-  
+
   const video = get(vendorProfile, 'video', '')[0]
   let videoType = 0
   if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
