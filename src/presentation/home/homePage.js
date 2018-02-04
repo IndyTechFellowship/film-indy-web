@@ -127,6 +127,12 @@ const AutoCompleteBar = connectAutoComplete(
                 {`${hit.vendorName}`}
               </MenuItem>
             )
+          } else if (hit.locationName) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.locationName}`}
+              </MenuItem>
+            )
           }
           return (null)
         }}
@@ -225,6 +231,7 @@ const homePage = (props) => {
               >
                 <Index indexName="names" />
                 <Index indexName="vendors" />
+                <Index indexName="locations" />
                 <AutoCompleteBar
                   onEnterHit={() => {
                     if (this.searchQuery) {
@@ -239,6 +246,8 @@ const homePage = (props) => {
                       history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
                     } else if (index === 2) {
                       history.push({ pathname: `/vendor/${suggestion.objectID}` })
+                    } else if (index === 3) {
+                      history.push({ pathname: `/location/${suggestion.objectID}` })
                     }
                   }}
                 />
@@ -267,7 +276,7 @@ const homePage = (props) => {
         {
           categories.map(item => (<Card className="category-card" key={item.key}>
             <CardMedia>
-              <img src={item.image} alt="Explore Categories" />
+              <img src={item.image} alt="Explore Categories" style={{ objectFit: 'cover' }}/>
             </CardMedia>
             <CardTitle title={item.title} />
           </Card>))
@@ -284,7 +293,7 @@ const homePage = (props) => {
               <Card className="category-card" key={item.key}>
                 <Link to={`/search?query=${encodeURIComponent(item.title)}`} style={{ textDecoration: 'none' }}>
                   <CardMedia>
-                    <img src={item.image} alt="Explore Roles" />
+                    <img src={item.image} alt="Explore Roles" style={{ objectFit: 'cover' }} />
                   </CardMedia>
                   <CardText className="popular-roles-text">{item.title}</CardText>
                 </Link>
@@ -316,4 +325,3 @@ homePage.defaultProps = {
 }
 
 export default homePage
-
