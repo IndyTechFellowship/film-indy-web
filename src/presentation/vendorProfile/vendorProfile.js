@@ -57,10 +57,10 @@ const VendorProfilePage = (props) => {
   const vendorEmail = get(vendorProfile, 'email', '')
   const vendorBio = get(vendorProfile, 'aboutUs', '')
   const vendorLinks = get(vendorProfile, 'links', [])
-  
+
   const video = get(vendorProfile, 'video', '')[0]
   let videoType = 0
-  if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+  if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo
 
   const vendorAddressLine1 = get(vendorProfile, 'addressLine1', '')
   const vendorAddressLine2 = get(vendorProfile, 'addressLine2', '')
@@ -94,7 +94,7 @@ const VendorProfilePage = (props) => {
         }
         <Card className="profile-card vendor-profile" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
           <CardMedia className="crew-image">
-            <img src={profileImageUrl} alt="" style={{ width: 200, height: 200, objectFit: 'contain', borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />
+            <img src={profileImageUrl} alt="" style={{ width: 250, height: 250, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2, minWidth: 250, minHeight: 250 }} />
           </CardMedia>
           <div style={{ minWidth: '200px', width: '100%' }}>
             <CardTitle title={vendorName} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />

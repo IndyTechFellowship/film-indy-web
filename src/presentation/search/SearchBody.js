@@ -95,14 +95,14 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                 <GridList style={{ display: 'flex', flexWrap: 'nowrap' }} padding={4}>
                   {take(enrichedVendors, 8).map((enrichedResult, i) => (
                     <div key={enrichedResult.objectID} style={{ display: 'flex', flexDirection: 'column' }}>
-                      <Link to={{ pathname: `/vendor/${enrichedResult.objectID}` }}>
+                      <Link to={{ pathname: `/vendor/${enrichedResult.objectID}` }} style={{ display: 'block', margin: 'auto' }}>
                         <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
                           <CardMedia>
-                            <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10, objectFit: 'contain' }} />
+                            <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 200, height: 150, borderRadius: 10, objectFit: 'contain' }} />
                           </CardMedia>
                         </Card>
                       </Link>
-                      <h3 style={{ textAlign: 'center', marginLeft: enrichedVendors.length === 1 ? 100 : 0 }}> {`${get(enrichedResult, 'vendorName', '')}`} </h3>
+                      <h3 style={{ textAlign: 'center', width: '100%', marginLeft: enrichedVendors.length === 1 ? 50 : 0 }}> {`${get(enrichedResult, 'vendorName', '')}`} </h3>
                     </div>
                   ))}
                 </GridList>
@@ -132,14 +132,14 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                 <GridList style={{ display: 'flex', flexWrap: 'nowrap' }} padding={4}>
                   {take(enrichedLocations, 8).map((enrichedResult, i) => (
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <Link to={{ pathname: `/location/${enrichedResult.objectID}` }}>
-                        <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
+                      <Link to={{ pathname: `/location/${enrichedResult.objectID}` }} style={{ display: 'block', margin: 'auto' }}>
+                        <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} style={{ width: 300, height: 200, marginRight: 20, borderRadius: 10, marginLeft: i === 0 ? 30 : 0 }}>
                           <CardMedia>
-                            <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10, objectFit: 'contain' }} />
+                            <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 300, height: 200, borderRadius: 10, objectFit: 'cover' }} />
                           </CardMedia>
                         </Card>
                       </Link>
-                      <h3 style={{ textAlign: 'center', marginLeft: enrichedLocations.length === 1 ? 100 : 0 }}> {`${get(enrichedResult, 'locationName', '')}`} </h3>
+                      <h3 style={{ textAlign: 'center', width: '100%', marginLeft: enrichedLocations.length === 1 ? 90 : 0 }}> {`${get(enrichedResult, 'locationName', '')}`} </h3>
                     </div>
                   ))}
                 </GridList>
