@@ -143,6 +143,12 @@ const AutoCompleteBar = connectAutoComplete(
                 {`${hit.vendorName}`}
               </MenuItem>
             )
+          } else if (hit.locationName) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.locationName}`}
+              </MenuItem>
+            )
           }
           return (null)
         }}
