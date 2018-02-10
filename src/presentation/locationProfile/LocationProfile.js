@@ -55,7 +55,7 @@ const LocationProfilePage = (props) => {
   const locationCityState = get(locationProfile, 'addressLine2', '')
   const video = get(locationProfile, 'video', '')[0]
   let videoType = 0
-  if (video) videoType = video.url.indexOf('youtube') > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+  if (video) videoType = video.url.indexOf('youtube') > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo
 
 
   if (locationProfile) {
@@ -65,14 +65,14 @@ const LocationProfilePage = (props) => {
           locationCreator === uid ? (
             <div style={{ textAlign: 'right', marginRight: 20, marginTop: 10 }}>
               <Link to={`/location/${locationId}/edit`}>
-                <RaisedButton label="Edit Profile" icon={<ModeEditIcon />} />
+                <RaisedButton label="Edit Location" icon={<ModeEditIcon />} />
               </Link>
             </div>
           ) : null
         }
         <Card className="profile-card location-profile" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
           <CardMedia className="crew-image">
-            <img src={profileImageUrl} alt="" style={{ width: 200, height: 200, objectFit: 'contain', borderBottomLeftRadius: 2, borderTopLeftRadius: 2 }} />
+            <img src={profileImageUrl} alt="" style={{ width: 250, height: 250, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2, minWidth: 250, minHeight: 250 }} />
           </CardMedia>
           <div style={{ minWidth: '200px', width: '100%' }}>
             <CardTitle title={locationName} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
