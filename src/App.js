@@ -143,6 +143,12 @@ const AutoCompleteBar = connectAutoComplete(
                 {`${hit.vendorName}`}
               </MenuItem>
             )
+          } else if (hit.locationName) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.locationName}`}
+              </MenuItem>
+            )
           }
           return (null)
         }}
@@ -158,6 +164,8 @@ const AutoCompleteBar = connectAutoComplete(
               )
             } else if (section.index === 'vendors') {
               return (<strong>Vendors</strong>)
+            } else if (section.index === 'locations') {
+              return (<strong>Locations</strong>)
             }
           }
           return ''
@@ -259,6 +267,7 @@ class App extends React.Component {
                     >
                       <Index indexName="names" />
                       <Index indexName="vendors" />
+                      <Index indexName="locations" />
                       <AutoCompleteBar
                         onUpdateInput={query => this.searchQuery = query}
                         onEnterHit={() => {
@@ -273,6 +282,8 @@ class App extends React.Component {
                             history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
                           } else if (index === 2) {
                             history.push({ pathname: `/vendor/${suggestion.objectID}` })
+                          } else if (index === 3) {
+                            history.push({ pathname: `/location/${suggestion.objectID}` })
                           }
                         }}
                       />

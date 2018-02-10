@@ -227,7 +227,7 @@ class EditVendorProfile extends React.Component {
               <CardTitle style={{ textAlign: 'left' }}title="General" />
               <div style={{ display: 'flex', justifyContent: 'left', paddingTop: 30 }}>
                 <div>
-                  <Avatar src={profileImageUrl} style={{ borderRadius: 5, objectFit: 'contain' }} size={180} />
+                  <Avatar src={profileImageUrl} style={{ borderRadius: 5, objectFit: 'cover' }} size={180} />
                   <RaisedButton
                     style={{ border: 'solid 2px #4A90E2', borderRadius: 5, marginTop: 40 }}
                     labelColor="#06397A"

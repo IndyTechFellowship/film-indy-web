@@ -1,7 +1,7 @@
-import { 
-  REMOVE_ROLE_SEARCH_FILTER, ADD_ROLE_SEARCH_FILTER, SEARCH_INDEX, ENRICH_SEARCH_RESULT, 
-  SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS, SEARCH_FOR_VENDORS, 
-  SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_LOCATIONS, SEARCH_FOR_LOCATIONS_ENRICHED, 
+import {
+  REMOVE_ROLE_SEARCH_FILTER, ADD_ROLE_SEARCH_FILTER, SEARCH_INDEX, ENRICH_SEARCH_RESULT,
+  SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS, SEARCH_FOR_VENDORS,
+  SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_LOCATIONS, SEARCH_FOR_LOCATIONS_ENRICHED,
   SEARCH_FOR_ROLES, ADD_EXPERIENCE_SEARCH_FILTER } from '../actions/types/algoliaActionsTypes'
 
 import { uniqBy } from 'lodash'
@@ -38,6 +38,8 @@ export default (state = initalState, action) => {
         crewQueryResults: [],
         vendorQueryResults: [],
         enrichedVendorQueryResults: [],
+        locationQueryResults: [],
+        enrichedLocationQueryResults: [],
         roleFilters
       }
     case `${SEARCH_INDEX}_SUCCESS`:
