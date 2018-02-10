@@ -46,21 +46,28 @@ class Search extends React.Component {
     }
   }
   render() {
-    const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters, addExperienceSearchFilter, experienceFilter } = this.props
+    const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters, addExperienceSearchFilter, experienceFilter, location } = this.props
+    const qs = get(location, 'search', '')
+    const parsedQs = QueryString.parse(qs)
+    const show = get(parsedQs, 'show', '')
     return (
       <div>
-        <FilterBar
-          history={history}
-          addRoleSearchFilter={addRoleSearchFilter}
-          removeRoleSearchFilter={removeRoleSearchFilter}
-          onExperienceFilterChange={({ min, max }) => {
-            addExperienceSearchFilter(min, max)
-          }}
-          onExperienceFilterApplyToggle={() => {
-          }}
-          roleFilters={roleFilters}
-          experienceFilter={experienceFilter}
-        />
+        {
+          show === 'crew' ? (
+            <FilterBar
+              history={history}
+              addRoleSearchFilter={addRoleSearchFilter}
+              removeRoleSearchFilter={removeRoleSearchFilter}
+              onExperienceFilterChange={({ min, max }) => {
+                addExperienceSearchFilter(min, max)
+              }}
+              onExperienceFilterApplyToggle={() => {
+              }}
+              roleFilters={roleFilters}
+              experienceFilter={experienceFilter}
+            />
+          ) : null
+        }
         <SearchBody {...this.props} />
       </div>
     )
