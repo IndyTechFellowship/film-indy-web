@@ -7,6 +7,7 @@ import { GridList } from 'material-ui/GridList'
 import MasonryInfiniteScroller from 'react-masonry-infinite'
 import { get, take } from 'lodash'
 import PropTypes from 'prop-types'
+import Truncate from 'react-truncate'
 
 const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, totalHits, totalVendorHits, totalLocationHits, searchForCrew, searchForVendors, searchForLocations, offset, length, history }) => {
   const parsed = QueryString.parse(location.search)
@@ -210,7 +211,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
           sizes={[
             { columns: 1, gutter: 5 },
             { columns: 2, mq: '900px', gutter: 100 },
-            { columns: 3, mq: '1330px', gutter: 70 },
+            { columns: 4, mq: '1330px', gutter: 40 },
             { columns: 4, mq: '1900px', gutter: 70 },
             { columns: 5, mq: '2500px', gutter: 70 }
           ]}
@@ -222,20 +223,24 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
           }}
         >
           {enrichedVendors.map(enrichedResult => (
-            <div style={{ width: 150 }}>
+            <div style={{ width: 300 }}>
               <Card
                 onClick={() => {
                   history.push({ pathname: `/vendor/${enrichedResult.objectID}` })
                 }}
                 key={enrichedResult.objectID}
                 containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
-                style={{ width: 200, height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer', display: 'block', margin: 'a' }}
+                style={{ height: 150, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer', display: 'block' }}
               >
                 <CardMedia>
-                  <img src={get(enrichedResult, 'photoURL', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                  <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 300, height: 150, borderRadius: 10, objectFit: 'fill' }} />
                 </CardMedia>
               </Card>
-              <h3 style={{ textAlign: 'center', width: '100%' }}> {`${get(enrichedResult, 'vendorName', '')}`} </h3>
+              <h3 style={{ textAlign: 'center', width: '100%', fontSize: 14 }}>
+                <Truncate lines={1}>
+                  {`${get(enrichedResult, 'vendorName', '')}`}
+                </Truncate>
+              </h3>
             </div>
           ))}
         </MasonryInfiniteScroller>
@@ -272,7 +277,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                 style={{ width: 300, height: 200, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
               >
                 <CardMedia>
-                  <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 300, height: 200, borderRadius: 10 }} />
+                  <img src={get(enrichedResult, 'displayImages[0]', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 300, height: 200, borderRadius: 10 }} />
                 </CardMedia>
               </Card>
               <h3 style={{ textAlign: 'center', width: '100%', marginLeft: enrichedLocations.length === 1 ? 90 : 0 }}> {`${get(enrichedResult, 'locationName', '')}`} </h3>
