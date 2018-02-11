@@ -207,6 +207,17 @@ const roles = [
   { key: 10, image: ScoutImage, title: 'Location Scout' }
 ]
 
+const generateCategorySearchLink = (index) => {
+  if (index === 0) {
+    return '/search?query=%27%27&show=locations'
+  } else if (index === 1) {
+    return '/search?query=%27%27&show=crew'
+  } else if (index === 2) {
+    return '/search?query=%27%27&show=vendors'
+  }
+  return '/search?query=%27%27&show=all'
+}
+
 
 const homePage = (props) => {
   const { history } = props
@@ -280,12 +291,15 @@ const homePage = (props) => {
       </div>
       <div className="category-wrapper">
         {
-          categories.map(item => (<Card className="category-card" key={item.key}>
-            <CardMedia>
-              <img src={item.image} alt="Explore Categories" style={{ objectFit: 'cover' }}/>
-            </CardMedia>
-            <CardTitle title={item.title} />
-          </Card>))
+          categories.map(item => (
+            <Card className="category-card" key={item.key}>
+              <Link to={generateCategorySearchLink(item.key)}>
+                <CardMedia>
+                  <img src={item.image} alt="Explore Categories" style={{ objectFit: 'cover' }} />
+                </CardMedia>
+                <CardTitle title={item.title} />
+              </Link>
+            </Card>))
         }
       </div>
 
