@@ -483,7 +483,7 @@ class EditLocationProfile extends React.Component {
                         editLocationVideo(video, values.title, values.url, locationId)
                       }}
                       onDelete={() => {
-                        removeLocationVideo(video, videoType, locationId)
+                        removeLocationVideo(video, locationId)
                         this.handleEditVideoClose()
                       }}
                       initialValues={{ title: video.title, url: video.url }}
