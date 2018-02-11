@@ -265,7 +265,7 @@ class EditProfile extends React.Component {
     const isPublic = get(profile, 'public', false)
     const video = get(userProfile, 'video', '')[0]
     let videoType = 0
-    if (video) videoType = video.url.indexOf('youtube') > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo 
+    if (video) videoType = video.url.indexOf('youtube') > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo
 
     const addYoutubeActions = [
       <FlatButton
@@ -569,7 +569,7 @@ class EditProfile extends React.Component {
                 labelColor="#fff"
                 labelPosition="before"
                 icon={<EditIcon />}
-                label={video.title}
+                label='Edit Video'
                 buttonStyle={{ borderRadius: 5 }}
                 style={{ marginRight: 5 }}
                 key={video.title}
