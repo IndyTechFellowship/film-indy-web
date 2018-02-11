@@ -5,7 +5,6 @@ import { Field, reduxForm } from 'redux-form'
 import TextField from 'material-ui/TextField'
 import Toggle from 'material-ui/Toggle'
 import { Card, CardTitle } from 'material-ui/Card'
-import Avatar from 'material-ui/Avatar'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import Dialog from 'material-ui/Dialog'
@@ -24,7 +23,9 @@ import AddVideoForm from '../profile/AddVideoForm'
 import EditVideoForm from '../profile/EditVideoForm'
 import YoutubeIcon from '../profile/YoutubeLogo'
 import VimeoIcon from '../profile/VimeoLogo'
+import ManagePhotosModal from '../common/ManagePhotosModal'
 import States from './States'
+import Gallery from '../common/Gallery'
 import './EditLocationProfile.css'
 
 
@@ -41,23 +42,6 @@ const styles = {
     margin: 6
   }
 }
-
-const FileUploader = props => (
-  <input
-    name="myFile"
-    type="file"
-    style={{ display: 'none' }}
-    onChange={(event) => {
-      const { locationId, uploadFile, updateLocationProfile } = props
-      const file = event.target.files[0]
-      const fbFilePath = `/images/locations/account/${locationId}/account_image`
-      uploadFile(fbFilePath, file).then((response) => {
-        const downloadUrl = response.uploadTaskSnaphot.downloadURL
-        updateLocationProfile({ profileImage: downloadUrl }, locationId)
-      })
-    }}
-  />
-)
 
 const renderTextField = ({ input, name, label, meta: { touched, error }, ...custom }) => (
   <TextField
@@ -83,7 +67,8 @@ class EditLocationProfile extends React.Component {
       addCreditDialogOpen: false,
       addYoutubeDialogOpen: false,
       addVimeoDialogOpen: false,
-      editVideoDialogOpen: false
+      editVideoDialogOpen: false,
+      managePhotosDiaglogOpen: false
     })
     this.handleAddLinkClose = this.handleAddLinkClose.bind(this)
     this.handleAddLinkOpen = this.handleAddLinkOpen.bind(this)
@@ -140,13 +125,13 @@ class EditLocationProfile extends React.Component {
       addLinkToLocationProfile, removeLocationProfileLink, editLocationProfileLink, addVimeoToLocationProfile, addYoutubeToLocationProfile,
       editLocationVideo, removeLocationVideo, updateLocationProfile } = this.props
     if (locationProfile) {
+      const displayImages = get(locationProfile, 'displayImages', [])
       const locationLinks = get(locationProfile, 'links', [])
       const isPublic = get(locationProfile, 'public', false)
       const video = get(locationProfile, 'video', '')[0]
       let videoType = 0
-      if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo
+      if (video) videoType = video.url.indexOf('youtube') > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo
 
-      const profileImageUrl = get(locationProfile, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')
       const addLinkActions = [
         <FlatButton
           label="Cancel"
@@ -221,23 +206,40 @@ class EditLocationProfile extends React.Component {
               </div>
             </Card>
           </div>
+          <div style={{ paddingTop: 30 }}>
+            <Card style={styles.card}>
+              <CardTitle style={{ textAlign: 'left' }}title="Photos" />
+              <Gallery
+                type="edit"
+                photos={displayImages.map(image => ({
+                  src: image,
+                  height: 3,
+                  width: 4
+                }))}
+              />
+              <RaisedButton
+                style={{
+                  borderRadius: 5,
+                  marginTop: 20,
+                  marginLeft: 10 }}
+                label="Manage Photos"
+                onClick={() => this.setState({ managePhotosDiaglogOpen: true })}
+              />
+              <ManagePhotosModal
+                displayImages={displayImages}
+                locationId={locationId}
+                fbFilePath={`/images/locations/account/${locationId}/account_image`}
+                uploadFile={firebase.uploadFile}
+                updateLocationProfile={updateLocationProfile}
+                open={this.state.managePhotosDiaglogOpen}
+                onCancel={() => this.setState({ managePhotosDiaglogOpen: false })}
+              />
+            </Card>
+          </div>
           <div style={{ display: 'flex', marginTop: 30 }}>
             <Card style={styles.card}>
               <CardTitle style={{ textAlign: 'left' }}title="General" />
               <div style={{ display: 'flex', justifyContent: 'left', paddingTop: 30 }}>
-                <div>
-                  <Avatar src={profileImageUrl} style={{ borderRadius: 5, objectFit: 'cover' }} size={180} />
-                  <RaisedButton
-                    style={{ border: 'solid 2px #4A90E2', borderRadius: 5, marginTop: 40 }}
-                    labelColor="#06397A"
-                    className="imageText"
-                    label="Upload Picture"
-                    labelPosition="before"
-                    containerElement="label"
-                  >
-                    <FileUploader locationId={locationId} uploadFile={firebase.uploadFile} updateLocationProfile={updateLocationProfile} />
-                  </RaisedButton>
-                </div>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', marginLeft: '25px' }}>
                   <div>
                     <form onSubmit={handleSubmit(values => updateLocationProfile(values, locationId))}>
@@ -542,7 +544,7 @@ EditLocationProfile.propTypes = {
     email: PropTypes.string,
     name: PropTypes.string,
     phone: PropTypes.string,
-    website: PropTypes.string,
+    website: PropTypes.string
   }),
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
