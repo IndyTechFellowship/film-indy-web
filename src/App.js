@@ -198,7 +198,9 @@ class App extends React.Component {
       open: false,
       signedOut: false,
       addVendorModalOpen: false,
-      addLocationModalOpen: false
+      addLocationModalOpen: false,
+      displayVendors: false,
+      displayLocations: false
     }
     this.handleAvatarTouch = this.handleAvatarTouch.bind(this)
     this.handleDropdownClose = this.handleDropdownClose.bind(this)
@@ -242,7 +244,7 @@ class App extends React.Component {
       signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors,
       submitVendorCreate, createVendor, usersLocations, submitLocationCreate, createLocation,
       getDefaultAccountImages } = this.props
-    const { addVendorModalOpen, addLocationModalOpen } = this.state
+    const { addVendorModalOpen, addLocationModalOpen, showSubMenu } = this.state
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const parsed = QueryString.parse(location.search)
@@ -411,12 +413,13 @@ class App extends React.Component {
           targetOrigin={{ horizontal: 'left', vertical: 'top' }}
           onRequestClose={this.handleDropdownClose}
         >
-          <Menu>
+          <Menu >
             { uid ? ( // renders dropdown items depending on if logged in
               <div>
-                <Link to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
-                <Link to={{ pathname: '/profile', search: `?query=${uid}` }}><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
+                <Link onClick={this.handleDropdownClose} to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
+                <Link onClick={this.handleDropdownClose} to={{ pathname: '/profile', search: `?query=${uid}` }}><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
                 <VendorMenu
+                  closeDropdown={this.handleDropdownClose}
                   vendors={usersVendors}
                   onAddVendorClick={() => {
                     this.handleDropdownClose()
@@ -424,6 +427,9 @@ class App extends React.Component {
                   }}
                 />
                 <LocationMenu
+                  showSubMenu={showSubMenu}
+                  onClickSubMenu={() => this.setState({ showSubMenu: true })}
+                  closeDropdown={this.handleDropdownClose}
                   locations={usersLocations}
                   onAddLocationClick={() => {
                     this.handleDropdownClose()
@@ -521,10 +527,10 @@ const wrappedApp = firebaseConnect((props) => {
 
 export default withRouter(connect(
   state => ({ account: state.account,
-firebase: state.firebase,
-profile: state.firebase.profile,
-auth: state.firebase.auth,
+    firebase: state.firebase,
+    profile: state.firebase.profile,
+    auth: state.firebase.auth,
     usersVendors: state.firebase.data.usersVendors,
-usersLocations: state.firebase.data.usersLocations }),
+    usersLocations: state.firebase.data.usersLocations }),
   { ...accountActions },
 )(wrappedApp))
