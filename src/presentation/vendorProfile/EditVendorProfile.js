@@ -143,8 +143,6 @@ class EditVendorProfile extends React.Component {
       const vendorLinks = get(vendorProfile, 'links', [])
       const isPublic = get(vendorProfile, 'public', false)
       const video = get(vendorProfile, 'video', '')[0]
-      let videoType = 0
-      if(video) videoType = video.url.indexOf("youtube") > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo
 
       const profileImageUrl = get(vendorProfile, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')
       const addLinkActions = [
