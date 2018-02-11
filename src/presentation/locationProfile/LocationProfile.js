@@ -1,12 +1,12 @@
 import React from 'react'
 import { get } from 'lodash'
-import { Card, CardMedia, CardText, CardTitle, CardActions } from 'material-ui/Card'
+import { Card, CardText, CardTitle, CardActions } from 'material-ui/Card'
 import { Link } from 'react-router-dom'
 import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
+import Gallery from '../common/Gallery'
 import './LocationProfile.css'
 import RaisedButton from 'material-ui/RaisedButton'
 
-const defaultImage = 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png'
 
 function formatPhoneNumber(s) {
   const s2 = (`${s}`).replace(/\D/g, '')
@@ -47,13 +47,13 @@ const LocationProfilePage = (props) => {
   const locationCreator = get(locationProfile, 'creator', '')
   const locationPhone = formatPhoneNumber(get(locationProfile, 'phone', ''))
   const locationName = get(locationProfile, 'name', '')
-  const profileImageUrl = get(locationProfile, 'profileImage', defaultImage)
   const locationEmail = get(locationProfile, 'email', '')
   const locationBio = get(locationProfile, 'aboutUs', '')
   const locationLinks = get(locationProfile, 'links', [])
   const locationStreet = get(locationProfile, 'addressLine1', '')
   const locationCityState = get(locationProfile, 'addressLine2', '')
   const video = get(locationProfile, 'video', '')[0]
+  const displayImages = get(locationProfile, 'displayImages', [])
   let videoType = 0
   if (video) videoType = video.url.indexOf('youtube') > -1 ? 1 : 2 // 1 for Youtube, 2 for Vimeo
 
@@ -70,10 +70,21 @@ const LocationProfilePage = (props) => {
             </div>
           ) : null
         }
+        {
+          displayImages.length !== 0 ? (
+            <Card className="profile-card">
+              <Gallery
+                type="view"
+                photos={displayImages.map(image => ({
+                  src: image,
+                  height: 3,
+                  width: 4
+                }))}
+              />
+            </Card>
+          ) : null
+        }
         <Card className="profile-card location-profile" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
-          <CardMedia className="crew-image">
-            <img src={profileImageUrl} alt="" style={{ width: 250, height: 250, objectFit: 'cover', borderBottomLeftRadius: 2, borderTopLeftRadius: 2, minWidth: 250, minHeight: 250 }} />
-          </CardMedia>
           <div style={{ minWidth: '200px', width: '100%' }}>
             <CardTitle title={locationName} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
             { locationStreet ? (
