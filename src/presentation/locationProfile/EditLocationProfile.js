@@ -31,7 +31,7 @@ import './EditLocationProfile.css'
 
 const styles = {
   card: {
-    width: '40%',
+    width: '50%',
     height: 'auto',
     marginTop: '1em',
     display: 'block',
@@ -212,9 +212,9 @@ class EditLocationProfile extends React.Component {
               <Gallery
                 type="edit"
                 photos={displayImages.map(image => ({
-                  src: image,
-                  height: 3,
-                  width: 4
+                  src: image.url,
+                  height: image.height,
+                  width: image.width
                 }))}
               />
               <RaisedButton
