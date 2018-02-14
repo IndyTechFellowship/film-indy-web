@@ -4,6 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import LinkIcon from 'material-ui/svg-icons/image/photo-library'
 import Gallery from 'react-photo-gallery'
 import Lightbox from 'react-images'
+import './Gallery.css'
 
 class PhotoGallery extends React.Component {
   constructor() {
