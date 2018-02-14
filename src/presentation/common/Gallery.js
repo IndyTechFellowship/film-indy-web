@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import RaisedButton from 'material-ui/RaisedButton'
 import LinkIcon from 'material-ui/svg-icons/image/photo-library'
 import Gallery from 'react-photo-gallery'
-import Lightbox from 'react-image-lightbox'
+import Lightbox from 'react-images'
+import './Gallery.css'
 
 class PhotoGallery extends React.Component {
   constructor() {
@@ -43,7 +44,7 @@ class PhotoGallery extends React.Component {
     const { photos, type } = this.props
     return (
       <div>
-        <Gallery photos={photos.slice(0, 2)} onClick={this.openLightbox} colums={10} />
+        <Gallery margin={0} photos={photos.slice(0, 2)} onClick={this.openLightbox} colums={2} />
         {
           photos.length > 1 ? (
             <RaisedButton
@@ -58,18 +59,17 @@ class PhotoGallery extends React.Component {
             />
           ) : null
         }
-        {
-          lightboxIsOpen ? (
-            <Lightbox
-              mainSrc={photos[this.state.currentImage].src}
-              nextSrc={photos[(this.state.currentImage + 1) % photos.length].src}
-              prevSrc={photos[(this.state.currentImage + 1) % photos.length].src}
-              onCloseRequest={this.closeLightbox}
-              onMoveNextRequest={this.gotoNext}
-              onMoxPrevRequest={this.gotoPrevious}
-            />
-          ) : null
-        }
+        <Lightbox
+          onClickThumbnail={i => this.setState({ currentImage: i })}
+          showThumbnails
+          backdropClosesModal
+          currentImage={this.state.currentImage}
+          images={photos}
+          isOpen={lightboxIsOpen}
+          onClickPrev={this.gotoPrevious}
+          onClickNext={this.gotoNext}
+          onClose={this.closeLightbox}
+        />
       </div>
     )
   }
