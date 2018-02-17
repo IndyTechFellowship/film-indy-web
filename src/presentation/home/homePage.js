@@ -133,6 +133,12 @@ const AutoCompleteBar = connectAutoComplete(
                 {`${hit.locationName}`}
               </MenuItem>
             )
+          } else if (hit.type) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.type}`}
+              </MenuItem>
+            )
           }
           return (null)
         }}
@@ -160,6 +166,12 @@ const AutoCompleteBar = connectAutoComplete(
               return (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <strong>Locations</strong>
+                </div>
+              )
+            } else if (section.index === 'locationTypes') {
+              return (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <strong>Locations Types</strong>
                 </div>
               )
             }
@@ -249,6 +261,7 @@ const homePage = (props) => {
                 <Index indexName="names" />
                 <Index indexName="vendors" />
                 <Index indexName="locations" />
+                <Index indexName="locationTypes" />
                 <AutoCompleteBar
                   onEnterHit={() => {
                     if (this.searchQuery) {
@@ -258,13 +271,15 @@ const homePage = (props) => {
                   onUpdateInput={query => this.searchQuery = query}
                   onSuggestionClicked={(suggestion, index) => {
                     if (index === 0) {
-                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all&role=${encodeURIComponent(suggestion.roleName)}` })
+                      history.push({ pathname: '/search', search: `?query=''&show=crew&role=${encodeURIComponent(suggestion.roleName)}` })
                     } else if (index === 1) {
                       history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
                     } else if (index === 2) {
                       history.push({ pathname: `/vendor/${suggestion.objectID}` })
                     } else if (index === 3) {
                       history.push({ pathname: `/location/${suggestion.objectID}` })
+                    } else if (index === 4) {
+                      history.push({ pathname: '/search', search: `?query=''&show=locations&locationType=${encodeURIComponent(suggestion.type)}` })
                     }
                   }}
                 />
@@ -276,9 +291,9 @@ const homePage = (props) => {
               style={{ display: 'inline' }}
               onClick={() => {
                 if (this.searchQuery && this.searchQuery !== '') {
-                  history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}` })
+                  history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
                 } else {
-                  history.push({ pathname: '/search', search: `?query=${encodeURIComponent('')}` })
+                  history.push({ pathname: '/search', search: `?query=${encodeURIComponent('')}&show=all` })
                 }
               }}
             />

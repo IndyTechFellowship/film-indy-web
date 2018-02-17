@@ -7,6 +7,7 @@ import EditLocationProfile from '../../presentation/locationProfile/EditLocation
 import * as accountActions from '../../redux/actions/creators/accountActions'
 import * as profileActions from '../../redux/actions/creators/profileActions'
 import * as locationActions from '../../redux/actions/creators/locationActions'
+import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
 import AuthenticatedOwner from '../../AuthenticatedLocationOwner'
 
 const createInitialValues = (state, props) => {
@@ -29,7 +30,8 @@ EditLocationProfileContainer.propTypes = {
 const WrappedEditLocationProfile = firebaseConnect((props) => {
   const locationId = get(props, 'match.params.locationId', '')
   return [
-    `/locationProfiles/${locationId}`
+    `/locationProfiles/${locationId}`,
+    '/locationTypes'
   ]
 })(AuthenticatedOwner(EditLocationProfileContainer))
 export default withRouter(connect(
@@ -38,8 +40,9 @@ export default withRouter(connect(
     auth: state.firebase.auth,
     locationProfile: get(state, `firebase.data.locationProfiles.${get(props, 'match.params.locationId', '')}`),
     locationId: get(props, 'match.params.locationId', ''),
+    locationTypes: get(state, 'firebase.data.locationTypes', []),
     initialValues: createInitialValues(state, props)
   }),
-  { ...accountActions, ...profileActions, ...locationActions },
+  { ...accountActions, ...profileActions, ...locationActions, ...algoliaActions },
 )(WrappedEditLocationProfile))
 
