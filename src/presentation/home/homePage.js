@@ -36,7 +36,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 
 // Material UI SVG Icons
 import SearchIcon from 'material-ui/svg-icons/action/search'
-import search from 'material-ui/svg-icons/action/search'
 
 const styles = {
   container: {
