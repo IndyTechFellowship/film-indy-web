@@ -238,7 +238,7 @@ class EditLocationProfile extends React.Component {
               <div className="toggleContainer">
                 <div className="toggle">
                   <Toggle
-                    label="Public"
+                    label={isPublic ? 'Public' : 'Private'}
                     toggled={isPublic}
                     onToggle={(event, toggleValue) => {
                       updateLocationProfile({ public: toggleValue }, locationId)
