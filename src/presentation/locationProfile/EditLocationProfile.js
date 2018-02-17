@@ -15,6 +15,7 @@ import { InputLabel } from 'material-ui-next/Input'
 import { MenuItem } from 'material-ui-next/Menu'
 import { Link } from 'react-router-dom'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
+import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import BackIcon from 'material-ui/svg-icons/hardware/keyboard-backspace'
 import RenderSelectField from './CustomSelect'
 import AddLinkForm from '../profile/AddLinkForm'
@@ -24,6 +25,8 @@ import EditVideoForm from '../profile/EditVideoForm'
 import YoutubeIcon from '../profile/YoutubeLogo'
 import VimeoIcon from '../profile/VimeoLogo'
 import ManagePhotosModal from '../common/ManagePhotosModal'
+import SearchAndSelectLocationTypes from '../common/SearchAndSelectLocationTypes'
+import Chip from 'material-ui/Chip'
 import States from './States'
 import Gallery from '../common/Gallery'
 import './EditLocationProfile.css'
@@ -68,7 +71,8 @@ class EditLocationProfile extends React.Component {
       addYoutubeDialogOpen: false,
       addVimeoDialogOpen: false,
       editVideoDialogOpen: false,
-      managePhotosDiaglogOpen: false
+      managePhotosDiaglogOpen: false,
+      addLocationTypeOpen: false
     })
     this.handleAddLinkClose = this.handleAddLinkClose.bind(this)
     this.handleAddLinkOpen = this.handleAddLinkOpen.bind(this)
@@ -80,6 +84,19 @@ class EditLocationProfile extends React.Component {
     this.handleEditLinkOpen = this.handleEditLinkOpen.bind(this)
     this.handleEditVideoClose = this.handleEditVideoClose.bind(this)
     this.handleEditVideoOpen = this.handleEditVideoOpen.bind(this)
+    this.handleSaveLocationTypes = this.handleSaveLocationTypes.bind(this)
+  }
+  componentWillReceiveProps(props) {
+    const { locationProfile, locationTypes } = props
+    const locationTypesIds = get(locationProfile, 'locationTypes', [])
+    const enrichedLocationTypes = locationTypesIds.reduce((acc, id) => {
+      const locationType = get(locationTypes, id)
+      if (locationType) {
+        return ([...acc, { ...locationType, objectID: id }])
+      }
+      return acc
+    }, [])
+    this.setState({ selectedLocationTypes: enrichedLocationTypes })
   }
 
   handleEditLinkClose() {
@@ -120,10 +137,22 @@ class EditLocationProfile extends React.Component {
   handleEditVideoClose() {
     this.setState({ editVideoDialogOpen: false })
   }
+  handleSaveLocationTypes() {
+    const { locationId, firebase, partialUpdateAlgoliaObject } = this.props
+    const { selectedLocationTypes } = this.state
+    const locationProfilePath = `/locationProfiles/${locationId}`
+    const locationTypeIds = selectedLocationTypes.map(loc => loc.objectID)
+    firebase.update(locationProfilePath, { locationTypes: locationTypeIds })
+    partialUpdateAlgoliaObject('locations', {
+      objectID: locationId,
+      types: selectedLocationTypes.map(loc => loc.type)
+    })
+  }
   render() {
     const { locationProfile, locationId, firebase, pristine, submitting, handleSubmit, remoteSubmitForm, initForm,
       addLinkToLocationProfile, removeLocationProfileLink, editLocationProfileLink, addVimeoToLocationProfile, addYoutubeToLocationProfile,
-      editLocationVideo, removeLocationVideo, updateLocationProfile } = this.props
+      editLocationVideo, removeLocationVideo, updateLocationProfile, partialUpdateAlgoliaObject } = this.props
+    const selectedLocationTypes = get(this.state, 'selectedLocationTypes', [])
     if (locationProfile) {
       const displayImages = get(locationProfile, 'displayImages', [])
       const locationLinks = get(locationProfile, 'links', [])
@@ -179,6 +208,22 @@ class EditLocationProfile extends React.Component {
           }}
         />
       ]
+
+      const dialogActions = [
+        <FlatButton
+          label="Cancel"
+          primary
+          onClick={() => this.setState({ addLocationTypeOpen: false })}
+        />,
+        <FlatButton
+          label="Save"
+          primary
+          onClick={() => {
+            this.setState({ updated: true, addLocationTypeOpen: false })
+            this.handleSaveLocationTypes()
+          }}
+        />
+      ]
       return (
         <div style={{ paddingTop: 10, display: 'flex', flexDirection: 'column' }}>
           <div style={{ textAlign: 'left', marginLeft: 20, marginTop: 5 }}>
@@ -197,6 +242,10 @@ class EditLocationProfile extends React.Component {
                     toggled={isPublic}
                     onToggle={(event, toggleValue) => {
                       updateLocationProfile({ public: toggleValue }, locationId)
+                      partialUpdateAlgoliaObject('locations', {
+                        objectID: locationId,
+                        public: toggleValue
+                      })
                     }}
                   />
                 </div>
@@ -529,6 +578,62 @@ class EditLocationProfile extends React.Component {
               }
             </Card>
           </div>
+          <div style={{ paddingTop: 30 }}>
+            <Card className="profile-card big-card" style={styles.card}>
+              <CardTitle style={{ textAlign: 'left' }} title="Location Types" />
+              <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+                {
+                  get(this, 'state.selectedLocationTypes', []).map(locationType => (
+                    <Chip
+                      onRequestDelete={() => {
+                        const newLocationTypes = selectedLocationTypes.filter(loc => loc.type !== locationType.type)
+                        const locationProfilePath = `/locationProfiles/${locationId}`
+                        const locationTypeIds = newLocationTypes.map(loc => loc.objectID)
+                        firebase.update(locationProfilePath, { locationTypes: locationTypeIds })
+                        partialUpdateAlgoliaObject('locations', {
+                          objectID: locationId,
+                          types: newLocationTypes.map(loc => loc.type)
+                        })
+                      }}
+                      style={{ marginLeft: 5, marginBottom: 10 }}
+                    >
+                      {locationType.type}
+                    </Chip>
+                  ))
+                }
+              </div>
+              <div>
+                <RaisedButton
+                  style={{ border: 'solid 2px #4A90E2',
+                    borderRadius: 5,
+                    marginTop: 20 }}
+                  label="Add Location Type"
+                  icon={<AddIcon />}
+                  onClick={() => this.setState({ addLocationTypeOpen: true })}
+                />
+                <Dialog
+                  title="Add Location Types"
+                  actions={dialogActions}
+                  modal={false}
+                  autoScrollBodyContent
+                  open={this.state.addLocationTypeOpen}
+                  onRequestClose={this.handleClose}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+                    <SearchAndSelectLocationTypes
+                      page="editLocationProfile"
+                      onItemSelected={(selectedItems, itemSelected, type) => {
+                        if (type === 'add') {
+                          this.setState({ selectedLocationTypes: [...selectedLocationTypes, itemSelected] })
+                        }
+                      }}
+                      locationTypeFilters={selectedLocationTypes.map(loc => loc.type)}
+                    />
+                  </div>
+                </Dialog>
+              </div>
+            </Card>
+          </div>
 
         </div>
       )
@@ -546,6 +651,13 @@ EditLocationProfile.propTypes = {
     phone: PropTypes.string,
     website: PropTypes.string
   }),
+  locationTypes: PropTypes.oneOfType([
+    PropTypes.objectOf(PropTypes.shape({
+      category: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired
+    })).isRequired,
+    PropTypes.array
+  ]).isRequired,
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
@@ -559,7 +671,11 @@ EditLocationProfile.propTypes = {
   addVimeoToLocationProfile: PropTypes.func.isRequired,
   removeLocationVideo: PropTypes.func.isRequired,
   editLocationVideo: PropTypes.func.isRequired,
-  updateLocationProfile: PropTypes.func.isRequired
+  updateLocationProfile: PropTypes.func.isRequired,
+  partialUpdateAlgoliaObject: PropTypes.func.isRequired,
+  firebase: PropTypes.shape({
+    set: PropTypes.func
+  }).isRequired
 }
 
 EditLocationProfile.defaultProps = {

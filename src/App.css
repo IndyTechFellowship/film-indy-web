@@ -56,6 +56,7 @@ a { text-decoration: none; }
     margin-right: 1em;
     margin-top: 0.25em;
     cursor: pointer;
+    border: 2px solid white !important;
 }
 
 .arrowIcon {

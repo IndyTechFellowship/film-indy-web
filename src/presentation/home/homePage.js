@@ -133,6 +133,12 @@ const AutoCompleteBar = connectAutoComplete(
                 {`${hit.locationName}`}
               </MenuItem>
             )
+          } else if (hit.type) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.type}`}
+              </MenuItem>
+            )
           }
           return (null)
         }}
@@ -160,6 +166,12 @@ const AutoCompleteBar = connectAutoComplete(
               return (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <strong>Locations</strong>
+                </div>
+              )
+            } else if (section.index === 'locationTypes') {
+              return (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <strong>Locations Types</strong>
                 </div>
               )
             }
@@ -218,111 +230,120 @@ const generateCategorySearchLink = (index) => {
   return '/search?query=%27%27&show=all'
 }
 
-
-const homePage = (props) => {
-  const { history } = props
-  const sliderSettings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    swipeToSlide: true,
-    slidesToShow: 6,
-    slidesToScroll: 2,
-    nextArrow: <Arrow direction="nextArrow" />,
-    prevArrow: <Arrow direction="prevArrow" />
+class homePage extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { searchQuery: '' }
   }
-  return (
-    <div className="home-container">
-      <div className="bg-image">
-        <div className="header-wrapper">
-          <div className="main-header">Film Indy</div>
-          <div className="subheader">If it isn't on video,</div>
-          <div className="subheader">it didn't happen.</div>
-          <Card className="searchCard" style={{ width: 700 }}>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <SearchIcon className="searchIcon" />
-              <InstantSearch
-                appId={ALGOLIA_APP_ID}
-                apiKey={ALGOLIA_SEARCH_KEY}
-                indexName="roles"
-              >
-                <Index indexName="names" />
-                <Index indexName="vendors" />
-                <Index indexName="locations" />
-                <AutoCompleteBar
-                  onEnterHit={() => {
-                    if (this.searchQuery) {
-                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
-                    }
-                  }}
-                  onUpdateInput={query => this.searchQuery = query}
-                  onSuggestionClicked={(suggestion, index) => {
-                    if (index === 0) {
-                      history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all&role=${encodeURIComponent(suggestion.roleName)}` })
-                    } else if (index === 1) {
-                      history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
-                    } else if (index === 2) {
-                      history.push({ pathname: `/vendor/${suggestion.objectID}` })
-                    } else if (index === 3) {
-                      history.push({ pathname: `/location/${suggestion.objectID}` })
-                    }
-                  }}
-                />
-              </InstantSearch>
-            </div>
-            <RaisedButton
-              primary
-              label="Search"
-              style={{ display: 'inline' }}
-              onClick={() => {
-                if (this.searchQuery && this.searchQuery !== '') {
-                  history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}` })
-                } else {
-                  history.push({ pathname: '/search', search: `?query=${encodeURIComponent('')}` })
-                }
-              }}
-            />
-          </Card>
+  render() {
+    const { history } = this.props
+    const { searchQuery } = this.state
+    const sliderSettings = {
+      dots: true,
+      infinite: false,
+      speed: 500,
+      swipeToSlide: true,
+      slidesToShow: 6,
+      slidesToScroll: 2,
+      nextArrow: <Arrow direction="nextArrow" />,
+      prevArrow: <Arrow direction="prevArrow" />
+    }
+    return (
+      <div className="home-container">
+        <div className="bg-image">
+          <div className="header-wrapper">
+            <div className="main-header">Film Indy</div>
+            <div className="subheader">If it isn't on video,</div>
+            <div className="subheader">it didn't happen.</div>
+            <Card className="searchCard" style={{ width: 700 }}>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <SearchIcon className="searchIcon" />
+                <InstantSearch
+                  appId={ALGOLIA_APP_ID}
+                  apiKey={ALGOLIA_SEARCH_KEY}
+                  indexName="roles"
+                >
+                  <Index indexName="names" />
+                  <Index indexName="vendors" />
+                  <Index indexName="locations" />
+                  <Index indexName="locationTypes" />
+                  <AutoCompleteBar
+                    onEnterHit={() => {
+                      if (searchQuery) {
+                        history.push({ pathname: '/search', search: `?query=${encodeURIComponent(searchQuery)}&show=all` })
+                      }
+                    }}
+                    onUpdateInput={query => this.setState({ searchQuery: query })}
+                    onSuggestionClicked={(suggestion, index) => {
+                      if (index === 0) {
+                        history.push({ pathname: '/search', search: `?query=''&show=crew&role=${encodeURIComponent(suggestion.roleName)}` })
+                      } else if (index === 1) {
+                        history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
+                      } else if (index === 2) {
+                        history.push({ pathname: `/vendor/${suggestion.objectID}` })
+                      } else if (index === 3) {
+                        history.push({ pathname: `/location/${suggestion.objectID}` })
+                      } else if (index === 4) {
+                        history.push({ pathname: '/search', search: `?query=''&show=locations&locationType=${encodeURIComponent(suggestion.type)}` })
+                      }
+                    }}
+                  />
+                </InstantSearch>
+              </div>
+              <RaisedButton
+                primary
+                label="Search"
+                style={{ display: 'inline' }}
+                onClick={() => {
+                  if (searchQuery && searchQuery !== '') {
+                    history.push({ pathname: '/search', search: `?query=${encodeURIComponent(searchQuery)}&show=all` })
+                  } else {
+                    history.push({ pathname: '/search', search: `?query=${encodeURIComponent('')}&show=all` })
+                  }
+                }}
+              />
+            </Card>
+          </div>
         </div>
-      </div>
 
-      <div className="category-wrapper header">
-        <div className="header">Explore Indy</div>
-      </div>
-      <div className="category-wrapper">
-        {
-          categories.map(item => (
-            <Card className="category-card" key={item.key}>
-              <Link to={generateCategorySearchLink(item.key)}>
-                <CardMedia>
-                  <img src={item.image} alt="Explore Categories" style={{ objectFit: 'cover' }} />
-                </CardMedia>
-                <CardTitle title={item.title} />
-              </Link>
-            </Card>))
-        }
-      </div>
-
-      <div className="roles-wrapper header">
-        <div className="header">Popular Roles</div>
-      </div>
-      <div className="roles-wrapper">
-        <ImageSlider className="imageSlider" {...sliderSettings}>
+        <div className="category-wrapper header">
+          <div className="header">Explore Indy</div>
+        </div>
+        <div className="category-wrapper">
           {
-            roles.map(item => (
+            categories.map(item => (
               <Card className="category-card" key={item.key}>
-                <Link to={`/search?query=${encodeURIComponent(item.title)}`} style={{ textDecoration: 'none' }}>
+                <Link to={generateCategorySearchLink(item.key)}>
                   <CardMedia>
-                    <img src={item.image} alt="Explore Roles" style={{ objectFit: 'cover' }} />
+                    <img src={item.image} alt="Explore Categories" style={{ objectFit: 'cover' }} />
                   </CardMedia>
-                  <CardText className="popular-roles-text">{item.title}</CardText>
+                  <CardTitle title={item.title} />
                 </Link>
               </Card>))
           }
-        </ImageSlider>
+        </div>
+
+        <div className="roles-wrapper header">
+          <div className="header">Popular Roles</div>
+        </div>
+        <div className="roles-wrapper">
+          <ImageSlider className="imageSlider" {...sliderSettings}>
+            {
+              roles.map(item => (
+                <Card className="category-card" key={item.key}>
+                  <Link to={`/search?query=${encodeURIComponent(item.title)}&show=all`} style={{ textDecoration: 'none' }}>
+                    <CardMedia>
+                      <img src={item.image} alt="Explore Roles" style={{ objectFit: 'cover' }} />
+                    </CardMedia>
+                    <CardText className="popular-roles-text">{item.title}</CardText>
+                  </Link>
+                </Card>))
+            }
+          </ImageSlider>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 

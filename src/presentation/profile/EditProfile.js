@@ -748,12 +748,11 @@ class EditProfile extends React.Component {
               >
                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                   <SearchAndSelectRoles
+                    page="editProfile"
                     searchForRoles={searchForRoles}
                     onItemSelected={(selectedItems, itemSelected, type) => {
                       if (type === 'add') {
                         this.setState({ selectedRoles: [...selectedRoles, itemSelected.roleName] })
-                      } else if (type === 'remove') {
-                        this.setState({ selectedRoles: selectedRoles.filter(role => role !== itemSelected.roleName) })
                       }
                     }}
                     roleSearchResults={roleSearchResults}

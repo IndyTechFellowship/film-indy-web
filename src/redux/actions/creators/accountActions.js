@@ -159,7 +159,8 @@ export const createLocation = locationName => (dispatch) => {
     type: CREATE_LOCATION,
     payload: locationRef.push({
       creator: uid,
-      name: locationName
+      name: locationName,
+      public: true
     }).then((ref) => {
       dispatch(algoliaActions.createLocationProfileRecord(ref.key, { locationName }))
     })
