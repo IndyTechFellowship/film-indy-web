@@ -326,7 +326,7 @@ const homePage = (props) => {
           {
             roles.map(item => (
               <Card className="category-card" key={item.key}>
-                <Link to={`/search?query=${encodeURIComponent(item.title)}`} style={{ textDecoration: 'none' }}>
+                <Link to={`/search?query=${encodeURIComponent(item.title)}&show=all`} style={{ textDecoration: 'none' }}>
                   <CardMedia>
                     <img src={item.image} alt="Explore Roles" style={{ objectFit: 'cover' }} />
                   </CardMedia>
