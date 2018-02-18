@@ -6,6 +6,7 @@ a { text-decoration: none; }
 
 .App {
   text-align: center;
+  overflow-x: hidden;
 }
 
 .App-logo {
@@ -89,12 +90,16 @@ a { text-decoration: none; }
 .menuSearchCard {
   position: relative;
   display: block !important;
-  /*margin: auto !important;*/
   margin-top: 10px !important;
   margin-bottom: 25px !important;
   margin-left: 4em !important;
-  /*margin-bottom: 1em !important;*/
 }
+
+/*.menuSearchCard div, .menuSearchCard input {
+  display: block;
+  margin: auto;
+  width: 100% !important;
+}*/
 
 .searchIcon {
   color: #38b5e6 !important;
@@ -107,4 +112,18 @@ a { text-decoration: none; }
 .avatar {
   object-fit: cover;
   border: 0;
+}
+
+@media (max-width: 400px) {
+  .logo {
+    margin-left: 0;
+    width: 2em;
+  }
+
+  .menuSearchCard {
+    margin: 0 !important;
+  }
+  .menuSearchCard div, .menuSearchCard input {
+    width: auto !important;
+  }
 }
