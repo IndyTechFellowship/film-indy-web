@@ -4,8 +4,8 @@ import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { InstantSearch, Index } from 'react-instantsearch/dom'
-import { connectAutoComplete } from 'react-instantsearch/connectors'
+import { InstantSearch, Index, Configure, CurrentRefinements } from 'react-instantsearch/dom'
+import { connectAutoComplete, connectMenu } from 'react-instantsearch/connectors'
 import Autosuggest from 'react-autosuggest'
 import QueryString from 'query-string'
 import 'react-instantsearch-theme-algolia/style.css'
@@ -53,6 +53,8 @@ import './App.css'
 import Logo from './film-indy-logo.png'
 
 import * as accountActions from './redux/actions/creators/accountActions'
+
+const VirtualMenu = connectMenu(() => null)
 
 const styles = {
   container: {
@@ -277,9 +279,27 @@ class App extends React.Component {
                       apiKey={ALGOLIA_SEARCH_KEY}
                       indexName="roles"
                     >
-                      <Index indexName="names" />
-                      <Index indexName="vendors" />
-                      <Index indexName="locations" />
+                      <Index indexName="names">
+                        <Configure />
+                        <CurrentRefinements
+                          transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                        />
+                        <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                      </Index>
+                      <Index indexName="vendors">
+                        <Configure />
+                        <CurrentRefinements
+                          transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                        />
+                        <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                      </Index>
+                      <Index indexName="locations">
+                        <Configure />
+                        <CurrentRefinements
+                          transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                        />
+                        <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                      </Index>
                       <Index indexName="locationTypes" />
                       <AutoCompleteBar
                         onUpdateInput={query => this.searchQuery = query}

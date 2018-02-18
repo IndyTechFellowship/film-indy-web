@@ -2,8 +2,8 @@ import React from 'react'
 import '../../App.css'
 import './homePage.css'
 import PropTypes from 'prop-types'
-import { InstantSearch, Index } from 'react-instantsearch/dom'
-import { connectAutoComplete } from 'react-instantsearch/connectors'
+import { InstantSearch, Index, CurrentRefinements, Configure } from 'react-instantsearch/dom'
+import { connectAutoComplete, connectMenu } from 'react-instantsearch/connectors'
 import 'react-instantsearch-theme-algolia/style.css'
 import ImageSlider from 'react-slick'
 import { Link } from 'react-router-dom'
@@ -36,6 +36,8 @@ import RaisedButton from 'material-ui/RaisedButton'
 
 // Material UI SVG Icons
 import SearchIcon from 'material-ui/svg-icons/action/search'
+
+const VirtualMenu = connectMenu(() => null)
 
 const styles = {
   container: {
@@ -263,9 +265,27 @@ class homePage extends React.Component {
                   apiKey={ALGOLIA_SEARCH_KEY}
                   indexName="roles"
                 >
-                  <Index indexName="names" />
-                  <Index indexName="vendors" />
-                  <Index indexName="locations" />
+                  <Index indexName="names">
+                    <Configure />
+                    <CurrentRefinements
+                      transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                    />
+                    <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                  </Index>
+                  <Index indexName="vendors">
+                    <Configure />
+                    <CurrentRefinements
+                      transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                    />
+                    <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                  </Index>
+                  <Index indexName="locations">
+                    <Configure />
+                    <CurrentRefinements
+                      transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                    />
+                    <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                  </Index>
                   <Index indexName="locationTypes" />
                   <AutoCompleteBar
                     onEnterHit={() => {
