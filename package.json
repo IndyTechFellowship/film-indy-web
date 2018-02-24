@@ -44,6 +44,7 @@
     "redux-form": "^7.1.2",
     "redux-form-material-ui": "^4.3.2",
     "redux-promise-middleware": "^4.4.1",
+    "redux-responsive": "^4.3.5",
     "redux-thunk": "^2.2.0",
     "slick-carousel": "^1.8.1",
     "xlsx": "^0.11.4"
