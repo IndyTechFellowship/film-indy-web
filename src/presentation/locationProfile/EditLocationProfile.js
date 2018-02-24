@@ -234,7 +234,8 @@ class EditLocationProfile extends React.Component {
             </Link>
           </div>
           <div style={{ paddingTop: 30 }}>
-            <Card style={styles.card}>
+            <Card className="profile-card" >
+
               <div className="toggleContainer">
                 <div className="toggle">
                   <Toggle
@@ -249,14 +250,15 @@ class EditLocationProfile extends React.Component {
                     }}
                   />
                 </div>
-                <div>
+                <div style={{ marginLeft: 20 }}>
                     Just here to search? Turn your profile to "Private" to not appear in other's searches.
                 </div>
               </div>
             </Card>
           </div>
           <div style={{ paddingTop: 30 }}>
-            <Card style={styles.card}>
+            <Card className="profile-card" >
+
               <CardTitle style={{ textAlign: 'left' }}title="Photos" />
               <Gallery
                 type="edit"
@@ -286,7 +288,8 @@ class EditLocationProfile extends React.Component {
             </Card>
           </div>
           <div style={{ display: 'flex', marginTop: 30 }}>
-            <Card style={styles.card}>
+            <Card className="profile-card" >
+
               <CardTitle style={{ textAlign: 'left' }}title="General" />
               <div style={{ display: 'flex', justifyContent: 'left', paddingTop: 30 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', marginLeft: '25px' }}>
@@ -382,7 +385,8 @@ class EditLocationProfile extends React.Component {
             </Card>
           </div>
           <div style={{ paddingTop: 30 }}>
-            <Card style={styles.card}>
+            <Card className="profile-card" >
+
               <CardTitle style={{ textAlign: 'left' }} title="About Us" />
               <form onSubmit={handleSubmit(values => updateLocationProfile(values, locationId))}>
                 <div>
@@ -412,7 +416,8 @@ class EditLocationProfile extends React.Component {
             </Card>
           </div>
           <div style={{ paddingTop: 30 }}>
-            <Card className="profile-card big-card" style={styles.card}>
+            <Card className="profile-card" >
+
               <CardTitle title="Links" style={{ textAlign: 'left' }} />
               <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', paddingTop: 5 }}>
                 {locationLinks.map((link, i) => (
@@ -488,7 +493,8 @@ class EditLocationProfile extends React.Component {
           </div>
 
           <div style={{ paddingTop: 30 }}>
-            <Card className="profile-card big-card" style={styles.card}>
+            <Card className="profile-card" >
+
               <CardTitle style={{ textAlign: 'left' }} title="Featured Video" />
               { video ? (
                 <RaisedButton
@@ -579,7 +585,8 @@ class EditLocationProfile extends React.Component {
             </Card>
           </div>
           <div style={{ paddingTop: 30 }}>
-            <Card className="profile-card big-card" style={styles.card}>
+            <Card className="profile-card" >
+
               <CardTitle style={{ textAlign: 'left' }} title="Location Types" />
               <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                 {

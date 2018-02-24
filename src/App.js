@@ -314,7 +314,7 @@ class App extends React.Component {
                             label="Search"
                             labelColor="#fff"
                             backgroundColor={'#02BDF2'}
-                            style={{ height: 30, marginTop: 10, marginLeft: 30 }}
+                            className="searchButton"
                             onClick={() => {
                               if (this.searchQuery) {
                                 history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
@@ -328,7 +328,7 @@ class App extends React.Component {
                     </Col>
                   }
                 </Row>
-                {location.pathname === '/search' ?
+                { location.pathname === '/search' ?
                   (
                     <Tabs tabItemContainerStyle={{ width: '100%' }} value={showOnly}>
                       <Tab
@@ -369,13 +369,13 @@ class App extends React.Component {
                       />
                     </Tabs>
 
-                  ) : null}
+                  ) : null }
               </div>
             }
             iconElementRight={uid ? (
               <Col xs>
                 <div className="avatar-wrapper" onClick={this.handleAvatarTouch}>
-                  <Avatar className="accountIcon avatar" src={photoURL} size={60} />
+                  <Avatar className="accountIcon avatar" src={photoURL} />
                   <ArrowIcon className="arrowIcon" />
                 </div>
               </Col>
@@ -451,8 +451,14 @@ class App extends React.Component {
           <Menu >
             { uid ? ( // renders dropdown items depending on if logged in
               <div>
-                <Link onClick={this.handleDropdownClose} to="/account"><MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} /></Link>
-                <Link onClick={this.handleDropdownClose} to={{ pathname: '/profile', search: `?query=${uid}` }}><MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} /></Link>
+                <Link onClick={this.handleDropdownClose} to="/account">
+                  <MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} />
+                </Link>
+
+                <Link onClick={this.handleDropdownClose} to={{ pathname: '/profile', search: `?query=${uid}` }}>
+                  <MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} />
+                </Link>
+
                 <VendorMenu
                   closeDropdown={this.handleDropdownClose}
                   vendors={usersVendors}
@@ -461,6 +467,7 @@ class App extends React.Component {
                     this.setState({ addVendorModalOpen: true })
                   }}
                 />
+
                 <LocationMenu
                   showSubMenu={showSubMenu}
                   onClickSubMenu={() => this.setState({ showSubMenu: true })}
@@ -472,6 +479,7 @@ class App extends React.Component {
                   }}
                 />
                 <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
+
               </div>
             ) : (
               <div />
