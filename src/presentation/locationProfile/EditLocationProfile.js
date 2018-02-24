@@ -31,21 +31,6 @@ import States from './States'
 import Gallery from '../common/Gallery'
 import './EditLocationProfile.css'
 
-
-const styles = {
-  card: {
-    width: '50%',
-    height: 'auto',
-    marginTop: '1em',
-    display: 'block',
-    margin: 'auto',
-    padding: '1em'
-  },
-  chipStyle: {
-    margin: 6
-  }
-}
-
 const renderTextField = ({ input, name, label, meta: { touched, error }, ...custom }) => (
   <TextField
     hintText={label}

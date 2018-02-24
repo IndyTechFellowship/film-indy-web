@@ -30,12 +30,6 @@ import AddVideoForm from './AddVideoForm'
 import '../../App.css'
 import '../../presentation/profile/ViewProfile.css'
 
-const styles = {
-
-  chipStyle: {
-    margin: 6
-  }
-}
 const FileUploader = props => (
   <input
     name="myFile"
@@ -477,7 +471,7 @@ class EditProfile extends React.Component {
           </Card>
         </div>
         <div style={{ paddingTop: 30 }}>
-          <Card className="profile-card big-card" style="profile-card">
+          <Card className="profile-card big-card">
             <CardTitle title="Links" style={{ textAlign: 'left' }} />
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', paddingTop: 5 }}>
               {userLinks.map((link, i) => (
