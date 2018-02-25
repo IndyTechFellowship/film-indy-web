@@ -8,9 +8,15 @@
 .element {
     margin:0;
     display:inline-block;
+    cursor: pointer;
 }
+
 .unselected {
     border:4px solid transparent;
+}
+
+.unselected:hover {
+    border:4px solid #B3E5FC;
 }
 
 .selected {
