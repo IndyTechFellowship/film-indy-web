@@ -251,7 +251,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { cancelSignInUpForm, account, profile, auth, firebase,
+    const { cancelSignInUpForm, account, profile, auth, firebase, browser,
       history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn,
       signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors,
       submitVendorCreate, createVendor, usersLocations, submitLocationCreate, createLocation,
@@ -389,6 +389,7 @@ class App extends React.Component {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
               <SignUpForm
+                browser={browser}
                 onSubmit={(values) => {
                   const photoFile = values.photoFile || values.avatar
                   signUp(values.firstName, values.lastName, photoFile, values.email, values.password)
@@ -402,6 +403,7 @@ class App extends React.Component {
                 sendSubmit={submitSignUp}
               />
               <SignInForm
+                browser={browser}
                 onSubmit={(values) => {
                   signIn(values.email, values.password)
                 }}
@@ -499,6 +501,11 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  browser: PropTypes.shape({
+    lessThan: PropTypes.shape({
+      extraSmall: PropTypes.bool.isRequired
+    }).isRequired
+  }).isRequired,
   profile: PropTypes.shape({
     photoURL: PropTypes.string
   }).isRequired,
@@ -560,6 +567,7 @@ const wrappedApp = firebaseConnect((props) => {
 
 export default withRouter(connect(
   state => ({ account: state.account,
+    browser: state.browser,
     firebase: state.firebase,
     profile: state.firebase.profile,
     auth: state.firebase.auth,
