@@ -2,7 +2,8 @@ import {
   REMOVE_ROLE_SEARCH_FILTER, ADD_ROLE_SEARCH_FILTER, SEARCH_INDEX, ENRICH_SEARCH_RESULT,
   SEARCH_FOR_CREW, SEARCH_FOR_CREW_ENRICHED, RESET_SEARCH_RESULTS, SEARCH_FOR_VENDORS,
   SEARCH_FOR_VENDORS_ENRICHED, SEARCH_FOR_LOCATIONS, SEARCH_FOR_LOCATIONS_ENRICHED,
-  SEARCH_FOR_ROLES, ADD_EXPERIENCE_SEARCH_FILTER } from '../actions/types/algoliaActionsTypes'
+  SEARCH_FOR_ROLES, ADD_EXPERIENCE_SEARCH_FILTER, SEARCH_FOR_LOCATION_TYPES,
+  ADD_LOCATION_TYPE_SEARCH_FILTER, REMOVE_LOCATION_TYPE_SEARCH_FILTER } from '../actions/types/algoliaActionsTypes'
 
 import { uniqBy } from 'lodash'
 
@@ -19,7 +20,9 @@ const initalState = {
   locationQueryResults: [],
   enrichedLocationQueryResults: [],
   roleSearchResults: [],
+  locationTypeSearchResults: [],
   roleFilters: [],
+  locationTypeFilters: [],
   experienceFilter: { min: undefined, max: undefined },
   totalVendorHits: { hasLoaded: false },
   totalLocationHits: { hasLoaded: false }
@@ -29,6 +32,7 @@ export default (state = initalState, action) => {
   switch (action.type) {
     case `${RESET_SEARCH_RESULTS}_STARTING`:
       const roleFilters = action.payload.filters.filter(filter => filter.type === 'role').map(filter => filter.role)
+      const locationTypeFilters = action.payload.locationTypeFilters.filter(filter => filter.type === 'location').map(t => t.locationType)
       return {
         ...state,
         offset: action.payload.offset,
@@ -40,7 +44,8 @@ export default (state = initalState, action) => {
         enrichedVendorQueryResults: [],
         locationQueryResults: [],
         enrichedLocationQueryResults: [],
-        roleFilters
+        roleFilters,
+        locationTypeFilters
       }
     case `${SEARCH_INDEX}_SUCCESS`:
       return {
@@ -209,6 +214,12 @@ export default (state = initalState, action) => {
         roleSearchResults: action.payload.hits
       }
 
+    case `${SEARCH_FOR_LOCATION_TYPES}_SUCCESS`:
+      return {
+        ...state,
+        locationTypeSearchResults: action.payload.hits
+      }
+
     case ADD_ROLE_SEARCH_FILTER:
       return {
         ...state,
@@ -219,6 +230,18 @@ export default (state = initalState, action) => {
       return {
         ...state,
         roleFilters: state.roleFilters.filter(role => role !== action.payload)
+      }
+
+    case ADD_LOCATION_TYPE_SEARCH_FILTER:
+      return {
+        ...state,
+        locationTypeFilters: [...state.locationTypeFilters, ...action.payload]
+      }
+
+    case REMOVE_LOCATION_TYPE_SEARCH_FILTER:
+      return {
+        ...state,
+        locationTypeFilters: state.locationTypeFilters.filter(t => t !== action.payload)
       }
 
     case ADD_EXPERIENCE_SEARCH_FILTER:

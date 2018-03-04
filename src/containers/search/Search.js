@@ -32,6 +32,7 @@ export default withRouter(connect(
     totalVendorHits: state.algolia.totalVendorHits,
     totalLocationHits: state.algolia.totalLocationHits,
     roleFilters: state.algolia.roleFilters,
+    locationTypeFilters: state.algolia.locationTypeFilters,
     experienceFilter: state.algolia.experienceFilter,
     totalHits: state.algolia.totalHits }),
   { ...algoliaActions },

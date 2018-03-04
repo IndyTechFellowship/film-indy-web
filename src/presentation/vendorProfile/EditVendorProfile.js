@@ -206,7 +206,7 @@ class EditVendorProfile extends React.Component {
               <div className="toggleContainer">
                 <div className="toggle">
                   <Toggle
-                    label="Public"
+                    label={isPublic ? 'Public' : 'Private'}
                     toggled={isPublic}
                     onToggle={(event, toggleValue) => {
                       updateVendorProfile({ public: toggleValue }, vendorId)
@@ -339,96 +339,96 @@ class EditVendorProfile extends React.Component {
                     <form onSubmit={handleSubmit(values => updateVendorProfile(values, vendorId))}>
                       <div>
                         <Field
-                            name="primaryContactName"
-                            component={renderTextField}
-                            floatingLabelText="Name"
-                            type="text"
+                          name="primaryContactName"
+                          component={renderTextField}
+                          floatingLabelText="Name"
+                          type="text"
                         />
                       </div>
                       <div>
                         <Field
-                            name="primaryContactAddressLine1"
-                            component={renderTextField}
-                            floatingLabelText="Address Line 1"
-                            type="text"
+                          name="primaryContactAddressLine1"
+                          component={renderTextField}
+                          floatingLabelText="Address Line 1"
+                          type="text"
                         />
                       </div>
                       <div>
                         <Field
-                            name="primaryContactAddressLine2"
-                            component={renderTextField}
-                            floatingLabelText="Address Line 2"
-                            type="text"
+                          name="primaryContactAddressLine2"
+                          component={renderTextField}
+                          floatingLabelText="Address Line 2"
+                          type="text"
                         />
                       </div>
                       <div style={{ display: 'flex' }}>
                         <div style={{ marginRight: 5 }}>
                           <Field
-                              name="primaryContactCity"
-                              component={renderTextField}
-                              floatingLabelText="City"
-                              type="text"
+                            name="primaryContactCity"
+                            component={renderTextField}
+                            floatingLabelText="City"
+                            type="text"
                           />
                         </div>
                         <div style={{ marginRight: 5, marginTop: 16 }}>
                           <FormControl style={{ width: 60 }}>
                             <InputLabel htmlFor="state">State</InputLabel>
                             <Field
-                                name="primaryContactState"
-                                component={RenderSelectField}
+                              name="primaryContactState"
+                              component={RenderSelectField}
                             >
-                                {States.map(state => (
-                                    <MenuItem key={state.abbreviation} value={state.abbreviation} >
-                                        {state.abbreviation}
-                                    </MenuItem>
-                                ))}
+                              {States.map(state => (
+                                <MenuItem key={state.abbreviation} value={state.abbreviation} >
+                                  {state.abbreviation}
+                                </MenuItem>
+                              ))}
                             </Field>
                           </FormControl>
                         </div>
                         <div style={{ marginRight: 5 }}>
                           <Field
-                              name="primaryContactZip"
-                              component={renderTextField}
-                              floatingLabelText="Zip Code"
-                              type="text"
+                            name="primaryContactZip"
+                            component={renderTextField}
+                            floatingLabelText="Zip Code"
+                            type="text"
                           />
                         </div>
                       </div>
                       <div>
                         <Field
-                            name="primaryContactPhone"
-                            component={renderTextField}
-                            floatingLabelText="Phone Number"
-                            type="text"
+                          name="primaryContactPhone"
+                          component={renderTextField}
+                          floatingLabelText="Phone Number"
+                          type="text"
                         />
                       </div>
                       <div>
                         <Field
-                            name="primaryContactEmail"
-                            component={renderTextField}
-                            floatingLabelText="Email Address"
-                            type="email"
+                          name="primaryContactEmail"
+                          component={renderTextField}
+                          floatingLabelText="Email Address"
+                          type="email"
                         />
                       </div>
                       <div>
                         <Field
-                            name="primaryContactAboutUs"
-                            component={renderTextField}
-                            floatingLabelStyle={{ display: 'flex' }}
-                            floatingLabelText="About Primary Contact"
-                            type="text"
-                            multiLine
-                            rows={3}
+                          name="primaryContactAboutUs"
+                          component={renderTextField}
+                          floatingLabelStyle={{ display: 'flex' }}
+                          floatingLabelText="About Primary Contact"
+                          type="text"
+                          multiLine
+                          rows={3}
                         />
                       </div>
                       <div style={{ marginTop: 10 }}>
                         <RaisedButton
-                            buttonStyle={{ borderRadius: 5 }}
-                            type="submit"
-                            primary
-                            label="Save"
-                            disabled={pristine || submitting}
-                            onClick={this.updateMessage}
+                          buttonStyle={{ borderRadius: 5 }}
+                          type="submit"
+                          primary
+                          label="Save"
+                          disabled={pristine || submitting}
+                          onClick={this.updateMessage}
                         />
                       </div>
                     </form>
@@ -650,7 +650,7 @@ EditVendorProfile.propTypes = {
     email: PropTypes.string,
     name: PropTypes.string,
     phone: PropTypes.string,
-    website: PropTypes.string,
+    website: PropTypes.string
   }),
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,

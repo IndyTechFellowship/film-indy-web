@@ -2,10 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import RaisedButton from 'material-ui/RaisedButton'
 import Dropzone from 'react-dropzone'
 import Gallery from 'react-photo-gallery'
 import PhotoComponent from '../common/PhotoComponent'
+
+const getMeta = url => new Promise(((resolve) => {
+  const img = new Image()
+  img.src = url
+  img.onload = function () {
+    resolve({ width: this.width, height: this.height, url })
+  }
+}))
 
 
 class ManagePhotosModal extends React.Component {
@@ -24,10 +31,12 @@ class ManagePhotosModal extends React.Component {
 
   uploadImages(files) {
     const { uploadFile, updateLocationProfile, fbFilePath, locationId, displayImages } = this.props
-    files.map(file => uploadFile(fbFilePath, file).then((response) => {
-      const downloadUrl = response.uploadTaskSnaphot.downloadURL
-      updateLocationProfile({ displayImages: [...displayImages, downloadUrl] }, locationId)
-    }))
+    const uploadPromises = files.map(file => uploadFile(fbFilePath, file)
+      .then(response =>
+        response.uploadTaskSnaphot.downloadURL
+      ))
+    const sizePromises = Promise.all(uploadPromises).then(urls => Promise.all(urls.map(getMeta)))
+    sizePromises.then(results => updateLocationProfile({ displayImages: [...displayImages, ...results] }, locationId))
   }
 
   render() {
@@ -56,15 +65,15 @@ class ManagePhotosModal extends React.Component {
       >
         <Gallery
           onClick={(e, event) => {
-            const newImages = displayImages.filter(image => image !== event.photo.src)
+            const newImages = displayImages.filter(image => image.url !== event.photo.src)
             updateLocationProfile({ displayImages: newImages }, locationId)
           }}
           ImageComponent={PhotoComponent}
           colums={10}
-          photos={displayImages.map(image => ({ src: image, height: 3, width: 4 }))}
+          photos={displayImages.map(image => ({ src: image.url, height: image.height, width: image.width }))}
         />
-        <Dropzone onDrop={this.uploadImages} style={{ border: 'none' }}>
-          <RaisedButton label="Upoad Photos" />
+        <Dropzone onDrop={this.uploadImages} style={{ width: '100%', height: 200, borderWidth: 2, borderColor: 'rgb(102,102,102)', borderStyle: 'dashed', borderRadius: 5 }}>
+          <p>Click to upload files, or drag them here</p>
         </Dropzone>
       </Dialog>
     )
@@ -72,7 +81,11 @@ class ManagePhotosModal extends React.Component {
 }
 
 ManagePhotosModal.propTypes = {
-  displayImages: PropTypes.arrayOf(PropTypes.string).isRequired,
+  displayImages: PropTypes.arrayOf(PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    height: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired
+  })).isRequired,
   locationId: PropTypes.string.isRequired,
   fbFilePath: PropTypes.string.isRequired,
   uploadFile: PropTypes.func.isRequired,

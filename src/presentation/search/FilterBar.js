@@ -15,7 +15,7 @@ import SearchAndSelectRoles from '../common/SearchAndSelectRoles'
 class FilterBar extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { menuOpen: false, experienceMenuOpen: false, experience: { min: 0, max: 100 }, applyExperienceFilter: false }
+    this.state = { menuOpen: false, experienceMenuOpen: false, experience: { min: 0, max: 30 }, applyExperienceFilter: false }
     this.openMenu = this.openMenu.bind(this)
     this.closeMenu = this.closeMenu.bind(this)
     this.openExperienceMenu = this.openExperienceMenu.bind(this)
@@ -23,8 +23,7 @@ class FilterBar extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     const { experienceFilter } = nextProps
-    const { experience } = this.state
-    if (experienceFilter.min >= 0 && experienceFilter.max >= 0 && (experience.min !== experienceFilter.min || experienceFilter.max !== experience.max)) {
+    if (experienceFilter.min >= 0 && experienceFilter.max >= 0) {
       this.setState({ experience: { min: experienceFilter.min, max: experienceFilter.max }, applyExperienceFilter: true })
     }
   }
@@ -65,6 +64,7 @@ class FilterBar extends React.Component {
               >
                 <Paper style={{ marginTop: 125, position: 'fixed', zIndex: 2100, overflowY: 'auto' }}>
                   <SearchAndSelectRoles
+                    page="search"
                     roleFilters={roleFilters}
                     onItemSelected={(selectedItem, itemSelected, type) => {
                       const parsedQs = QueryString.parse(window.location.search)
@@ -101,17 +101,25 @@ class FilterBar extends React.Component {
                 onHide={this.closeExperienceMenu}
               >
                 <Paper style={{ marginTop: 125, position: 'fixed', zIndex: 2100, overflowY: 'auto' }}>
-                  <h4 style={{ fontWeight: 300, fontSize: 18 }}> {`< ${this.state.experience.min} years - ${this.state.experience.max} years`} </h4>
+                  <h4 style={{ fontWeight: 300, fontSize: 18 }}>
+                    {`< ${this.state.experience.min} years - ${this.state.experience.max >= 30 ? '30+' : this.state.experience.max} years`}
+                  </h4>
                   <div style={{ width: 400, height: 70, marginLeft: 60, marginRight: 60, marginTop: 40 }}>
                     <InputRange
+                      formatLabel={(value) => {
+                        if (value >= 30) {
+                          return '30+'
+                        }
+                        return value
+                      }}
                       style={{ width: '50%' }}
                       minValue={0}
-                      maxValue={100}
+                      maxValue={30}
                       value={this.state.experience}
                       onChange={(value) => {
                         const parsedQs = QueryString.parse(window.location.search)
                         const expMin = value.min
-                        const expMax = value.max
+                        const expMax = value.max >= 30 ? 100 : value.max
                         const newQs = QueryString.stringify({ ...parsedQs, expMin, expMax })
                         history.push({ pathname: '/search', search: newQs })
                         this.setState({ experience: value, applyExperienceFilter: true })

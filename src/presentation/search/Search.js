@@ -3,15 +3,17 @@ import QueryString from 'query-string'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import FilterBar from './FilterBar'
+import LocationFilterBar from './LocationFilterBar'
 import SearchBody from './SearchBody'
 import '../../App.css'
 
 class Search extends React.Component {
   componentWillMount() {
-    const { resetAndSearch, location, addRoleSearchFilter, addExperienceSearchFilter } = this.props
+    const { resetAndSearch, location, addRoleSearchFilter, addExperienceSearchFilter, addLocationTypeSearchFilter } = this.props
     const parsed = QueryString.parse(location.search)
     const query = parsed.query
     const rolesToFilter = get(parsed, 'role', [])
+    const locationTypesToFilter = get(parsed, 'locationType', [])
     const expMin = get(parsed, 'expMin')
     const expMax = get(parsed, 'expMax')
     const parsedExpMin = expMin ? Number.parseInt(expMin, 10) : undefined
@@ -21,16 +23,25 @@ class Search extends React.Component {
       type: 'role',
       role
     }))
-    resetAndSearch(query, roleFilters, experienceFilter)
+    const locationTypeFilters = typeof (locationTypesToFilter) === 'string' ? [{ type: 'location', locationType: locationTypesToFilter }] : locationTypesToFilter.map(locationType => ({
+      type: 'location',
+      locationType
+    }))
+    const qs = get(location, 'search', '')
+    const parsedQs = QueryString.parse(qs)
+    const show = get(parsedQs, 'show', '')
+    resetAndSearch(show, query, roleFilters, experienceFilter, locationTypeFilters)
     addExperienceSearchFilter(parsedExpMin, parsedExpMax)
     addRoleSearchFilter(roleFilters.map(filter => filter.role))
+    addLocationTypeSearchFilter(locationTypeFilters.map(t => t.locationType))
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
-      const { resetAndSearch, addRoleSearchFilter, addExperienceSearchFilter } = this.props
+      const { resetAndSearch, addRoleSearchFilter, addExperienceSearchFilter, addLocationTypeSearchFilter } = this.props
       const parsed = QueryString.parse(nextProps.location.search)
       const query = get(parsed, 'query', ' ')
       const rolesToFilter = get(parsed, 'role', [])
+      const locationTypesToFilter = get(parsed, 'locationType', [])
       const expMin = get(parsed, 'expMin')
       const expMax = get(parsed, 'expMax')
       const parsedExpMin = expMin ? Number.parseInt(expMin, 10) : undefined
@@ -40,13 +51,24 @@ class Search extends React.Component {
         type: 'role',
         role
       }))
+      const locationTypeFilters = typeof (locationTypesToFilter) === 'string' ? [{ type: 'location', locationType: locationTypesToFilter }] : locationTypesToFilter.map(locationType => ({
+        type: 'location',
+        locationType
+      }))
+      const qs = get(nextProps, 'location.search', '')
+      const parsedQs = QueryString.parse(qs)
+      const show = get(parsedQs, 'show', '')
       addRoleSearchFilter(roleFilters.map(filter => filter.role))
+      addLocationTypeSearchFilter(locationTypeFilters.map(t => t.locationType))
       addExperienceSearchFilter(parsedExpMin, parsedExpMax)
-      resetAndSearch(query, roleFilters, experienceFilter)
+      resetAndSearch(show, query, roleFilters, experienceFilter, locationTypeFilters)
     }
   }
   render() {
-    const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters, addExperienceSearchFilter, experienceFilter, location } = this.props
+    const {
+      history, addRoleSearchFilter, removeRoleSearchFilter,
+      addLocationTypeSearchFilter, removeLocationTypeSearchFilter, locationTypeFilters,
+      roleFilters, addExperienceSearchFilter, experienceFilter, location } = this.props
     const qs = get(location, 'search', '')
     const parsedQs = QueryString.parse(qs)
     const show = get(parsedQs, 'show', '')
@@ -68,7 +90,17 @@ class Search extends React.Component {
             />
           ) : null
         }
-        <SearchBody {...this.props} />
+        {
+          show === 'locations' ? (
+            <LocationFilterBar
+              history={history}
+              addLocationTypeSearchFilter={addLocationTypeSearchFilter}
+              removeLocationTypeSearchFilter={removeLocationTypeSearchFilter}
+              locationTypeFilters={locationTypeFilters}
+            />
+          ) : null
+        }
+        <SearchBody {...this.props} show={show} />
       </div>
     )
   }
@@ -83,13 +115,16 @@ Search.propTypes = {
   }).isRequired,
   removeRoleSearchFilter: PropTypes.func.isRequired,
   addRoleSearchFilter: PropTypes.func.isRequired,
+  addLocationTypeSearchFilter: PropTypes.func.isRequired,
+  removeLocationTypeSearchFilter: PropTypes.func.isRequired,
   addExperienceSearchFilter: PropTypes.func.isRequired,
   resetAndSearch: PropTypes.func.isRequired,
   experienceFilter: PropTypes.shape({
     min: PropTypes.number,
     max: PropTypes.number
   }).isRequired,
-  roleFilters: PropTypes.arrayOf(PropTypes.string).isRequired
+  roleFilters: PropTypes.arrayOf(PropTypes.string).isRequired,
+  locationTypeFilters: PropTypes.arrayOf(PropTypes.string).isRequired
 }
 
 export default Search

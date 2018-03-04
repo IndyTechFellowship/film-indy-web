@@ -36,7 +36,7 @@ class LocationMenu extends React.Component {
 
   render() {
     const { locations, onAddLocationClick, closeDropdown } = this.props
-    const menuItems = Object.keys(locations).map((key) => {
+    const menuItems = Object.keys(locations || []).map((key) => {
       const location = locations[key]
       return (
         <Link onClick={closeDropdown} to={`/location/${key}`}> <MenuItem primaryText={location.name} /> </Link>

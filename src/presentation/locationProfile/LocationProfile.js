@@ -76,9 +76,9 @@ const LocationProfilePage = (props) => {
               <Gallery
                 type="view"
                 photos={displayImages.map(image => ({
-                  src: image,
-                  height: 3,
-                  width: 4
+                  src: image.url,
+                  height: image.height,
+                  width: image.width
                 }))}
               />
             </Card>

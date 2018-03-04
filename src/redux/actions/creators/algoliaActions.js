@@ -7,7 +7,7 @@ import { RESET_SEARCH_RESULTS, SEARCH_INDEX, SEARCH_FOR_CREW,
   SEARCH_FOR_LOCATIONS, SEARCH_FOR_LOCATIONS_ENRICHED,
   CREATE_LOCATION_PROFILE_RECORD, DELETE_LOCATION_PROFILE_RECORD, SEARCH_FOR_ROLES,
   ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER, DELETE_ROLE_FROM_PROFILE,
-  SET_VENDOR_PUBLIC, ADD_EXPERIENCE_SEARCH_FILTER
+  SET_VENDOR_PUBLIC, ADD_EXPERIENCE_SEARCH_FILTER, SEARCH_FOR_LOCATION_TYPES, ADD_LOCATION_TYPE_SEARCH_FILTER, REMOVE_LOCATION_TYPE_SEARCH_FILTER
 } from '../types/algoliaActionsTypes'
 
 import moment from 'moment'
@@ -25,6 +25,16 @@ export const addRoleSearchFilter = role => ({
 export const removeRoleSearchFilter = role => ({
   type: REMOVE_ROLE_SEARCH_FILTER,
   payload: role
+})
+
+export const addLocationTypeSearchFilter = type => ({
+  type: ADD_LOCATION_TYPE_SEARCH_FILTER,
+  payload: type
+})
+
+export const removeLocationTypeSearchFilter = type => ({
+  type: REMOVE_LOCATION_TYPE_SEARCH_FILTER,
+  payload: type
 })
 
 export const addExperienceSearchFilter = (min, max) => ({
@@ -60,6 +70,15 @@ const createFilters = (filters) => {
     return acc === '' ? `roles:"${role}"` : `${acc} OR roles:"${role}"`
   }, '')
   return roles ? `(${roles}) AND public:true` : 'public:true'
+}
+
+const createLocationTypeFilters = (filters) => {
+  const roleFilters = filters.filter(filter => filter.type === 'location')
+  const types = roleFilters.reduce((acc, roleFilter) => {
+    const type = roleFilter.locationType
+    return acc === '' ? `types:"${type}"` : `${acc} OR types:"${type}"`
+  }, '')
+  return types ? `(${types}) AND public:true` : 'public:true'
 }
 
 const createExperienceFilterString = ({ min, max }) => {
@@ -148,11 +167,12 @@ export const searchForVendors = (query, offset = 0, length = 10) => (dispatch) =
   })
 }
 
-export const searchForLocations = (query, offset = 0, length = 10) => (dispatch) => {
+export const searchForLocations = (query, filters = [], offset = 0, length = 10) => (dispatch) => {
   const indexNames = ['locations']
+  const locationTypeFilters = createLocationTypeFilters(filters)
   const searchPromises = indexNames.map((indexName) => {
     const index = algoliaClient.initIndex(indexName)
-    return index.search({ query, offset, length }).then(results => ({ indexName, results }))
+    return index.search({ query, offset, length, filters: locationTypeFilters }).then(results => ({ indexName, results }))
   })
   return dispatch({
     type: SEARCH_FOR_LOCATIONS,
@@ -179,16 +199,26 @@ export const searchForLocations = (query, offset = 0, length = 10) => (dispatch)
   })
 }
 
-export const resetAndSearch = (query, filters = [], experienceFilter = { min: undefined, max: undefined }, offset = 0, length = 10) => dispatch => dispatch({
+export const resetAndSearch = (show, query, filters = [], experienceFilter = { min: undefined, max: undefined }, locationTypeFilters = [], offset = 0, length = 10) => dispatch => dispatch({
   type: RESET_SEARCH_RESULTS,
   payload: {
-    data: { offset, length, filters },
+    data: { offset, length, filters, locationTypeFilters },
     promise: Promise.resolve()
   }
 })
-  .then(() => dispatch(searchForCrew(query, filters, experienceFilter, offset, length)))
-  .then(() => dispatch(searchForVendors(query, offset, length)))
-  .then(() => dispatch(searchForLocations(query, offset, length)))
+  .then(() => {
+    if (show === 'all') {
+      dispatch(searchForCrew(query, filters, experienceFilter, offset, length))
+      dispatch(searchForVendors(query, offset, length))
+      dispatch(searchForLocations(query, locationTypeFilters, offset, length))
+    } else if (show === 'crew') {
+      dispatch(searchForCrew(query, filters, experienceFilter, offset, length))
+    } else if (show === 'vendors') {
+      dispatch(searchForVendors(query, offset, length))
+    } else if (show === 'locations') {
+      dispatch(searchForLocations(query, locationTypeFilters, offset, length))
+    }
+  })
 
 export const migrateProfile = (uid, email) => (dispatch) => {
   const profileIndex = algoliaClient.initIndex('profiles')
@@ -295,7 +325,8 @@ export const createLocationProfileRecord = (locationId, locationInfo) => {
     type: CREATE_LOCATION_PROFILE_RECORD,
     payload: locationIndex.addObject({
       ...locationInfo,
-      objectID: locationId
+      objectID: locationId,
+      public: true
     })
   }
 }
@@ -313,6 +344,14 @@ export const searchForRoles = (query) => {
   return {
     type: SEARCH_FOR_ROLES,
     payload: roleIndex.search({ query, hitsPerPage: '100', facets: ['roleName'] })
+  }
+}
+
+export const searchForLocationTypes = (query) => {
+  const locationIndex = algoliaClient.initIndex('locationTypes')
+  return {
+    type: SEARCH_FOR_LOCATION_TYPES,
+    payload: locationIndex.search({ query, hitsPerPage: '100', facets: ['type'] })
   }
 }
 
