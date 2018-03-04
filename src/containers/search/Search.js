@@ -14,6 +14,9 @@ class Search extends React.Component {
 }
 
 Search.propTypes = {
+  browser: PropTypes.shape({
+    mediaType: PropTypes.string.isRequired
+  }).isRequired,
   searchIndex: PropTypes.func.isRequired,
   location: PropTypes.shape({
     search: PropTypes.string.isRequired
@@ -23,6 +26,7 @@ Search.propTypes = {
 
 export default withRouter(connect(
   state => ({
+    browser: state.browser,
     profileIndex: state.algolia.crewQueryResults,
     enriched: state.algolia.enrichedCrewResults,
     enrichedVendors: state.algolia.enrichedVendorQueryResults,

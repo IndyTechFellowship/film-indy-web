@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom'
 import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import formatLink from '../../util/formatLink'
 import { Grid, Row, Col } from 'react-flexbox-grid'
+import formatLink from '../../util/formatLink'
 import '../../App.css'
 import './ViewProfile.css'
 
@@ -93,7 +93,7 @@ class ViewProfile extends React.Component {
         <div className="profile">
           {
             authorizedUid === uid ? (
-              <div style={{ textAlign: 'right', marginRight: 20, marginTop: 10 }}>
+              <div style={{ textAlign: 'right', marginRight: 20, marginTop: 10, marginBottom: 10 }}>
                 <Link to="/profile/edit">
                   <RaisedButton label="Edit Profile" icon={<ModeEditIcon />} />
                 </Link>
@@ -107,7 +107,7 @@ class ViewProfile extends React.Component {
                   <Row>
                     <Col xs={12} md={6}>
                       <CardMedia>
-                        <img src={profileImageUrl} alt="" />
+                        <img src={profileImageUrl} alt="" style={{ objectFit: 'cover' }} />
                       </CardMedia>
                     </Col>
                     <Col xs={12} md={6}>
@@ -122,7 +122,7 @@ class ViewProfile extends React.Component {
                             { isNaN(numYears) ?
                               null
                               : (
-                                <CardText className="crew-text">
+                                <CardText>
                                   {numYears} year(s) in industry
                                 </CardText>
                               )
@@ -132,7 +132,7 @@ class ViewProfile extends React.Component {
                         <Row>
                           <Col xs={12}>
                             { phone ? (
-                              <CardText className="crew-text">
+                              <CardText>
                                 {phone}
                               </CardText>
                             ) : null
@@ -141,7 +141,7 @@ class ViewProfile extends React.Component {
                         </Row>
                         <Row>
                           <Col xs={12}>
-                            <CardText className="crew-text">
+                            <CardText>
                               {email}
                             </CardText>
                           </Col>

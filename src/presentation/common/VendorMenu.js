@@ -41,7 +41,7 @@ class VendorMenu extends React.Component {
     const menuItems = Object.keys(vendors || []).map((key) => {
       const location = vendors[key]
       return (
-        <Link onClick={closeDropdown} to={`/vendor/${key}`}> <MenuItem primaryText={location.name} /> </Link>
+        <Link key={key} onClick={closeDropdown} to={`/vendor/${key}`}> <MenuItem primaryText={location.name} /> </Link>
       )
     })
 

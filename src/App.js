@@ -7,7 +7,6 @@ import PropTypes from 'prop-types'
 import { InstantSearch, Index, Configure, CurrentRefinements } from 'react-instantsearch/dom'
 import { connectAutoComplete, connectMenu } from 'react-instantsearch/connectors'
 import Autosuggest from 'react-autosuggest'
-import QueryString from 'query-string'
 import { Grid, Row, Col } from 'react-flexbox-grid'
 import 'react-instantsearch-theme-algolia/style.css'
 
@@ -19,18 +18,19 @@ import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover'
 import Snackbar from 'material-ui/Snackbar'
-import TextField from 'material-ui/TextField'
-import RaisedButton from 'material-ui/RaisedButton'
-import { Tabs, Tab } from 'material-ui/Tabs'
+import IconButton from 'material-ui/IconButton'
+import Drawer from 'material-ui/Drawer'
+
 
 // Material UI SVG Icons
-import SearchIcon from 'material-ui/svg-icons/action/search'
+import MenuIcon from 'material-ui/svg-icons/navigation/menu'
 import AccountCircle from 'material-ui/svg-icons/action/account-circle'
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app'
 import ViewIcon from 'material-ui/svg-icons/image/remove-red-eye'
 import ArrowIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 // Page components
+import SearchBar from './presentation/common/SearchBar'
 import Home from './containers/home'
 import Account from './containers/account/account'
 import EditProfile from './containers/profile/EditProfile'
@@ -114,7 +114,8 @@ const AutoCompleteBar = connectAutoComplete(
           }
           const moreInputProps = { ...inputProps, onBlur }
           return (
-            <TextField
+            <SearchBar
+              onRequestSearch={() => onEnterHit()}
               id="autocomplete-text-field"
               onKeyPress={(ev) => {
                 if (ev.key === 'Enter') {
@@ -192,8 +193,7 @@ const AutoCompleteBar = connectAutoComplete(
         inputProps={{
           placeholder: 'Search our database....',
           style: {
-            height: 42,
-            width: 256
+            width: '100%'
           },
           value: currentRefinement,
           onChange: (event) => {
@@ -252,7 +252,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { cancelSignInUpForm, account, profile, auth, firebase,
+    const { cancelSignInUpForm, account, profile, auth, firebase, browser,
       history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn,
       signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors,
       submitVendorCreate, createVendor, usersLocations, submitLocationCreate, createLocation,
@@ -260,116 +260,80 @@ class App extends React.Component {
     const { addVendorModalOpen, addLocationModalOpen, showSubMenu } = this.state
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
-    const parsed = QueryString.parse(location.search)
-    const showOnly = get(parsed, 'show', 'all')
     const appBarStyle = location.pathname === '/search' ? { boxShadow: 'none' } : {}
+    const lessThanSm = get(browser, 'lessThan.small', false)
     return (
       <div className="App">
         <Grid fluid style={{ padding: 0 }}>
           <AppBar
             style={{ ...appBarStyle }}
+            titleStyle={{ overflow: 'none', lineHeight: '20px', height: 20 }}
+            title={location.pathname !== '/' &&
+            <Col xs={12} md={6} lg={6}>
+              <Row style={{ marginTop: !lessThanSm ? 20 : 5 }}>
+                <Col xs={12}>
+                  <InstantSearch
+                    appId={ALGOLIA_APP_ID}
+                    apiKey={ALGOLIA_SEARCH_KEY}
+                    indexName="roles"
+                  >
+                    <Index indexName="names">
+                      <Configure />
+                      <CurrentRefinements
+                        transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                      />
+                      <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                    </Index>
+                    <Index indexName="vendors">
+                      <Configure />
+                      <CurrentRefinements
+                        transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                      />
+                      <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                    </Index>
+                    <Index indexName="locations">
+                      <Configure />
+                      <CurrentRefinements
+                        transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                      />
+                      <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                    </Index>
+                    <Index indexName="locationTypes" />
+                    <AutoCompleteBar
+                      onUpdateInput={query => this.searchQuery = query}
+                      onEnterHit={() => {
+                        if (this.searchQuery) {
+                          history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
+                        } else {
+                          history.push({ pathname: '/search', search: `?query=${encodeURIComponent('')}&show=all` })
+                        }
+                      }}
+                      onSuggestionClicked={(suggestion, index) => {
+                        if (index === 0) {
+                          history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all&role=${encodeURIComponent(suggestion.roleName)}` })
+                        } else if (index === 1) {
+                          history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
+                        } else if (index === 2) {
+                          history.push({ pathname: `/vendor/${suggestion.objectID}` })
+                        } else if (index === 3) {
+                          history.push({ pathname: `/location/${suggestion.objectID}` })
+                        } else if (index === 4) {
+                          history.push({ pathname: '/search', search: `?query=''&show=locations&locationType=${encodeURIComponent(suggestion.type)}` })
+                        }
+                      }}
+                    />
+                  </InstantSearch>
+                </Col>
+              </Row>
+            </Col>
+            }
             iconElementLeft={
               <div>
                 <Row>
                   <Col xs>
                     <Link to="/"><img src={Logo} className="logo" alt="Film Indy Logo" /></Link>
                   </Col>
-                  { location.pathname !== '/' &&
-                    <Col xs>
-                      <Card className="menuSearchCard">
-                        <div style={{ display: 'flex', flexDirection: 'row' }}>
-                          <SearchIcon className="searchIcon" />
-                          <InstantSearch
-                            appId={ALGOLIA_APP_ID}
-                            apiKey={ALGOLIA_SEARCH_KEY}
-                            indexName="roles"
-                          >
-                            <Index indexName="names" />
-                            <Index indexName="vendors" />
-                            <Index indexName="locations" />
-                            <Index indexName="locationTypes" />
-                            <AutoCompleteBar
-                              onUpdateInput={query => this.searchQuery = query}
-                              onEnterHit={() => {
-                                if (this.searchQuery) {
-                                  history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
-                                }
-                              }}
-                              onSuggestionClicked={(suggestion, index) => {
-                                if (index === 0) {
-                                  history.push({ pathname: '/search', search: `?query=${encodeURIComponent(suggestion.roleName)}&show=all&role=${encodeURIComponent(suggestion.roleName)}` })
-                                } else if (index === 1) {
-                                  history.push({ pathname: '/profile', search: `?query=${encodeURIComponent(suggestion.objectID)}` })
-                                } else if (index === 2) {
-                                  history.push({ pathname: `/vendor/${suggestion.objectID}` })
-                                } else if (index === 3) {
-                                  history.push({ pathname: `/location/${suggestion.objectID}` })
-                                } else if (index === 4) {
-                                  history.push({ pathname: '/search', search: `?query=''&show=locations&locationType=${encodeURIComponent(suggestion.type)}` })
-                                }
-                              }}
-                            />
-                          </InstantSearch>
-                          <RaisedButton
-                            label="Search"
-                            labelColor="#fff"
-                            backgroundColor={'#02BDF2'}
-                            className="searchButton"
-                            onClick={() => {
-                              if (this.searchQuery) {
-                                history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
-                              } else {
-                                history.push({ pathname: '/search', search: `?query=${encodeURIComponent('')}&show=all` })
-                              }
-                            }}
-                          />
-                        </div>
-                      </Card>
-                    </Col>
-                  }
                 </Row>
-                { location.pathname === '/search' ?
-                  (
-                    <Tabs tabItemContainerStyle={{ width: '100%' }} value={showOnly}>
-                      <Tab
-                        style={{ zIndex: 0 }}
-                        label="All"
-                        value="all"
-                        onActive={() => {
-                          const newQs = QueryString.stringify({ ...parsed, show: 'all' })
-                          history.push({ pathname: '/search', search: newQs })
-                        }}
-                      />
-                      <Tab
-                        style={{ zIndex: 0 }}
-                        label="Crew"
-                        value="crew"
-                        onActive={() => {
-                          const newQs = QueryString.stringify({ ...parsed, show: 'crew' })
-                          history.push({ pathname: '/search', search: newQs })
-                        }}
-                      />
-                      <Tab
-                        style={{ zIndex: 0 }}
-                        label="Vendors"
-                        value="vendors"
-                        onActive={() => {
-                          const newQs = QueryString.stringify({ ...parsed, show: 'vendors' })
-                          history.push({ pathname: '/search', search: newQs })
-                        }}
-                      />
-                      <Tab
-                        style={{ zIndex: 0 }}
-                        label="Locations"
-                        value="locations"
-                        onActive={() => {
-                          const newQs = QueryString.stringify({ ...parsed, show: 'locations' })
-                          history.push({ pathname: '/search', search: newQs })
-                        }}
-                      />
-                    </Tabs>
-
-                  ) : null }
               </div>
             }
             iconElementRight={uid ? (
@@ -381,37 +345,48 @@ class App extends React.Component {
               </Col>
             ) : (
               <Col xs>
-                <Row>
-                  <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
-                    <Col xs>
-                      <SignUpForm
-                        onSubmit={(values) => {
-                          const photoFile = values.photoFile || values.avatar
-                          signUp(values.firstName, values.lastName, photoFile, values.email, values.password)
-                        }}
-                        getDefaultAccountImages={getDefaultAccountImages}
-                        defaultAccountImages={account.defaultAccountImages}
-                        account={account}
-                        cancelSignInUpForm={cancelSignInUpForm}
-                        signUpWithGoogle={signUpWithGoogle}
-                        signUpWithFacebook={signUpWithFacebook}
-                        sendSubmit={submitSignUp}
-                      />
-                    </Col>
-                    <Col xs>
-                      <SignInForm
-                        onSubmit={(values) => {
-                          signIn(values.email, values.password)
-                        }}
-                        account={account}
-                        cancelSignInUpForm={cancelSignInUpForm}
-                        signInWithFacebook={signInWithFacebook}
-                        signInWithGoogle={signInWithGoogle}
-                        sendSubmit={submitSignIn}
-                      />
-                    </Col>
-                  </div>
-                </Row>
+                {
+                  !lessThanSm ? (
+                    <Row>
+                      <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
+                        <Col xs>
+                          <SignUpForm
+                            onSubmit={(values) => {
+                              const photoFile = values.photoFile || values.avatar
+                              signUp(values.firstName, values.lastName, photoFile, values.email, values.password)
+                            }}
+                            getDefaultAccountImages={getDefaultAccountImages}
+                            defaultAccountImages={account.defaultAccountImages}
+                            account={account}
+                            cancelSignInUpForm={cancelSignInUpForm}
+                            signUpWithGoogle={signUpWithGoogle}
+                            signUpWithFacebook={signUpWithFacebook}
+                            sendSubmit={submitSignUp}
+                          />
+                        </Col>
+                        <Col xs>
+                          <SignInForm
+                            onSubmit={(values) => {
+                              signIn(values.email, values.password)
+                            }}
+                            account={account}
+                            cancelSignInUpForm={cancelSignInUpForm}
+                            signInWithFacebook={signInWithFacebook}
+                            signInWithGoogle={signInWithGoogle}
+                            sendSubmit={submitSignIn}
+                          />
+                        </Col>
+                      </div>
+                    </Row>
+                  ) : (
+                    <IconButton
+                      onClick={() => this.setState({ open: !this.state.open })}
+                      iconStyle={{ color: '#fff' }}
+                    >
+                      <MenuIcon />
+                    </IconButton>
+                  )
+                }
               </Col>
             )}
             zDepth={2}
@@ -441,51 +416,125 @@ class App extends React.Component {
             this.setState({ addLocationModalOpen: false })
           }}
         />
-        <Popover
-          open={this.state.open}
-          anchorEl={this.state.anchorEl}
-          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-          onRequestClose={this.handleDropdownClose}
-        >
-          <Menu >
-            { uid ? ( // renders dropdown items depending on if logged in
-              <div>
-                <Link onClick={this.handleDropdownClose} to="/account">
-                  <MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} />
-                </Link>
 
-                <Link onClick={this.handleDropdownClose} to={{ pathname: '/profile', search: `?query=${uid}` }}>
-                  <MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} />
-                </Link>
+        {
+          !lessThanSm ? (
+            uid ? (
+              <Popover
+                open={this.state.open}
+                anchorEl={this.state.anchorEl}
+                anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+                onRequestClose={this.handleDropdownClose}
+              >
+                <Menu >
+                  <div>
+                    <Link onClick={this.handleDropdownClose} to="/account">
+                      <MenuItem primaryText="Account Settings" leftIcon={<AccountCircle />} />
+                    </Link>
 
-                <VendorMenu
-                  closeDropdown={this.handleDropdownClose}
-                  vendors={usersVendors}
-                  onAddVendorClick={() => {
-                    this.handleDropdownClose()
-                    this.setState({ addVendorModalOpen: true })
-                  }}
-                />
+                    <Link onClick={this.handleDropdownClose} to={{ pathname: '/profile', search: `?query=${uid}` }}>
+                      <MenuItem primaryText="View Profile" leftIcon={<ViewIcon />} />
+                    </Link>
 
-                <LocationMenu
-                  showSubMenu={showSubMenu}
-                  onClickSubMenu={() => this.setState({ showSubMenu: true })}
-                  closeDropdown={this.handleDropdownClose}
-                  locations={usersLocations}
-                  onAddLocationClick={() => {
-                    this.handleDropdownClose()
-                    this.setState({ addLocationModalOpen: true })
-                  }}
-                />
-                <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
+                    <VendorMenu
+                      closeDropdown={this.handleDropdownClose}
+                      vendors={usersVendors}
+                      onAddVendorClick={() => {
+                        this.handleDropdownClose()
+                        this.setState({ addVendorModalOpen: true })
+                      }}
+                    />
 
-              </div>
-            ) : (
-              <div />
-            )}
-          </Menu>
-        </Popover>
+                    <LocationMenu
+                      showSubMenu={showSubMenu}
+                      onClickSubMenu={() => this.setState({ showSubMenu: true })}
+                      closeDropdown={this.handleDropdownClose}
+                      locations={usersLocations}
+                      onAddLocationClick={() => {
+                        this.handleDropdownClose()
+                        this.setState({ addLocationModalOpen: true })
+                      }}
+                    />
+                    <MenuItem primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
+
+                  </div>
+                </Menu>
+              </Popover>
+            ) : null
+          ) : (
+            <Drawer
+              docked={false}
+              open={this.state.open}
+              openSecondary
+              onRequestChange={() => this.setState({ open: !this.state.open })}
+            >
+              { uid ? ( // renders dropdown items depending on if logged in
+                <div>
+                  <Link onClick={this.handleDropdownClose} to="/account">
+                    <MenuItem innerDivStyle={{ padding: 0 }}primaryText="Account Settings" leftIcon={<AccountCircle />} />
+                  </Link>
+
+                  <Link onClick={this.handleDropdownClose} to={{ pathname: '/profile', search: `?query=${uid}` }}>
+                    <MenuItem innerDivStyle={{ padding: '0px 40px 0px 0px' }} primaryText="View Profile" leftIcon={<ViewIcon />} />
+                  </Link>
+
+                  <VendorMenu
+                    closeDropdown={this.handleDropdownClose}
+                    vendors={usersVendors}
+                    onAddVendorClick={() => {
+                      this.handleDropdownClose()
+                      this.setState({ addVendorModalOpen: true })
+                    }}
+                  />
+
+                  <LocationMenu
+                    showSubMenu={showSubMenu}
+                    onClickSubMenu={() => this.setState({ showSubMenu: true })}
+                    closeDropdown={this.handleDropdownClose}
+                    locations={usersLocations}
+                    onAddLocationClick={() => {
+                      this.handleDropdownClose()
+                      this.setState({ addLocationModalOpen: true })
+                    }}
+                  />
+                  <MenuItem innerDivStyle={{ padding: '0px 40px 0px 0px' }} primaryText="Log Out" leftIcon={<LogoutIcon />} onClick={(e) => { firebase.logout(); this.signOutMessage() }} />
+
+                </div>
+              ) : (
+                <div>
+                  <SignUpForm
+                    browser={browser}
+                    mobile
+                    onSubmit={(values) => {
+                      const photoFile = values.photoFile || values.avatar
+                      signUp(values.firstName, values.lastName, photoFile, values.email, values.password)
+                    }}
+                    getDefaultAccountImages={getDefaultAccountImages}
+                    defaultAccountImages={account.defaultAccountImages}
+                    account={account}
+                    cancelSignInUpForm={cancelSignInUpForm}
+                    signUpWithGoogle={signUpWithGoogle}
+                    signUpWithFacebook={signUpWithFacebook}
+                    sendSubmit={submitSignUp}
+                  />
+                  <SignInForm
+                    browser={browser}
+                    mobile
+                    onSubmit={(values) => {
+                      signIn(values.email, values.password)
+                    }}
+                    account={account}
+                    cancelSignInUpForm={cancelSignInUpForm}
+                    signInWithFacebook={signInWithFacebook}
+                    signInWithGoogle={signInWithGoogle}
+                    sendSubmit={submitSignIn}
+                  />
+                </div>
+              )}
+            </Drawer>
+          )
+        }
         <Snackbar
           bodyStyle={{ backgroundColor: '#00C853' }}
           open={this.state.signedOut}
@@ -509,6 +558,11 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  browser: PropTypes.shape({
+    lessThan: PropTypes.shape({
+      small: PropTypes.bool.isRequired
+    }).isRequired
+  }).isRequired,
   profile: PropTypes.shape({
     photoURL: PropTypes.string
   }).isRequired,
@@ -571,6 +625,7 @@ const wrappedApp = firebaseConnect((props) => {
 export default withRouter(connect(
   state => ({ account: state.account,
     firebase: state.firebase,
+    browser: state.browser,
     profile: state.firebase.profile,
     auth: state.firebase.auth,
     usersVendors: state.firebase.data.usersVendors,

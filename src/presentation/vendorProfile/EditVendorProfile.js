@@ -27,14 +27,6 @@ import VimeoIcon from '../profile/VimeoLogo'
 import States from './States'
 import './EditVendorProfile.css'
 
-
-const styles = {
-
-  chipStyle: {
-    margin: 6
-  }
-}
-
 const FileUploader = props => (
   <input
     name="myFile"
