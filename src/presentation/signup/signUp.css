@@ -14,3 +14,20 @@
 #fileText {
     margin: 0 20px 0 75px;
 }
+
+.circle-responsive {
+    border: 1px solid grey;
+    border-radius: 50%;
+    height: 0;
+    padding-bottom: 100%;
+    width: 100%;
+  }
+
+  .circle-content {
+    float: left;
+    line-height: 1;
+    margin-top: -0.5em;
+    padding-top: 50%;
+    text-align: center;
+    width: 100%;
+  }

@@ -252,7 +252,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { cancelSignInUpForm, account, profile, auth, firebase,
+    const { cancelSignInUpForm, account, profile, auth, firebase, browser,
       history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn,
       signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors,
       submitVendorCreate, createVendor, usersLocations, submitLocationCreate, createLocation,
@@ -284,9 +284,27 @@ class App extends React.Component {
                             apiKey={ALGOLIA_SEARCH_KEY}
                             indexName="roles"
                           >
-                            <Index indexName="names" />
-                            <Index indexName="vendors" />
-                            <Index indexName="locations" />
+                            <Index indexName="names">
+                              <Configure />
+                              <CurrentRefinements
+                                transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                              />
+                              <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                            </Index>
+                            <Index indexName="vendors">
+                              <Configure />
+                              <CurrentRefinements
+                                transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                              />
+                              <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                            </Index>
+                            <Index indexName="locations">
+                              <Configure />
+                              <CurrentRefinements
+                                transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                              />
+                              <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                            </Index>
                             <Index indexName="locationTypes" />
                             <AutoCompleteBar
                               onUpdateInput={query => this.searchQuery = query}
@@ -417,6 +435,7 @@ class App extends React.Component {
             zDepth={2}
           />
         </Grid>
+
         <AddVendorModal
           open={addVendorModalOpen}
           onCancel={() => {
@@ -509,6 +528,11 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  browser: PropTypes.shape({
+    lessThan: PropTypes.shape({
+      extraSmall: PropTypes.bool.isRequired
+    }).isRequired
+  }).isRequired,
   profile: PropTypes.shape({
     photoURL: PropTypes.string
   }).isRequired,
@@ -570,6 +594,7 @@ const wrappedApp = firebaseConnect((props) => {
 
 export default withRouter(connect(
   state => ({ account: state.account,
+    browser: state.browser,
     firebase: state.firebase,
     profile: state.firebase.profile,
     auth: state.firebase.auth,
