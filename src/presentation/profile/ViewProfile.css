@@ -88,7 +88,7 @@
 	padding-left: 10px;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 775px) {
   .profile-card {
   	width: 100% !important;
     height: auto !important;

@@ -155,7 +155,7 @@
 	color: #38b5e6;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 775px) {
   .bg-image {
   	position: relative;
   	top: -100px;

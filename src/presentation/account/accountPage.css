@@ -126,7 +126,7 @@
     width: 100%;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 775px) {
   .profileCard, .passwordCard {
     box-shadow: none !important;
     width: 100%;

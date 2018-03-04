@@ -93,7 +93,7 @@ class ViewProfile extends React.Component {
         <div className="profile">
           {
             authorizedUid === uid ? (
-              <div style={{ textAlign: 'right', marginRight: 20, marginTop: 10 }}>
+              <div style={{ textAlign: 'right', marginRight: 20, marginTop: 10, marginBottom: 10 }}>
                 <Link to="/profile/edit">
                   <RaisedButton label="Edit Profile" icon={<ModeEditIcon />} />
                 </Link>
