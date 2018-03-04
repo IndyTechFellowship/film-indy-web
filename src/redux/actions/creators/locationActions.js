@@ -58,18 +58,18 @@ export const addVimeoToLocationProfile = (vimeoVideo, title, url, locationId) =>
 export const removeLocationVideo = (video, locationId) => {
   const profileRef = firebase.database().ref(`/locationProfiles/${locationId}`)
 
-    return {
-      type: REMOVE_LOCATION_VIDEO,
-      payload: profileRef.update({ video: [] })
-    }
+  return {
+    type: REMOVE_LOCATION_VIDEO,
+    payload: profileRef.update({ video: [] })
+  }
 }
 
 export const editLocationVideo = (video, newTitle, newUrl, locationId) => {
   const newVideo = [...video, { title: newTitle, url: newUrl }]
   const profileRef = firebase.database().ref(`/locationProfiles/${locationId}`)
 
-    return {
-      type: EDIT_LOCATION_VIDEO,
-      payload: profileRef.update({ video: newVideo })
-    }
+  return {
+    type: EDIT_LOCATION_VIDEO,
+    payload: profileRef.update({ video: newVideo })
+  }
 }

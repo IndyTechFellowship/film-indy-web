@@ -4,8 +4,8 @@ import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { InstantSearch, Index } from 'react-instantsearch/dom'
-import { connectAutoComplete } from 'react-instantsearch/connectors'
+import { InstantSearch, Index, Configure, CurrentRefinements } from 'react-instantsearch/dom'
+import { connectAutoComplete, connectMenu } from 'react-instantsearch/connectors'
 import Autosuggest from 'react-autosuggest'
 import QueryString from 'query-string'
 import 'react-instantsearch-theme-algolia/style.css'
@@ -53,6 +53,8 @@ import './App.css'
 import Logo from './film-indy-logo.png'
 
 import * as accountActions from './redux/actions/creators/accountActions'
+
+const VirtualMenu = connectMenu(() => null)
 
 const styles = {
   container: {
@@ -149,6 +151,12 @@ const AutoCompleteBar = connectAutoComplete(
                 {`${hit.locationName}`}
               </MenuItem>
             )
+          } else if (hit.type) {
+            return (
+              <MenuItem style={{ whiteSpace: 'inital' }}>
+                {`${hit.type}`}
+              </MenuItem>
+            )
           }
           return (null)
         }}
@@ -166,6 +174,10 @@ const AutoCompleteBar = connectAutoComplete(
               return (<strong>Vendors</strong>)
             } else if (section.index === 'locations') {
               return (<strong>Locations</strong>)
+            } else if (section.index === 'locationTypes') {
+              return (
+                <strong>Locations Types</strong>
+              )
             }
           }
           return ''
@@ -239,7 +251,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { cancelSignInUpForm, account, profile, auth, firebase,
+    const { cancelSignInUpForm, account, profile, auth, firebase, browser,
       history, signUp, signUpWithGoogle, signUpWithFacebook, submitSignUp, signIn,
       signInWithFacebook, signInWithGoogle, submitSignIn, location, usersVendors,
       submitVendorCreate, createVendor, usersLocations, submitLocationCreate, createLocation,
@@ -267,9 +279,28 @@ class App extends React.Component {
                       apiKey={ALGOLIA_SEARCH_KEY}
                       indexName="roles"
                     >
-                      <Index indexName="names" />
-                      <Index indexName="vendors" />
-                      <Index indexName="locations" />
+                      <Index indexName="names">
+                        <Configure />
+                        <CurrentRefinements
+                          transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                        />
+                        <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                      </Index>
+                      <Index indexName="vendors">
+                        <Configure />
+                        <CurrentRefinements
+                          transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                        />
+                        <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                      </Index>
+                      <Index indexName="locations">
+                        <Configure />
+                        <CurrentRefinements
+                          transformItems={items => items.filter(item => item.public === 'true' || item.public === 'false')}
+                        />
+                        <VirtualMenu attributeName="public" defaultRefinement={'true'} />
+                      </Index>
+                      <Index indexName="locationTypes" />
                       <AutoCompleteBar
                         onUpdateInput={query => this.searchQuery = query}
                         onEnterHit={() => {
@@ -286,6 +317,8 @@ class App extends React.Component {
                             history.push({ pathname: `/vendor/${suggestion.objectID}` })
                           } else if (index === 3) {
                             history.push({ pathname: `/location/${suggestion.objectID}` })
+                          } else if (index === 4) {
+                            history.push({ pathname: '/search', search: `?query=''&show=locations&locationType=${encodeURIComponent(suggestion.type)}` })
                           }
                         }}
                       />
@@ -356,6 +389,7 @@ class App extends React.Component {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
               <SignUpForm
+                browser={browser}
                 onSubmit={(values) => {
                   const photoFile = values.photoFile || values.avatar
                   signUp(values.firstName, values.lastName, photoFile, values.email, values.password)
@@ -369,6 +403,7 @@ class App extends React.Component {
                 sendSubmit={submitSignUp}
               />
               <SignInForm
+                browser={browser}
                 onSubmit={(values) => {
                   signIn(values.email, values.password)
                 }}
@@ -466,6 +501,11 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  browser: PropTypes.shape({
+    lessThan: PropTypes.shape({
+      extraSmall: PropTypes.bool.isRequired
+    }).isRequired
+  }).isRequired,
   profile: PropTypes.shape({
     photoURL: PropTypes.string
   }).isRequired,
@@ -527,6 +567,7 @@ const wrappedApp = firebaseConnect((props) => {
 
 export default withRouter(connect(
   state => ({ account: state.account,
+    browser: state.browser,
     firebase: state.firebase,
     profile: state.firebase.profile,
     auth: state.firebase.auth,

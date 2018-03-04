@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
+import IconButton from 'material-ui/IconButton'
+import ClearIcon from 'material-ui/svg-icons/content/clear'
 import { chunk } from 'lodash'
 import { Grid, Row, Col } from 'react-flexbox-grid'
 import PropTypes from 'prop-types'
@@ -30,14 +32,28 @@ class SearchAndSelectRoles extends React.Component {
     }
   }
   render() {
-    const { roleSearchResults, searchForRoles, onItemSelected, roleFilters } = this.props
+    const { roleSearchResults, searchForRoles, onItemSelected, roleFilters, page } = this.props
     const roles = roleSearchResults.sort((a, b) => a.roleName.localeCompare(b.roleName))
     const chunkedRoles = chunk(roles, 2)
     return (
       <div style={{ width: 700, height: 300 }}>
-        <div>
-          <SearchIcon />
-          <TextField onChange={(ev, query) => searchForRoles(query)}id="searchRolesFilter" style={{ width: 650 }} />
+        <div style={{ display: 'flex' }}>
+          <SearchIcon style={{ marginTop: 10 }} />
+          <TextField hintText="Search Roles" onChange={(ev, query) => searchForRoles(query)}id="searchRolesFilter" style={{ width: 650 }} />
+          {
+            page === 'search' ? (
+              <IconButton onClick={() => {
+                roles.forEach((role) => {
+                  this.onItemClick(role, item => item.roleName === role.roleName)
+                  onItemSelected(this.state.selectedItems, role, 'remove')
+                })
+              }}
+              >
+                <ClearIcon />
+              </IconButton>
+            ) : null
+          }
+
         </div>
         <div>
           <Grid fluid>
@@ -87,6 +103,7 @@ class SearchAndSelectRoles extends React.Component {
 }
 
 SearchAndSelectRoles.propTypes = {
+  page: PropTypes.string.isRequired,
   searchForRoles: PropTypes.func.isRequired,
   onItemSelected: PropTypes.func.isRequired,
   roleSearchResults: PropTypes.arrayOf(PropTypes.object).isRequired,

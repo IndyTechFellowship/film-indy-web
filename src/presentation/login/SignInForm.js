@@ -7,6 +7,7 @@ import FlatButton from 'material-ui/FlatButton'
 import { FacebookLoginButton } from 'react-social-login-buttons'
 import { get } from 'lodash'
 import SocialLoginButton from 'react-social-login-buttons/lib/buttons/SocialLoginButton'
+import { Grid, Row, Col } from 'react-flexbox-grid'
 import './signInForm.css'
 import { Link } from 'react-router-dom'
 
@@ -58,7 +59,8 @@ class SignInForm extends React.Component {
     this.setState({ open: false })
   }
   render() {
-    const { account, handleSubmit, error, pristine, submitting, sendSubmit, signInWithFacebook, signInWithGoogle } = this.props
+    const { account, handleSubmit, error, pristine, submitting, sendSubmit, signInWithFacebook, signInWithGoogle, browser } = this.props
+    const lessThanSmall = get(browser, 'lessThan.small', '')
     const socialSignInError = get(account, 'socialSignInError.code')
     const signInError = get(account, 'signInError.code')
     const actions = [
@@ -85,8 +87,6 @@ class SignInForm extends React.Component {
       <div>
         <FlatButton label="Login" style={{ color: 'white' }} labelStyle={{ fontSize: '12pt' }} onClick={this.handleOpen} />
         <Dialog
-          contentStyle={{ width: '100%', marginBottom: 150 }}
-          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           title="Login"
           actions={actions}
           modal={false}
@@ -94,60 +94,84 @@ class SignInForm extends React.Component {
           autoScrollBodyContent
           onRequestClose={this.handleClose}
         >
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', paddingTop: 40 }}>
-              <FacebookLoginButton onClick={() => signInWithFacebook()} text="Log in with Facebook" style={{ marginBottom: 20 }} />
-              <GoogleLoginButton onClick={() => signInWithGoogle()} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-              <div style={{ marginLeft: 75, marginTop: 10, border: '1px solid #979797', height: 60, width: 0 }} />
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: 75, width: 48, height: 48, borderRadius: '50%', border: '1px solid grey' }}> OR </div>
-              <div style={{ marginLeft: 75, border: '1px solid #979797', height: 60, width: 0 }} />
-            </div>
-            <div style={{ paddingTop: 13, marginLeft: 60 }}>
-              <form onSubmit={handleSubmit}>
-                <div>
-                  <Field
-                    name="email"
-                    component={TextField}
-                    hintText="Email"
-                    floatingLabelText="Email"
-                    type="email"
-                    onKeyPress={(ev) => {
-                      if (ev.key === 'Enter') {
-                        sendSubmit()
-                      }
-                    }}
-                  />
+          <Grid fluid>
+            <Row around="sm">
+              <Col xs={12} sm={5} style={{ paddingTop: 40 }}>
+                <FacebookLoginButton onClick={() => signInWithFacebook()} text="Log in with Facebook" style={{ marginBottom: 20 }} />
+                <GoogleLoginButton onClick={() => signInWithGoogle()} />
+              </Col>
+              <Col xs={12} sm={2}>
+                {
+                  !lessThanSmall ? (
+                    <div style={{ paddingLeft: 20 }}>
+                      <Row style={{ marginLeft: 45, marginTop: 10, border: '1px solid #979797', height: 60, width: 0 }} />
+                      <Row style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: 22, width: 48, height: 48, borderRadius: '50%', border: '1px solid grey' }}> OR </Row>
+                      <Row style={{ marginLeft: 45, border: '1px solid #979797', height: 60, width: 0 }} />
+                    </div>
+                  ) : (
+                    <Row style={{ marginTop: 16, marginBottom: -7 }}>
+                      <Col xs={5} style={{ paddingLeft: 0, paddingRight: 0 }}>
+                        <hr style={{ height: 0, width: '100%', marginTop: 22 }} />
+                      </Col>
+                      <Col xs={2} style={{ paddingLeft: 0, paddingRight: 0 }}>
+                        <div className="circle-responsive">
+                          <div className="circle-content">OR</div>
+                        </div>
+                      </Col>
+                      <Col xs={5} style={{ paddingLeft: 0, paddingRight: 0 }}>
+                        <hr style={{ height: 0, width: '100%', marginTop: 22 }} />
+                      </Col>
+                    </Row>
+                  )
+                }
+              </Col>
+              <Col xs={12} sm={5} style={{ paddingLeft: lessThanSmall ? 0 : 60 }}>
+                <form onSubmit={handleSubmit}>
+                  <div>
+                    <Field
+                      fullWidth
+                      name="email"
+                      component={TextField}
+                      hintText="Email"
+                      floatingLabelText="Email"
+                      type="email"
+                      onKeyPress={(ev) => {
+                        if (ev.key === 'Enter') {
+                          sendSubmit()
+                        }
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <Field
+                      fullWidth
+                      name="password"
+                      component={TextField}
+                      hintText="Password"
+                      floatingLabelText="Password"
+                      type="password"
+                      onKeyPress={(ev) => {
+                        if (ev.key === 'Enter') {
+                          sendSubmit()
+                        }
+                      }}
+                    />
+                  </div>
+                </form>
+                <div id="forgotPasswordContainer">
+                  <Link to="/forgotpassword">
+                    <FlatButton
+                      label="Forgot Password?"
+                      onClick={this.handleClose}
+                    />
+                  </Link>
                 </div>
-                <div>
-                  <Field
-                    name="password"
-                    component={TextField}
-                    hintText="Password"
-                    floatingLabelText="Password"
-                    type="password"
-                    onKeyPress={(ev) => {
-                      if (ev.key === 'Enter') {
-                        sendSubmit()
-                      }
-                    }}
-                  />
-                </div>
-              </form>
-              <div id="forgotPasswordContainer">
-                <Link to="/forgotpassword">
-                  <FlatButton
-                    label="Forgot Password?"
-                    onClick={this.handleClose}
-                  />
-                </Link>
-              </div>
+              </Col>
+            </Row>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: 10, color: 'red' }}>
+              {signInError ? fireBaseErrorCode(signInError) : socialSignInError ? fireBaseErrorCode(socialSignInError) : '' }
             </div>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: 10, color: 'red' }}>
-            {signInError ? fireBaseErrorCode(signInError) : socialSignInError ? fireBaseErrorCode(socialSignInError) : '' }
-          </div>
+          </Grid>
         </Dialog>
       </div>
     )
@@ -155,6 +179,11 @@ class SignInForm extends React.Component {
 }
 
 SignInForm.propTypes = {
+  browser: PropTypes.shape({
+    lessThan: PropTypes.shape({
+      small: PropTypes.bool.isRequired
+    }).isRequired
+  }).isRequired,
   cancelSignInUpForm: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
   signInWithGoogle: PropTypes.func.isRequired,
