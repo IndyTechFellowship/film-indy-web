@@ -150,7 +150,7 @@ class SignUpForm extends React.Component {
         {
           !mobile ? (
             <div>
-              <FlatButton label="Sign Up" style={{ color: 'white' }} labelStyle={{ fontSize: '12pt' }} onClick={this.handleOpen} />
+              <FlatButton label="Sign Up" style={{ color: 'white' }} labelStyle={{ fontSize: '12pt', paddingLeft: 0 }} onClick={this.handleOpen} />
               <Dialog
                 contentStyle={{ marginBottom: 150, width: '100%' }}
                 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}

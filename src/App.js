@@ -347,36 +347,36 @@ class App extends React.Component {
               <Col xs>
                 {
                   !lessThanSm ? (
-                    <Row>
-                      <div style={{ display: 'flex', flexDirection: 'row', marginTop: 35 }}>
-                        <Col xs>
-                          <SignUpForm
-                            onSubmit={(values) => {
-                              const photoFile = values.photoFile || values.avatar
-                              signUp(values.firstName, values.lastName, photoFile, values.email, values.password)
-                            }}
-                            getDefaultAccountImages={getDefaultAccountImages}
-                            defaultAccountImages={account.defaultAccountImages}
-                            account={account}
-                            cancelSignInUpForm={cancelSignInUpForm}
-                            signUpWithGoogle={signUpWithGoogle}
-                            signUpWithFacebook={signUpWithFacebook}
-                            sendSubmit={submitSignUp}
-                          />
-                        </Col>
-                        <Col xs>
-                          <SignInForm
-                            onSubmit={(values) => {
-                              signIn(values.email, values.password)
-                            }}
-                            account={account}
-                            cancelSignInUpForm={cancelSignInUpForm}
-                            signInWithFacebook={signInWithFacebook}
-                            signInWithGoogle={signInWithGoogle}
-                            sendSubmit={submitSignIn}
-                          />
-                        </Col>
-                      </div>
+                    <Row style={{ marginTop: 35 }}>
+                      <Col xs={6}>
+                        <SignUpForm
+                          browser={browser}
+                          onSubmit={(values) => {
+                            const photoFile = values.photoFile || values.avatar
+                            signUp(values.firstName, values.lastName, photoFile, values.email, values.password)
+                          }}
+                          getDefaultAccountImages={getDefaultAccountImages}
+                          defaultAccountImages={account.defaultAccountImages}
+                          account={account}
+                          cancelSignInUpForm={cancelSignInUpForm}
+                          signUpWithGoogle={signUpWithGoogle}
+                          signUpWithFacebook={signUpWithFacebook}
+                          sendSubmit={submitSignUp}
+                        />
+                      </Col>
+                      <Col xs={6}>
+                        <SignInForm
+                          browser={browser}
+                          onSubmit={(values) => {
+                            signIn(values.email, values.password)
+                          }}
+                          account={account}
+                          cancelSignInUpForm={cancelSignInUpForm}
+                          signInWithFacebook={signInWithFacebook}
+                          signInWithGoogle={signInWithGoogle}
+                          sendSubmit={submitSignIn}
+                        />
+                      </Col>
                     </Row>
                   ) : (
                     <IconButton
