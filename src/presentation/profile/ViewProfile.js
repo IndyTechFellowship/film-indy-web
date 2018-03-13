@@ -87,7 +87,7 @@ class ViewProfile extends React.Component {
     const name = `${get(userAccount, 'firstName', '')} ${get(userAccount, 'lastName', '')}`
     const phone = formatPhoneNumber(get(userAccount, 'phone'))
 
-    const email = get(userProfile, 'displayEmail') ? userProfile.displayEmail : get(auth, 'email')
+    const email = get(userProfile, 'displayEmail') ? userProfile.displayEmail : get(userAccount, 'email')
     return (
       <Grid fluid>
         <div className="profile">

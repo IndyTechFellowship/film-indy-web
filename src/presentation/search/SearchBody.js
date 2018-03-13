@@ -140,7 +140,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                           </Card>
                           <Row>
                             <Col xs={12}>
-                              <h4 style={{ textAlign: 'center', width: '100%', marginLeft: enrichedVendors.length === 1 ? 50 : 0 }}> {`${get(enrichedResult, 'vendorName', '')}`} </h4>
+                              <h4 style={{ textAlign: 'center', width: '100%' }}> {`${get(enrichedResult, 'vendorName', '')}`} </h4>
                             </Col>
                           </Row>
                         </Col>
@@ -164,7 +164,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                     labelStyle={{ paddingLeft: 5, paddingRight: 5 }}
                     backgroundColor={'#38b5e6'}
                     onClick={() => {
-                      const newQs = QueryString.stringify({ ...parsed, show: 'vendors' })
+                      const newQs = QueryString.stringify({ ...parsed, show: 'locations' })
                       history.push({ pathname: '/search', search: newQs })
                     }}
                   />
@@ -278,20 +278,25 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
           }}
         >
           {enrichedVendors.map(enrichedResult => (
-            <div style={{ width: 200, marginLeft: 30 }}>
+            <div key={enrichedResult.vendorName} style={{ width: 300 }}>
               <Card
                 onClick={() => {
-                  history.push({ pathname: `/vendor/${enrichedResult.objectID}` })
+                  history.push({ pathname: `/location/${enrichedResult.objectID}` })
                 }}
                 key={enrichedResult.objectID}
                 containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
-                style={{ width: 200, height: 150, marginRight: 10, borderRadius: 10, cursor: 'pointer', display: 'block' }}
+                style={{ width: 300, height: 200, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
               >
                 <CardMedia>
-                  <img src={get(enrichedResult, 'photoURL', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 150, height: 150, borderBottomLeftRadius: 10, borderTopLeftRadius: 10 }} />
+                  <img
+                    src={get(enrichedResult, 'profileImage',
+                      'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')}
+                    alt=""
+                    style={{ width: 300, height: 200, borderRadius: 10, objectFit: 'cover' }}
+                  />
                 </CardMedia>
               </Card>
-              <h4 style={{ textAlign: 'center', width: '100%' }}> {`${get(enrichedResult, 'vendorName', '')}`} </h4>
+              <h4 style={{ textAlign: 'center', width: '100%', marginLeft: 35 }}> {`${get(enrichedResult, 'vendorName', '')}`} </h4>
             </div>
           ))}
         </MasonryInfiniteScroller>
@@ -318,7 +323,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
           }}
         >
           {enrichedLocations.map(enrichedResult => (
-            <div key={enrichedResult.locationName}style={{ width: 300 }}>
+            <div key={enrichedResult.locationName} style={{ width: 300 }}>
               <Card
                 onClick={() => {
                   history.push({ pathname: `/location/${enrichedResult.objectID}` })
@@ -332,7 +337,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                     src={get(enrichedResult, 'displayImages[0].url',
                       'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')}
                     alt=""
-                    style={{ width: 300, height: 200, borderRadius: 10 }}
+                    style={{ width: 300, height: 200, borderRadius: 10, objectFit: 'cover' }}
                   />
                 </CardMedia>
               </Card>
