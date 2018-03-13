@@ -737,13 +737,17 @@ class EditProfile extends React.Component {
                   <SearchAndSelectRoles
                     page="editProfile"
                     searchForRoles={searchForRoles}
+                    onItemsSelected={(items) => {
+                      console.log(items)
+                      // this.setState({ selectedRoles: items })
+                    }}
                     onItemSelected={(selectedItems, itemSelected, type) => {
                       if (type === 'add') {
                         this.setState({ selectedRoles: [...selectedRoles, itemSelected.roleName] })
                       }
                     }}
                     roleSearchResults={roleSearchResults}
-                    roleFilters={selectedRoles}
+                    roleFilters={userRoles.map(role => role.roleName)}
                   />
                 </div>
               </Dialog>

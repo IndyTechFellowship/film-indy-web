@@ -15,7 +15,13 @@ import SearchAndSelectRoles from '../common/SearchAndSelectRoles'
 class FilterBar extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { menuOpen: false, experienceMenuOpen: false, experience: { min: 0, max: 30 }, applyExperienceFilter: false }
+    const parsedQs = QueryString.parse(window.location.search)
+    if (parsedQs.expMin && parsedQs.expMax) {
+      this.state = { menuOpen: false, experienceMenuOpen: false, experience: { min: Number.parseInt(parsedQs.expMin, 10), max: Number.parseInt(parsedQs.expMax, 10) }, applyExperienceFilter: true }
+    } else {
+      this.state = { menuOpen: false, experienceMenuOpen: false, experience: { min: 0, max: 30 }, applyExperienceFilter: false }
+    }
+
     this.openMenu = this.openMenu.bind(this)
     this.closeMenu = this.closeMenu.bind(this)
     this.openExperienceMenu = this.openExperienceMenu.bind(this)
@@ -24,7 +30,7 @@ class FilterBar extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { experienceFilter } = nextProps
     if (experienceFilter.min >= 0 && experienceFilter.max >= 0) {
-      this.setState({ experience: { min: experienceFilter.min, max: experienceFilter.max }, applyExperienceFilter: true })
+      this.setState({ experience: { min: experienceFilter.min, max: experienceFilter.max } })
     }
   }
   openMenu(event) {
@@ -66,21 +72,14 @@ class FilterBar extends React.Component {
                   <SearchAndSelectRoles
                     page="search"
                     roleFilters={roleFilters}
-                    onItemSelected={(selectedItem, itemSelected, type) => {
+                    onItemSelected={() => {
+
+                    }}
+                    onItemsSelected={(items) => {
+                      this.setState({ menuOpen: false })
                       const parsedQs = QueryString.parse(window.location.search)
-                      const rolesFromQs = get(parsedQs, 'role', [])
-                      const roles = typeof (rolesFromQs) === 'string' ? [rolesFromQs] : rolesFromQs
-                      if (type === 'add') {
-                        addRoleSearchFilter([itemSelected.roleName])
-                        const newRoles = [...roles, itemSelected.roleName]
-                        const newQs = QueryString.stringify({ ...parsedQs, role: newRoles })
-                        history.push({ pathname: '/search', search: newQs })
-                      } else if (type === 'remove') {
-                        removeRoleSearchFilter(itemSelected.roleName)
-                        const newRoles = roles.filter(role => role !== itemSelected.roleName)
-                        const newQs = QueryString.stringify({ ...parsedQs, role: newRoles })
-                        history.push({ pathname: '/search', search: newQs })
-                      }
+                      const newQs = QueryString.stringify({ ...parsedQs, role: items })
+                      history.push({ pathname: '/search', search: newQs })
                     }}
                   />
                 </Paper>

@@ -128,7 +128,12 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                             <Row style={(mediaType === 'small' || mediaType === 'extraSmall') ? { minHeight: 256, maxHeight: 256 } : { maxHeight: 256 }}>
                               <Col xs={12}>
                                 <CardMedia>
-                                  <img src={get(enrichedResult, 'profileImage', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: '100%', height: 'auto', borderRadius: 10, objectFit: 'cover', minHeight: 256, maxHeight: 256 }} />
+                                  <img
+                                    src={get(enrichedResult, 'profileImage',
+                                      'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')}
+                                    alt=""
+                                    style={{ width: '100%', height: 'auto', borderRadius: 10, objectFit: 'cover', minHeight: 256, maxHeight: 256 }}
+                                  />
                                 </CardMedia>
                               </Col>
                             </Row>
@@ -168,14 +173,19 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
               <Row style={{ paddingLeft: 20, paddingRight: 30 }}>
                 {take(enrichedLocations, 6).map((enrichedResult, i) => (
                   <Col lg={2} md={4} sm={4} xs={12} style={{ marginBottom: 10 }}>
-                    <Link id="vendorLink" to={{ pathname: `/vendor/${enrichedResult.objectID}` }} style={{ }}>
+                    <Link id="vendorLink" to={{ pathname: `/location/${enrichedResult.objectID}` }} style={{ }}>
                       <Row style={{ }}>
                         <Col xs={12}>
                           <Card key={enrichedResult.objectID} containerStyle={{ paddingBottom: 0 }} style={{ borderRadius: 10 }}>
                             <Row style={(mediaType === 'small' || mediaType === 'extraSmall') ? { minHeight: 256, maxHeight: 256 } : { maxHeight: 256 }}>
                               <Col xs={12}>
                                 <CardMedia>
-                                  <img src={get(enrichedResult, 'displayImages[0].url', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: '100%', height: 'auto', borderRadius: 10, objectFit: 'cover', minHeight: 256, maxHeight: 256 }} />
+                                  <img
+                                    src={get(enrichedResult, 'displayImages[0].url',
+                                      'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')}
+                                    alt=""
+                                    style={{ width: '100%', height: 'auto', borderRadius: 10, objectFit: 'cover', minHeight: 256, maxHeight: 256 }}
+                                  />
                                 </CardMedia>
                               </Col>
                             </Row>
@@ -318,7 +328,12 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                 style={{ width: 300, height: 200, marginRight: 20, borderRadius: 10, marginLeft: 30, cursor: 'pointer' }}
               >
                 <CardMedia>
-                  <img src={get(enrichedResult, 'displayImages[0].url', 'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')} alt="" style={{ width: 300, height: 200, borderRadius: 10 }} />
+                  <img
+                    src={get(enrichedResult, 'displayImages[0].url',
+                      'https://images.vexels.com/media/users/3/144866/isolated/preview/927c4907bbd0598c70fb79de7af6a35c-business-building-silhouette-by-vexels.png')}
+                    alt=""
+                    style={{ width: 300, height: 200, borderRadius: 10 }}
+                  />
                 </CardMedia>
               </Card>
               <h4 style={{ textAlign: 'center', width: '100%', marginLeft: enrichedLocations.length === 1 ? 90 : 0 }}> {`${get(enrichedResult, 'locationName', '')}`} </h4>
