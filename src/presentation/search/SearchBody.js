@@ -281,7 +281,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
             <div key={enrichedResult.vendorName} style={{ width: 300 }}>
               <Card
                 onClick={() => {
-                  history.push({ pathname: `/location/${enrichedResult.objectID}` })
+                  history.push({ pathname: `/vendor/${enrichedResult.objectID}` })
                 }}
                 key={enrichedResult.objectID}
                 containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
@@ -341,7 +341,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                   />
                 </CardMedia>
               </Card>
-              <h4 style={{ textAlign: 'center', width: '100%', marginLeft: enrichedLocations.length === 1 ? 90 : 0 }}> {`${get(enrichedResult, 'locationName', '')}`} </h4>
+              <h4 style={{ textAlign: 'center', width: '100%', marginLeft: 35 }}> {`${get(enrichedResult, 'locationName', '')}`} </h4>
             </div>
           ))}
         </MasonryInfiniteScroller>

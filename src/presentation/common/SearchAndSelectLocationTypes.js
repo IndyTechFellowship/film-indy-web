@@ -7,14 +7,16 @@ import { chunk, groupBy } from 'lodash'
 import { Grid, Row, Col } from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ClearIcon from 'material-ui/svg-icons/content/clear'
+import SubmitIcon from 'material-ui/svg-icons/action/input'
 import PropTypes from 'prop-types'
 import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
 
 class SearchAndSelectRoles extends React.Component {
   constructor(props) {
     super(props)
+    const { locationTypeFilters } = props
     this.onItemClick = this.onItemClick.bind(this)
-    this.state = { selectedItems: [] }
+    this.state = { selectedItems: locationTypeFilters }
   }
   componentDidMount() {
     const { searchForLocationTypes } = this.props
@@ -31,7 +33,7 @@ class SearchAndSelectRoles extends React.Component {
     }
   }
   render() {
-    const { locationTypeSearchResults, searchForLocationTypes, onItemSelected, locationTypeFilters, page } = this.props
+    const { locationTypeSearchResults, searchForLocationTypes, onItemsSelected, onItemSelected, page } = this.props
     const grouped = groupBy(locationTypeSearchResults, result => result.category)
     const groupedResults = Object.keys(grouped)
       .sort()
@@ -44,13 +46,21 @@ class SearchAndSelectRoles extends React.Component {
           {
             page === 'search' ? (
               <IconButton onClick={() => {
-                locationTypeSearchResults.forEach((loc) => {
-                  this.onItemClick(loc, item => item.type === loc.type)
-                  onItemSelected(this.state.selectedItems, loc, 'remove')
-                })
+                this.setState({ selectedItems: [] })
+                onItemsSelected([])
               }}
               >
                 <ClearIcon />
+              </IconButton>
+            ) : null
+          }
+          {
+            page === 'search' ? (
+              <IconButton onClick={() => {
+                onItemsSelected(this.state.selectedItems)
+              }}
+              >
+                <SubmitIcon />
               </IconButton>
             ) : null
           }
@@ -61,21 +71,22 @@ class SearchAndSelectRoles extends React.Component {
               const results = groupedResults[category]
               const sortedResults = results.sort((a, b) => a.type.localeCompare(b.type))
               const chunkedLocs = chunk(sortedResults, 2)
+              const { selectedItems } = this.state
               return (
                 <Grid key={category} fluid>
                   <h4> {category} </h4>
                   {chunkedLocs.map((chunked, i) => {
                     const loc1 = chunked[0]
                     const loc2 = chunked[1]
-                    const role1Selected = !!(loc1 && locationTypeFilters.find(item => loc1.type === item))
-                    const role2Selected = !!(loc2 && locationTypeFilters.find(item => loc2.type === item))
+                    const role1Selected = !!(loc1 && selectedItems.find(item => loc1.type === item))
+                    const role2Selected = !!(loc2 && selectedItems.find(item => loc2.type === item))
                     return (
                       <Row key={i}>
                         {loc1 ?
                           <Col xs={6}>
                             <RaisedButton
                               onClick={() => {
-                                this.onItemClick(loc1, item => item.type === loc1.type)
+                                this.onItemClick(loc1.type, item => item === loc1.type)
                                 onItemSelected(this.state.selectedItems, loc1, role1Selected ? 'remove' : 'add')
                               }}
                               style={{ width: 325, marginTop: 10 }}
@@ -89,7 +100,7 @@ class SearchAndSelectRoles extends React.Component {
                           <Col xs={6}>
                             <RaisedButton
                               onClick={() => {
-                                this.onItemClick(loc2, item => item.roleName === loc2.roleName)
+                                this.onItemClick(loc2.type, item => item === loc2.type)
                                 onItemSelected(this.state.selectedItems, loc2, role2Selected ? 'remove' : 'add')
                               }}
                               style={{ width: 325, marginTop: 10 }}
@@ -115,6 +126,7 @@ class SearchAndSelectRoles extends React.Component {
 SearchAndSelectRoles.propTypes = {
   page: PropTypes.string.isRequired,
   searchForLocationTypes: PropTypes.func.isRequired,
+  onItemsSelected: PropTypes.func.isRequired,
   onItemSelected: PropTypes.func.isRequired,
   locationTypeSearchResults: PropTypes.arrayOf(PropTypes.object).isRequired,
   locationTypeFilters: PropTypes.arrayOf(PropTypes.string).isRequired

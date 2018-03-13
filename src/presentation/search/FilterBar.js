@@ -8,7 +8,6 @@ import Popover from 'react-simple-popover'
 import InputRange from 'react-input-range'
 import QueryString from 'query-string'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
 import 'react-input-range/lib/css/index.css'
 import SearchAndSelectRoles from '../common/SearchAndSelectRoles'
 
@@ -49,7 +48,7 @@ class FilterBar extends React.Component {
   }
   render() {
     const { menuOpen, experienceMenuOpen, applyExperienceFilter, experience } = this.state
-    const { history, addRoleSearchFilter, removeRoleSearchFilter, roleFilters, onExperienceFilterChange } = this.props
+    const { history, roleFilters, onExperienceFilterChange } = this.props
     return (
       <Paper>
         <Toolbar style={{ backgroundColor: '#FFFFF' }}>

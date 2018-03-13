@@ -79,6 +79,9 @@ const VendorProfilePage = (props) => {
   const primaryContactState = get(vendorProfile, 'primaryContactState', '')
   const primaryContactZip = get(vendorProfile, 'primaryContactZip', '')
   const primaryContactCityStateZip = formatCityStateZip(primaryContactCity, primaryContactState, primaryContactZip)
+  const hasPrimaryContact =
+  primaryContactPhone || primaryContactEmail || primaryContactAboutUs
+    || primaryContactAddressLine1 || primaryContactAddressLine2 || primaryContactCity || primaryContactState
 
   if (vendorProfile) {
     return (
@@ -92,121 +95,133 @@ const VendorProfilePage = (props) => {
             </div>
           ) : null
         }
-        <Card className="profile-card vendor-profile" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
-          <CardMedia className="crew-image-container">
-            <img src={profileImageUrl} className="crew-image" alt="" />
-          </CardMedia>
-          <div style={{ minWidth: '200px', width: '100%' }}>
-            <CardTitle title={vendorName} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-            { vendorAddressLine1 ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '0px', width: '100%' }}>
-                {vendorAddressLine1}
-              </CardText>
-            ) : null
-            }
-            { vendorAddressLine2 ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '4px', width: '100%' }}>
-                {vendorAddressLine2}
-              </CardText>
-            ) : null
-            }
-            { vendorCityStateZip ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '4px', width: '100%' }}>
-                {vendorCityStateZip}
-              </CardText>
-            ) : null
-            }
-            { vendorPhone ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
-                {vendorPhone}
-              </CardText>
-            ) : null
-            }
-            { vendorEmail ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
-                {vendorEmail}
-              </CardText>
-            ) : null
-            }
-          </div>
-        </Card>
+        <div style={{ marginBottom: 10 }}>
+          <Card className="profile-card vendor-profile" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
+            <CardMedia className="crew-image-container">
+              <img src={profileImageUrl} className="crew-image" alt="" />
+            </CardMedia>
+            <div style={{ minWidth: '200px', width: '100%' }}>
+              <CardTitle title={vendorName} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+              { vendorAddressLine1 ? (
+                <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '0px', width: '100%' }}>
+                  {vendorAddressLine1}
+                </CardText>
+              ) : null
+              }
+              { vendorAddressLine2 ? (
+                <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '4px', width: '100%' }}>
+                  {vendorAddressLine2}
+                </CardText>
+              ) : null
+              }
+              { vendorCityStateZip ? (
+                <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '4px', width: '100%' }}>
+                  {vendorCityStateZip}
+                </CardText>
+              ) : null
+              }
+              { vendorPhone ? (
+                <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
+                  {vendorPhone}
+                </CardText>
+              ) : null
+              }
+              { vendorEmail ? (
+                <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
+                  {vendorEmail}
+                </CardText>
+              ) : null
+              }
+            </div>
+          </Card>
+        </div>
+        {
+          hasPrimaryContact ? (
+            <div style={{ marginBottom: 10 }}>
+              <Card className="profile-card vendor-primaryContact" containerStyle={{ paddingBottom: 0, textAlign: 'left' }}>
+                <CardTitle title="Primary Contact" titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+                <div style={{ width: '35%' }}>
+                  { primaryContactName ? (
+                    <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '16px' }}>
+                      {primaryContactName}
+                    </CardText>
+                  ) : null
+                  }
+                  { primaryContactAddressLine1 ? (
+                    <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '8px', width: '100%' }}>
+                      {primaryContactAddressLine1}
+                    </CardText>
+                  ) : null
+                  }
+                  { primaryContactAddressLine2 ? (
+                    <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '4px', width: '100%' }}>
+                      {primaryContactAddressLine2}
+                    </CardText>
+                  ) : null
+                  }
+                  { primaryContactCityStateZip ? (
+                    <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '4px', width: '100%' }}>
+                      {primaryContactCityStateZip}
+                    </CardText>
+                  ) : null
+                  }
+                  { primaryContactPhone ? (
+                    <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px' }}>
+                      {primaryContactPhone}
+                    </CardText>
+                  ) : null
+                  }
+                  { primaryContactEmail ? (
+                    <CardText className="vendor-text" style={{ paddingBottom: '16px', paddingTop: '8px' }}>
+                      {primaryContactEmail}
+                    </CardText>
+                  ) : null
+                  }
+                </div>
+                <div style={{ width: '75%' }}>
+                  { primaryContactAboutUs ? (
+                    <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '16px' }}>
+                      {primaryContactAboutUs}
+                    </CardText>
+                  ) : null
+                  }
+                </div>
+              </Card>
+            </div>
+          ) : null
+        }
 
-        <Card className="profile-card vendor-primaryContact" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
-          <div style={{ width: '35%' }}>
-            { primaryContactName ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '16px' }}>
-                {primaryContactName}
-              </CardText>
-            ) : null
-            }
-            { primaryContactAddressLine1 ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '8px', width: '100%' }}>
-                {primaryContactAddressLine1}
-              </CardText>
-            ) : null
-            }
-            { primaryContactAddressLine2 ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '4px', width: '100%' }}>
-                {primaryContactAddressLine2}
-              </CardText>
-            ) : null
-            }
-            { primaryContactCityStateZip ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '4px', width: '100%' }}>
-                {primaryContactCityStateZip}
-              </CardText>
-            ) : null
-            }
-            { primaryContactPhone ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '8px' }}>
-                {primaryContactPhone}
-              </CardText>
-            ) : null
-            }
-            { primaryContactEmail ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '16px', paddingTop: '8px' }}>
-                {primaryContactEmail}
-              </CardText>
-            ) : null
-            }
-          </div>
-          <div style={{ width: '75%' }}>
-            { primaryContactAboutUs ? (
-              <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '16px' }}>
-                {primaryContactAboutUs}
-              </CardText>
-            ) : null
-            }
-          </div>
-        </Card>
-
-        <Card className="profile-card vendor-bio" containerStyle={{ width: '95%', paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
-          <div>
-            <CardTitle title={'About Us'} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-            { vendorBio ? (
-              <CardText style={{ lineHeight: '20px', paddingBottom: '40px' }}>
-                {vendorBio}
-              </CardText>
-            ) : (
-              <CardText style={{ paddingBottom: '48px' }}>
+        <div style={{ marginBottom: 10 }}>
+          <Card className="profile-card vendor-bio" containerStyle={{ width: '95%', paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
+            <div>
+              <CardTitle title={'About Us'} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+              { vendorBio ? (
+                <CardText style={{ lineHeight: '20px', paddingBottom: '40px' }}>
+                  {vendorBio}
+                </CardText>
+              ) : (
+                <CardText style={{ paddingBottom: '48px' }}>
                                 Contact us directly for more information.
-              </CardText>
-            )
-            }
+                </CardText>
+              )
+              }
 
-            <CardActions>
-              {vendorLinks.map(link => (
-                <RaisedButton primary key={link.title} label={link.title} target="_blank" href={formatLink(link.url)} />
-              ))}
-            </CardActions>
-          </div>
-        </Card>
+              <CardActions>
+                {vendorLinks.map(link => (
+                  <RaisedButton primary key={link.title} label={link.title} target="_blank" href={formatLink(link.url)} />
+                ))}
+              </CardActions>
+            </div>
+          </Card>
+        </div>
 
         { video ? (
-          <Card className="profile-card big-card">
-            <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={video.title} />
-            <embed width="100%" height="500px" src={linkToEmbed(video.url, videoType)} />
-          </Card>
+          <div style={{ marginBottom: 10 }}>
+            <Card className="profile-card big-card" containerStyle={{ paddingBottom: 0, textAlign: 'left' }}>
+              <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={video.title} />
+              <embed width="100%" height="500px" src={linkToEmbed(video.url, videoType)} />
+            </Card>
+          </div>
         ) : null }
       </div>
 

@@ -35,7 +35,7 @@ class SearchAndSelectRoles extends React.Component {
   }
   render() {
     const { selectedItems } = this.state
-    const { roleSearchResults, searchForRoles, onItemSelected, onItemsSelected, roleFilters, page } = this.props
+    const { roleSearchResults, searchForRoles, onItemSelected, onItemsSelected, page } = this.props
     const roles = roleSearchResults.sort((a, b) => a.roleName.localeCompare(b.roleName))
     const chunkedRoles = chunk(roles, 2)
     return (

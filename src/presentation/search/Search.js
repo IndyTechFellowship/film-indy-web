@@ -10,7 +10,7 @@ import '../../App.css'
 
 class Search extends React.Component {
   componentWillMount() {
-    const { resetAndSearch, location, addRoleSearchFilter, addExperienceSearchFilter, addLocationTypeSearchFilter } = this.props
+    const { resetAndSearch, location } = this.props
     const parsed = QueryString.parse(location.search)
     const query = parsed.query
     const rolesToFilter = get(parsed, 'role', [])
@@ -32,13 +32,10 @@ class Search extends React.Component {
     const parsedQs = QueryString.parse(qs)
     const show = get(parsedQs, 'show', '')
     resetAndSearch(show, query, roleFilters, experienceFilter, locationTypeFilters)
-    // addExperienceSearchFilter(parsedExpMin, parsedExpMax)
-    // addRoleSearchFilter(roleFilters.map(filter => filter.role))
-    // addLocationTypeSearchFilter(locationTypeFilters.map(t => t.locationType))
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
-      const { resetAndSearch, addRoleSearchFilter, addExperienceSearchFilter, addLocationTypeSearchFilter } = this.props
+      const { resetAndSearch } = this.props
       const parsed = QueryString.parse(nextProps.location.search)
       const query = get(parsed, 'query', '')
       const rolesToFilter = get(parsed, 'role', [])
@@ -59,9 +56,6 @@ class Search extends React.Component {
       const qs = get(nextProps, 'location.search', '')
       const parsedQs = QueryString.parse(qs)
       const show = get(parsedQs, 'show', '')
-      // addRoleSearchFilter(roleFilters.map(filter => filter.role))
-      // addLocationTypeSearchFilter(locationTypeFilters.map(t => t.locationType))
-      // addExperienceSearchFilter(parsedExpMin, parsedExpMax)
       resetAndSearch(show, query, roleFilters, experienceFilter, locationTypeFilters)
     }
   }

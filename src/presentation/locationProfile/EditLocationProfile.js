@@ -614,6 +614,9 @@ class EditLocationProfile extends React.Component {
                   <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                     <SearchAndSelectLocationTypes
                       page="editLocationProfile"
+                      onItemsSelected={() => {
+
+                      }}
                       onItemSelected={(selectedItems, itemSelected, type) => {
                         if (type === 'add') {
                           this.setState({ selectedLocationTypes: [...selectedLocationTypes, itemSelected] })
