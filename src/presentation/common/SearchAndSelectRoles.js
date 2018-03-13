@@ -5,6 +5,7 @@ import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import IconButton from 'material-ui/IconButton'
 import ClearIcon from 'material-ui/svg-icons/content/clear'
+import SubmitIcon from 'material-ui/svg-icons/action/input'
 import { chunk } from 'lodash'
 import { Grid, Row, Col } from 'react-flexbox-grid'
 import PropTypes from 'prop-types'
@@ -14,8 +15,9 @@ import * as algoliaActions from '../../redux/actions/creators/algoliaActions'
 class SearchAndSelectRoles extends React.Component {
   constructor(props) {
     super(props)
+    const { roleFilters } = props
     this.onItemClick = this.onItemClick.bind(this)
-    this.state = { selectedItems: [] }
+    this.state = { selectedItems: roleFilters }
   }
   componentDidMount() {
     const { searchForRoles } = this.props
@@ -28,11 +30,12 @@ class SearchAndSelectRoles extends React.Component {
       const withoutItem = selectedItems.filter(selected => !findFn(selected))
       this.setState({ selectedItems: withoutItem })
     } else {
-      this.setState({ selectedItems: [...selectedItems, item] })
+      this.setState({ selectedItems: [...selectedItems, item.roleName] })
     }
   }
   render() {
-    const { roleSearchResults, searchForRoles, onItemSelected, roleFilters, page } = this.props
+    const { selectedItems } = this.state
+    const { roleSearchResults, searchForRoles, onItemSelected, onItemsSelected, page } = this.props
     const roles = roleSearchResults.sort((a, b) => a.roleName.localeCompare(b.roleName))
     const chunkedRoles = chunk(roles, 2)
     return (
@@ -43,13 +46,21 @@ class SearchAndSelectRoles extends React.Component {
           {
             page === 'search' ? (
               <IconButton onClick={() => {
-                roles.forEach((role) => {
-                  this.onItemClick(role, item => item.roleName === role.roleName)
-                  onItemSelected(this.state.selectedItems, role, 'remove')
-                })
+                onItemsSelected([])
+                this.setState({ selectedItems: [] })
               }}
               >
                 <ClearIcon />
+              </IconButton>
+            ) : null
+          }
+          {
+            page === 'search' ? (
+              <IconButton onClick={() => {
+                onItemsSelected(this.state.selectedItems)
+              }}
+              >
+                <SubmitIcon />
               </IconButton>
             ) : null
           }
@@ -60,15 +71,15 @@ class SearchAndSelectRoles extends React.Component {
             {chunkedRoles.map((chunked, i) => {
               const role1 = chunked[0]
               const role2 = chunked[1]
-              const role1Selected = !!(role1 && roleFilters.find(item => role1.roleName === item))
-              const role2Selected = !!(role2 && roleFilters.find(item => role2.roleName === item))
+              const role1Selected = !!(role1 && selectedItems.find(item => role1.roleName === item))
+              const role2Selected = !!(role2 && selectedItems.find(item => role2.roleName === item))
               return (
                 <Row key={i}>
                   {role1 ?
                     <Col xs={6}>
                       <RaisedButton
                         onClick={() => {
-                          this.onItemClick(role1, item => item.roleName === role1.roleName)
+                          this.onItemClick(role1, item => item === role1.roleName)
                           onItemSelected(this.state.selectedItems, role1, role1Selected ? 'remove' : 'add')
                         }}
                         style={{ width: 325, marginTop: 10 }}
@@ -82,7 +93,7 @@ class SearchAndSelectRoles extends React.Component {
                     <Col xs={6}>
                       <RaisedButton
                         onClick={() => {
-                          this.onItemClick(role2, item => item.roleName === role2.roleName)
+                          this.onItemClick(role2, item => item === role2.roleName)
                           onItemSelected(this.state.selectedItems, role2, role2Selected ? 'remove' : 'add')
                         }}
                         style={{ width: 325, marginTop: 10 }}
@@ -106,6 +117,7 @@ SearchAndSelectRoles.propTypes = {
   page: PropTypes.string.isRequired,
   searchForRoles: PropTypes.func.isRequired,
   onItemSelected: PropTypes.func.isRequired,
+  onItemsSelected: PropTypes.func.isRequired,
   roleSearchResults: PropTypes.arrayOf(PropTypes.object).isRequired,
   roleFilters: PropTypes.arrayOf(PropTypes.string).isRequired
 

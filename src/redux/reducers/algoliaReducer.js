@@ -5,12 +5,12 @@ import {
   SEARCH_FOR_ROLES, ADD_EXPERIENCE_SEARCH_FILTER, SEARCH_FOR_LOCATION_TYPES,
   ADD_LOCATION_TYPE_SEARCH_FILTER, REMOVE_LOCATION_TYPE_SEARCH_FILTER } from '../actions/types/algoliaActionsTypes'
 
-import { uniqBy } from 'lodash'
+import { uniqBy, get } from 'lodash'
 
 const initalState = {
   offset: 0,
   length: 10,
-  totalHits: { hasLoaded: false },
+  totalHits: { hasLoaded: false, profiles: 0, names: 0 },
   queryResults: [],
   enrichedResults: [],
   crewQueryResults: [],
@@ -73,14 +73,17 @@ export default (state = initalState, action) => {
     case `${SEARCH_FOR_CREW}_SUCCESS`:
       return {
         ...state,
-        crewQueryResults: [...state.crewQueryResults, ...action.payload.reduce((acc, r) => [...acc, ...r.results.hits], [])]
+        crewQueryResults: [...state.crewQueryResults, ...action.payload.reduce((acc, r) => [...acc, ...get(r, 'results.hits', [])], [])]
       }
     case `${SEARCH_FOR_CREW_ENRICHED}_STARTING`:
+      const profileHits = get(action, 'payload.totalHits.profiles', 0)
+      const nameHits = get(action, 'payload.totalHits.names', 0)
       return {
         ...state,
         totalHits: {
           ...state.totalHits,
-          ...action.payload.totalHits
+          profiles: profileHits,
+          names: nameHits
         }
       }
     case `${SEARCH_FOR_CREW_ENRICHED}_SUCCESS`:

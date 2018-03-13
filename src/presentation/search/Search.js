@@ -1,6 +1,7 @@
 import React from 'react'
 import QueryString from 'query-string'
 import { get } from 'lodash'
+import Tabs, { Tab } from 'material-ui-next/Tabs'
 import PropTypes from 'prop-types'
 import FilterBar from './FilterBar'
 import LocationFilterBar from './LocationFilterBar'
@@ -9,7 +10,7 @@ import '../../App.css'
 
 class Search extends React.Component {
   componentWillMount() {
-    const { resetAndSearch, location, addRoleSearchFilter, addExperienceSearchFilter, addLocationTypeSearchFilter } = this.props
+    const { resetAndSearch, location } = this.props
     const parsed = QueryString.parse(location.search)
     const query = parsed.query
     const rolesToFilter = get(parsed, 'role', [])
@@ -31,15 +32,12 @@ class Search extends React.Component {
     const parsedQs = QueryString.parse(qs)
     const show = get(parsedQs, 'show', '')
     resetAndSearch(show, query, roleFilters, experienceFilter, locationTypeFilters)
-    addExperienceSearchFilter(parsedExpMin, parsedExpMax)
-    addRoleSearchFilter(roleFilters.map(filter => filter.role))
-    addLocationTypeSearchFilter(locationTypeFilters.map(t => t.locationType))
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
-      const { resetAndSearch, addRoleSearchFilter, addExperienceSearchFilter, addLocationTypeSearchFilter } = this.props
+      const { resetAndSearch } = this.props
       const parsed = QueryString.parse(nextProps.location.search)
-      const query = get(parsed, 'query', ' ')
+      const query = get(parsed, 'query', '')
       const rolesToFilter = get(parsed, 'role', [])
       const locationTypesToFilter = get(parsed, 'locationType', [])
       const expMin = get(parsed, 'expMin')
@@ -58,9 +56,6 @@ class Search extends React.Component {
       const qs = get(nextProps, 'location.search', '')
       const parsedQs = QueryString.parse(qs)
       const show = get(parsedQs, 'show', '')
-      addRoleSearchFilter(roleFilters.map(filter => filter.role))
-      addLocationTypeSearchFilter(locationTypeFilters.map(t => t.locationType))
-      addExperienceSearchFilter(parsedExpMin, parsedExpMax)
       resetAndSearch(show, query, roleFilters, experienceFilter, locationTypeFilters)
     }
   }
@@ -74,6 +69,59 @@ class Search extends React.Component {
     const show = get(parsedQs, 'show', '')
     return (
       <div>
+        { location.pathname === '/search' ?
+          (
+            <div style={{ backgroundColor: '#004b8d' }}>
+              <Tabs
+                indicatorColor="#38b5e6"
+                onChange={(event, value) => {
+                  const newQs = QueryString.stringify({ ...parsedQs, show: value })
+                  history.push({ pathname: '/search', search: newQs })
+                }}
+                style={{ backgroundColor: '#004b8d', marginLeft: '8%' }}
+                tabItemContainerStyle={{ width: '100%' }}
+                value={show}
+              >
+                <Tab
+                  style={{ zIndex: 0, color: '#ffff' }}
+                  label="All"
+                  value="all"
+                  onActive={() => {
+                    const newQs = QueryString.stringify({ ...parsedQs, show: 'all' })
+                    history.push({ pathname: '/search', search: newQs })
+                  }}
+                />
+                <Tab
+                  style={{ zIndex: 0, color: '#ffff' }}
+                  label="Crew"
+                  value="crew"
+                  onActive={() => {
+                    const newQs = QueryString.stringify({ ...parsedQs, show: 'crew' })
+                    history.push({ pathname: '/search', search: newQs })
+                  }}
+                />
+                <Tab
+                  style={{ zIndex: 0, color: '#ffff' }}
+                  label="Vendors"
+                  value="vendors"
+                  onActive={() => {
+                    const newQs = QueryString.stringify({ ...parsedQs, show: 'vendors' })
+                    history.push({ pathname: '/search', search: newQs })
+                  }}
+                />
+                <Tab
+                  style={{ zIndex: 0, color: '#ffff' }}
+                  label="Locations"
+                  value="locations"
+                  onActive={() => {
+                    const newQs = QueryString.stringify({ ...parsedQs, show: 'locations' })
+                    history.push({ pathname: '/search', search: newQs })
+                  }}
+                />
+              </Tabs>
+            </div>
+
+          ) : null }
         {
           show === 'crew' ? (
             <FilterBar
@@ -107,6 +155,9 @@ class Search extends React.Component {
 }
 
 Search.propTypes = {
+  browser: PropTypes.shape({
+    mediaType: PropTypes.string.isRequired
+  }).isRequired,
   location: PropTypes.shape({
     search: PropTypes.string.isRequired
   }).isRequired,

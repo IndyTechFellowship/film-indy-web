@@ -63,7 +63,7 @@ const LocationProfilePage = (props) => {
       <div>
         {
           locationCreator === uid ? (
-            <div style={{ textAlign: 'right', marginRight: 20, marginTop: 10 }}>
+            <div style={{ textAlign: 'right', marginRight: 20, marginTop: 10, marginBottom: 20 }}>
               <Link to={`/location/${locationId}/edit`}>
                 <RaisedButton label="Edit Location" icon={<ModeEditIcon />} />
               </Link>
@@ -72,71 +72,79 @@ const LocationProfilePage = (props) => {
         }
         {
           displayImages.length !== 0 ? (
-            <Card className="profile-card">
-              <Gallery
-                type="view"
-                photos={displayImages.map(image => ({
-                  src: image.url,
-                  height: image.height,
-                  width: image.width
-                }))}
-              />
-            </Card>
+            <div style={{ marginBottom: 10, marginTop: 10 }}>
+              <Card className="profile-card">
+                <Gallery
+                  type="view"
+                  photos={displayImages.map(image => ({
+                    src: image.url,
+                    height: image.height,
+                    width: image.width
+                  }))}
+                />
+              </Card>
+            </div>
           ) : null
         }
-        <Card className="profile-card location-profile" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
-          <div style={{ minWidth: '200px', width: '100%' }}>
-            <CardTitle title={locationName} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-            { locationStreet ? (
-              <CardText className="location-text" style={{ paddingBottom: '8px', paddingTop: '0px', width: '100%' }}>
-                {locationStreet}
-                <br />
-                {locationCityState}
-              </CardText>
-            ) : null
-            }
-            { locationPhone ? (
-              <CardText className="location-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
-                {locationPhone}
-              </CardText>
-            ) : null
-            }
-            { locationEmail ? (
-              <CardText className="location-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
-                {locationEmail}
-              </CardText>
-            ) : null
-            }
-          </div>
-        </Card>
+        <div style={{ marginBottom: 10 }}>
+          <Card className="profile-card location-profile" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
+            <div style={{ minWidth: '200px', width: '100%' }}>
+              <CardTitle title={locationName} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+              { locationStreet ? (
+                <CardText className="location-text" style={{ paddingBottom: '8px', paddingTop: '0px', width: '100%' }}>
+                  {locationStreet}
+                  <br />
+                  {locationCityState}
+                </CardText>
+              ) : null
+              }
+              { locationPhone ? (
+                <CardText className="location-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
+                  {locationPhone}
+                </CardText>
+              ) : null
+              }
+              { locationEmail ? (
+                <CardText className="location-text" style={{ paddingBottom: '8px', paddingTop: '8px', width: '100%' }}>
+                  {locationEmail}
+                </CardText>
+              ) : null
+              }
+            </div>
+          </Card>
+        </div>
 
-        <Card className="profile-card big-card location-bio" containerStyle={{ width: '95%', paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
-          <div>
-            <CardTitle title={'About Us'} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-            { locationBio ? (
-              <CardText style={{ lineHeight: '20px', paddingBottom: '40px' }}>
-                {locationBio}
-              </CardText>
-            ) : (
-              <CardText style={{ paddingBottom: '48px' }}>
+        <div style={{ marginBottom: 10 }}>
+          <Card className="profile-card location-bio" containerStyle={{ width: '95%', paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
+            <div>
+              <CardTitle title={'About Us'} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
+              { locationBio ? (
+                <CardText style={{ lineHeight: '20px', paddingBottom: '40px' }}>
+                  {locationBio}
+                </CardText>
+              ) : (
+                <CardText style={{ paddingBottom: '48px' }}>
                                 Contact us directly for more information.
-              </CardText>
-            )
-            }
+                </CardText>
+              )
+              }
 
-            <CardActions>
-              {locationLinks.map(link => (
-                <RaisedButton primary key={link.title} label={link.title} target="_blank" href={link.url} />
-              ))}
-            </CardActions>
-          </div>
-        </Card>
+              <CardActions>
+                {locationLinks.map(link => (
+                  <RaisedButton primary key={link.title} label={link.title} target="_blank" href={link.url} />
+                ))}
+              </CardActions>
+            </div>
+          </Card>
+        </div>
 
         { video ? (
-          <Card className="profile-card big-card">
-            <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={video.title} />
-            <embed width="100%" height="500px" src={linkToEmbed(video.url, videoType)} />
-          </Card>
+          <div style={{ marginBottom: 10 }}>
+            <Card className="profile-card">
+              <CardTitle title="Featured Video" titleStyle={{ fontWeight: 500, fontSize: '20px' }} subtitle={video.title} />
+              <embed width="100%" height="500px" src={linkToEmbed(video.url, videoType)} />
+            </Card>
+          </div>
         ) : null }
       </div>
 

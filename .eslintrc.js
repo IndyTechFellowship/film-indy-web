@@ -11,6 +11,7 @@ module.exports = {
         "import/prefer-default-export": 'off',
         'import/no-named-as-default-member': 'off',
         "no-case-declarations": 'off',
+        'no-nested-ternary': 'off',
     },
     "extends": "airbnb"
 };

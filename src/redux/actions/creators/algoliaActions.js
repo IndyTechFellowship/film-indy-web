@@ -9,7 +9,7 @@ import { RESET_SEARCH_RESULTS, SEARCH_INDEX, SEARCH_FOR_CREW,
   ADD_ROLE_SEARCH_FILTER, REMOVE_ROLE_SEARCH_FILTER, DELETE_ROLE_FROM_PROFILE,
   SET_VENDOR_PUBLIC, ADD_EXPERIENCE_SEARCH_FILTER, SEARCH_FOR_LOCATION_TYPES, ADD_LOCATION_TYPE_SEARCH_FILTER, REMOVE_LOCATION_TYPE_SEARCH_FILTER
 } from '../types/algoliaActionsTypes'
-
+import { get } from 'lodash'
 import moment from 'moment'
 
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
@@ -103,7 +103,7 @@ export const searchForCrew = (query, filters, experienceFilter, offset = 0, leng
     if (indexName === 'profiles') {
       const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: allFiltersString } : { ...searchObject, query: '', filters: allFiltersString }
       return index.search(enhancedSearchObject).then(results => ({ indexName, results }))
-    } else if (indexName === 'names') {
+    } else if (indexName === 'names' && query && query !== ' ') {
       const enhancedSearchObject = filters.length === 0 ? { ...searchObject, query, filters: namesIndexFilters } : { ...searchObject, query, filters: namesIndexFilters }
       return index.search(enhancedSearchObject).then(results => ({ indexName, results }))
     }
@@ -117,10 +117,13 @@ export const searchForCrew = (query, filters, experienceFilter, offset = 0, leng
     }
   }).then((searchResults) => {
     const totalHits = searchResults.value.reduce((acc, results) => {
-      const indexName = results.indexName
-      return { ...acc, [indexName]: results.results.hits.length }
+      const indexName = get(results, 'indexName')
+      if (indexName) {
+        return { ...acc, [indexName]: results.results.hits.length }
+      }
+      return acc
     }, {})
-    const uniqueHits = searchResults.value.reduce((acc, result) => [...acc, ...result.results.hits], [])
+    const uniqueHits = searchResults.value.reduce((acc, result) => [...acc, ...get(result, 'results.hits', [])], [])
     const enrichPromises = Promise.all(uniqueHits.map(uniqueHit => firebase.database().ref(`userAccount/${uniqueHit.objectID}`)
       .once('value')
       .then(snapshot => firebase.database().ref(`/userProfiles/${uniqueHit.objectID}`)

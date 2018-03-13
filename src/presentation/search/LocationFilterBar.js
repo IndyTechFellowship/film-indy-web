@@ -6,7 +6,6 @@ import Paper from 'material-ui/Paper'
 import Popover from 'react-simple-popover'
 import QueryString from 'query-string'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
 import 'react-input-range/lib/css/index.css'
 import SearchAndSelectLocationTypes from '../common/SearchAndSelectLocationTypes'
 
@@ -26,7 +25,7 @@ class LocationFilterBar extends React.Component {
   }
   render() {
     const { menuOpen } = this.state
-    const { history, addLocationTypeSearchFilter, removeLocationTypeSearchFilter, locationTypeFilters } = this.props
+    const { history, locationTypeFilters } = this.props
     return (
       <Paper>
         <Toolbar style={{ backgroundColor: '#FFFFF' }}>
@@ -49,21 +48,12 @@ class LocationFilterBar extends React.Component {
                   <SearchAndSelectLocationTypes
                     page="search"
                     locationTypeFilters={locationTypeFilters}
-                    onItemSelected={(selectedItem, itemSelected, type) => {
+                    onItemsSelected={(items) => {
                       const parsedQs = QueryString.parse(window.location.search)
-                      const typesFromQs = get(parsedQs, 'locationType', [])
-                      const types = typeof (typesFromQs) === 'string' ? [typesFromQs] : typesFromQs
-                      if (type === 'add') {
-                        addLocationTypeSearchFilter([itemSelected.type])
-                        const newTypes = [...types, itemSelected.type]
-                        const newQs = QueryString.stringify({ ...parsedQs, locationType: newTypes })
-                        history.push({ pathname: '/search', search: newQs })
-                      } else if (type === 'remove') {
-                        removeLocationTypeSearchFilter(itemSelected.type)
-                        const newTypes = types.filter(t => t !== itemSelected.type)
-                        const newQs = QueryString.stringify({ ...parsedQs, locationType: newTypes })
-                        history.push({ pathname: '/search', search: newQs })
-                      }
+                      const newQs = QueryString.stringify({ ...parsedQs, locationType: items })
+                      history.push({ pathname: '/search', search: newQs })
+                    }}
+                    onItemSelected={() => {
                     }}
                   />
                 </Paper>
