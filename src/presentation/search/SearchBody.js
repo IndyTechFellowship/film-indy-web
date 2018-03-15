@@ -47,7 +47,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                 <Col xs>
                   <h1 style={{ textAlign: 'left', paddingLeft: 40, margin: 0 }}> Crew </h1>
                 </Col>
-                <Col xs>
+                <Col xs style={{ textAlign: 'right', marginRight: 15 }}>
                   <RaisedButton
                     label="See More"
                     labelColor="white"
@@ -105,7 +105,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                 <Col xs>
                   <h1 style={{ textAlign: 'left', paddingLeft: 40, margin: 0 }}> Vendors </h1>
                 </Col>
-                <Col xs>
+                <Col xs style={{ textAlign: 'right', marginRight: 15 }}>
                   <RaisedButton
                     label="See More"
                     labelColor="white"
@@ -157,7 +157,7 @@ const SearchBody = ({ enriched, enrichedVendors, enrichedLocations, location, to
                 <Col xs>
                   <h1 style={{ textAlign: 'left', paddingLeft: 40, margin: 0 }}> Locations </h1>
                 </Col>
-                <Col xs>
+                <Col xs style={{ textAlign: 'right', marginRight: 15 }}>
                   <RaisedButton
                     label="See More"
                     labelColor="white"
