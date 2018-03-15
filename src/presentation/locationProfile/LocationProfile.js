@@ -40,6 +40,11 @@ function linkToEmbed(link, type) {
   }
 }
 
+function formatCityStateZip(city, state, zip) {
+  const cityWithComma = city ? `${city}, ` : null
+  return (city || state || zip) ? `${cityWithComma} ${state} ${zip}` : null
+}
+
 const LocationProfilePage = (props) => {
   const uid = get(props, 'auth.uid', '')
   const locationId = get(props, 'match.params.locationId', '')
@@ -50,8 +55,12 @@ const LocationProfilePage = (props) => {
   const locationEmail = get(locationProfile, 'email', '')
   const locationBio = get(locationProfile, 'aboutUs', '')
   const locationLinks = get(locationProfile, 'links', [])
-  const locationStreet = get(locationProfile, 'addressLine1', '')
-  const locationCityState = get(locationProfile, 'addressLine2', '')
+  const primaryContactAddressLine1 = get(locationProfile, 'addressLine1', '')
+  const primaryContactAddressLine2 = get(locationProfile, 'addressLine2', '')
+  const primaryContactCity = get(locationProfile, 'city', '')
+  const primaryContactState = get(locationProfile, 'state', '')
+  const primaryContactZip = get(locationProfile, 'zip', '')
+  const primaryContactCityStateZip = formatCityStateZip(primaryContactCity, primaryContactState, primaryContactZip)
   const video = get(locationProfile, 'video', '')[0]
   const displayImages = get(locationProfile, 'displayImages', [])
   let videoType = 0
@@ -90,11 +99,21 @@ const LocationProfilePage = (props) => {
           <Card className="profile-card location-profile" containerStyle={{ paddingBottom: 0, display: 'flex', flexDirection: 'row', textAlign: 'left' }}>
             <div style={{ minWidth: '200px', width: '100%' }}>
               <CardTitle title={locationName} titleStyle={{ fontWeight: 500, fontSize: '20px' }} />
-              { locationStreet ? (
-                <CardText className="location-text" style={{ paddingBottom: '8px', paddingTop: '0px', width: '100%' }}>
-                  {locationStreet}
-                  <br />
-                  {locationCityState}
+              { primaryContactAddressLine1 ? (
+                <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '8px', width: '100%' }}>
+                  {primaryContactAddressLine1}
+                </CardText>
+              ) : null
+              }
+              { primaryContactAddressLine2 ? (
+                <CardText className="vendor-text" style={{ paddingBottom: '4px', paddingTop: '4px', width: '100%' }}>
+                  {primaryContactAddressLine2}
+                </CardText>
+              ) : null
+              }
+              { primaryContactCityStateZip ? (
+                <CardText className="vendor-text" style={{ paddingBottom: '8px', paddingTop: '4px', width: '100%' }}>
+                  {primaryContactCityStateZip}
                 </CardText>
               ) : null
               }
