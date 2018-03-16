@@ -49,6 +49,7 @@ class LocationFilterBar extends React.Component {
                     page="search"
                     locationTypeFilters={locationTypeFilters}
                     onItemsSelected={(items) => {
+                      this.setState({ menuOpen: false })
                       const parsedQs = QueryString.parse(window.location.search)
                       const newQs = QueryString.stringify({ ...parsedQs, locationType: items })
                       history.push({ pathname: '/search', search: newQs })
