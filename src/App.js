@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
+import QueryString from 'query-string'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import { InstantSearch, Index, Configure, CurrentRefinements } from 'react-instantsearch/dom'
@@ -94,8 +95,12 @@ const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID
 
 const AutoCompleteBar = connectAutoComplete(
-  ({ hits, currentRefinement, refine, onUpdateInput, onSuggestionClicked, onEnterHit }) => {
+  ({ hits, currentRefinement, refine, onUpdateInput, onSuggestionClicked, onEnterHit, searchBarUpdated, initalQuery }) => {
     const subsetHits = hits.map(hit => ({ ...hit, hits: hit.hits.slice(0, 3) }))
+    let refinement = currentRefinement
+    if (!searchBarUpdated && initalQuery) {
+      refinement = initalQuery
+    }
     return (
       <Autosuggest
         theme={styles}
@@ -110,7 +115,7 @@ const AutoCompleteBar = connectAutoComplete(
         renderInputComponent={(inputProps) => {
           const onBlur = (event) => {
             inputProps.onBlur()
-            refine(currentRefinement)
+            refine(refinement)
           }
           const moreInputProps = { ...inputProps, onBlur }
           return (
@@ -195,7 +200,7 @@ const AutoCompleteBar = connectAutoComplete(
           style: {
             width: '100%'
           },
-          value: currentRefinement,
+          value: refinement,
           onChange: (event) => {
             onUpdateInput(event.target.value)
           }
@@ -206,8 +211,13 @@ const AutoCompleteBar = connectAutoComplete(
 
 class App extends React.Component {
   constructor(props) {
+    const parsedQs = QueryString.parse(window.location.search)
+    const query = get(parsedQs, 'query', '')
     super(props)
     this.state = {
+      searchQuery: '',
+      initalQuery: query,
+      searchBarUpdated: false,
       open: false,
       signedOut: false,
       addVendorModalOpen: false,
@@ -258,6 +268,9 @@ class App extends React.Component {
       submitVendorCreate, createVendor, usersLocations, submitLocationCreate, createLocation,
       getDefaultAccountImages } = this.props
     const { addVendorModalOpen, addLocationModalOpen, showSubMenu } = this.state
+    const searchQuery = get(this.state, 'searchQuery', '')
+    const searchBarUpdated = get(this.state, 'searchBarUpdated', false)
+    const initalQuery = get(this.state, 'initalQuery', '')
     const photoURL = get(profile, 'photoURL', '')
     const uid = get(auth, 'uid')
     const appBarStyle = location.pathname === '/search' ? { boxShadow: 'none' } : {}
@@ -300,10 +313,16 @@ class App extends React.Component {
                     </Index>
                     <Index indexName="locationTypes" />
                     <AutoCompleteBar
-                      onUpdateInput={query => this.searchQuery = query}
+                      initalQuery={initalQuery}
+                      searchBarUpdated={searchBarUpdated}
+                      onUpdateInput={query => this.setState({ searchQuery: query, searchBarUpdated: true })}
                       onEnterHit={() => {
-                        if (this.searchQuery) {
-                          history.push({ pathname: '/search', search: `?query=${encodeURIComponent(this.searchQuery)}&show=all` })
+                        if (searchQuery) {
+                          if (!searchBarUpdated) {
+                            history.push({ pathname: '/search', search: `?query=${encodeURIComponent(initalQuery)}&show=all` })
+                          } else {
+                            history.push({ pathname: '/search', search: `?query=${encodeURIComponent(searchQuery)}&show=all` })
+                          }
                         } else {
                           history.push({ pathname: '/search', search: `?query=${encodeURIComponent('')}&show=all` })
                         }
