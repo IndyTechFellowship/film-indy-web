@@ -225,13 +225,13 @@ const roles = [
 
 const generateCategorySearchLink = (index) => {
   if (index === 0) {
-    return '/search?query=%27%27&show=locations'
+    return '/search?show=locations'
   } else if (index === 1) {
-    return '/search?query=%27%27&show=crew'
+    return '/search?show=crew'
   } else if (index === 2) {
-    return '/search?query=%27%27&show=vendors'
+    return '/search?show=vendors'
   }
-  return '/search?query=%27%27&show=all'
+  return '/search?show=all'
 }
 
 class homePage extends React.Component {
