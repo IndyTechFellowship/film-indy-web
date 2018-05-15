@@ -248,6 +248,7 @@ class SignUpForm extends React.Component {
                               }
                             }}
                           />
+                          <div style={{fontSize: '10px'}}>Must be 6 or more characters</div>
                         </Col>
                       </Row>
                       <Row id="confirmPasswordInput">
@@ -403,7 +404,7 @@ class SignUpForm extends React.Component {
                           <Field
                             name="password"
                             component={TextField}
-                            floatingLabelText="Password"
+                            floatingLabelText="Password (must be 6 or more characters)"
                             type="password"
                             onKeyPress={(ev) => {
                               if (ev.key === 'Enter') {
